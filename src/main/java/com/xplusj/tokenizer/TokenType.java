@@ -6,6 +6,7 @@ public enum TokenType {
     PARENTHESIS_CLOSING,
     VARIABLE,
     FUNCTION,
+    FUNCTION_PARAM_DELIMITER,
     OPERATOR,
     EOE
 }

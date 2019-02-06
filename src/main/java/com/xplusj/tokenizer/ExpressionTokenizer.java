@@ -40,10 +40,22 @@ public class ExpressionTokenizer {
         if(')' == c)
             return Token.parenthesisClosing();
 
+        if(',' == c)
+            return Token.getFunctionParamDelimiter();
+
         if(environment.hasOperator(c))
             return Token.operator(expression.substring(startIndex, currentIndex));
 
-        //2+pw(3,2)
+        while(currentIndex < expressionLength && 'a'<= c && c <= 'z'){
+            c = expression.charAt(++currentIndex);
+        }
+
+        if(startIndex < currentIndex){
+            String funcName = expression.substring(startIndex, currentIndex);
+            if(environment.hasFunction(funcName)){
+                return Token.function(funcName);
+            }
+        }
 
         return Token.variable(expression.substring(startIndex, currentIndex));
     }

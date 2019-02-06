@@ -80,4 +80,48 @@ public class ExpressionTokenizerTests {
         assertEquals(Token.number("3"), tokenList.get(2));
     }
 
+    @Test
+    public void shouldReturnFunctionWithSingleParam(){
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer("2+fsp(3)", environment);
+        List<Token> tokenList = new ArrayList<>();
+
+        when(environment.hasOperator('+')).thenReturn(true);
+        when(environment.hasFunction("fsp")).thenReturn(true);
+
+        while (tokenizer.hasNext()){
+            tokenList.add(tokenizer.next());
+        }
+
+        assertEquals(Token.number("2"), tokenList.get(0));
+        assertEquals(Token.operator("+"), tokenList.get(1));
+        assertEquals(Token.function("fsp"), tokenList.get(2));
+        assertEquals(Token.parenthesisOpening(), tokenList.get(3));
+        assertEquals(Token.number("3"), tokenList.get(4));
+        assertEquals(Token.parenthesisClosing(), tokenList.get(5));
+    }
+
+    @Test
+    public void shouldReturnFunctionWithMultipleParams(){
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer("2+fmp(3,2,4)", environment);
+        List<Token> tokenList = new ArrayList<>();
+
+        when(environment.hasOperator('+')).thenReturn(true);
+        when(environment.hasFunction("fmp")).thenReturn(true);
+
+        while (tokenizer.hasNext()){
+            tokenList.add(tokenizer.next());
+        }
+
+        assertEquals(Token.number("2"), tokenList.get(0));
+        assertEquals(Token.operator("+"), tokenList.get(1));
+        assertEquals(Token.function("fmp"), tokenList.get(2));
+        assertEquals(Token.parenthesisOpening(), tokenList.get(3));
+        assertEquals(Token.number("3"), tokenList.get(4));
+        assertEquals(Token.getFunctionParamDelimiter(), tokenList.get(5));
+        assertEquals(Token.number("2"), tokenList.get(6));
+        assertEquals(Token.getFunctionParamDelimiter(), tokenList.get(7));
+        assertEquals(Token.number("4"), tokenList.get(8));
+        assertEquals(Token.parenthesisClosing(), tokenList.get(9));
+    }
+
 }
