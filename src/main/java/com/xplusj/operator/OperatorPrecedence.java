@@ -1,8 +1,10 @@
 package com.xplusj.operator;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
+@ToString
 public class OperatorPrecedence implements Comparable<OperatorPrecedence>{
     private static final OperatorPrecedence LOW = new OperatorPrecedence(0);
     private static final OperatorPrecedence MEDIUM = new OperatorPrecedence(Integer.MAX_VALUE/3);

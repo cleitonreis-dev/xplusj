@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 @AllArgsConstructor
 @Getter
-@ToString(of = {"type", "identifier"})
+@ToString(of = {"type", "identifier", "precedence"})
 @EqualsAndHashCode(of = {"type", "identifier"})
 public class OperatorDefinition {
     private final OperatorType type;
