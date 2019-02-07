@@ -14,5 +14,6 @@ import java.util.function.Function;
 public class OperatorDefinition {
     private final OperatorType type;
     private final char identifier;
+    private final OperatorPrecedence precedence;
     private final Function<OperatorRuntimeContext,Double> operator;
 }
