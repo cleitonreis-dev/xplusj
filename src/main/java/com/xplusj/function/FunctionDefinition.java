@@ -1,4 +1,4 @@
-package com.xplusj.functions;
+package com.xplusj.function;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -14,5 +14,5 @@ import java.util.function.Function;
 public class FunctionDefinition {
     private final String name;
     private final int totalOfParams;
-    private final Function<RuntimeContext, Double> function;
+    private final Function<FunctionRuntimeContext, Double> function;
 }
