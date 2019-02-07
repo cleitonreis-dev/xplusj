@@ -1,5 +1,6 @@
 package com.xplusj.operator;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
@@ -39,14 +40,20 @@ public class OperatorPrecedence implements Comparable<OperatorPrecedence>{
     }
 
     public static OperatorPrecedence lowerThan(OperatorPrecedence precedence){
+        if(precedence.precedence == Integer.MIN_VALUE)
+            throw new IllegalArgumentException("Precedence with min value set");
+
         return new OperatorPrecedence(precedence.precedence - 1);
     }
 
     public static OperatorPrecedence higherThan(OperatorPrecedence precedence){
+        if(precedence.precedence == Integer.MAX_VALUE)
+            throw new IllegalArgumentException("Precedence with max value set");
+
         return new OperatorPrecedence(precedence.precedence + 1);
     }
 
     public static OperatorPrecedence sameAs(OperatorPrecedence precedence){
-        return new OperatorPrecedence(precedence.precedence);
+        return precedence;
     }
 }
