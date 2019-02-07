@@ -2,19 +2,21 @@ package com.xplusj.tokenizer;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+@Getter
 public class Token {
     private static final Token EOE = new Token(TokenType.EOE, null);
     private static final Token PARENTHESIS_OPENING = new Token(TokenType.PARENTHESIS_OPENING, null);
     private static final Token PARENTHESIS_CLOSING = new Token(TokenType.PARENTHESIS_CLOSING, null);
     private static final Token FUNCTION_PARAM_DELIMITER = new Token(TokenType.FUNCTION_PARAM_DELIMITER, null);
 
-    public final TokenType type;
-    public final String value;
+    private final TokenType type;
+    private final String value;
 
 
     public static Token number(String value){

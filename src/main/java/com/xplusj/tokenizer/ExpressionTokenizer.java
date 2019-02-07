@@ -2,7 +2,16 @@ package com.xplusj.tokenizer;
 
 import com.xplusj.Environment;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ExpressionTokenizer {
+    private static final Map<Character, Token> RESERVED_TOKENS = new HashMap<>();
+    static {
+        RESERVED_TOKENS.put('(', Token.parenthesisOpening());
+        RESERVED_TOKENS.put(')', Token.parenthesisClosing());
+        RESERVED_TOKENS.put(',', Token.getFunctionParamDelimiter());
+    }
 
     private final String expression;
     private final int expressionLength;
@@ -25,7 +34,9 @@ public class ExpressionTokenizer {
 
         int startIndex = currentIndex;
 
-        while(currentIndex < expressionLength && Character.isDigit(expression.charAt(currentIndex))){
+        while(currentIndex < expressionLength && (
+                Character.isDigit(expression.charAt(currentIndex))
+                        || expression.charAt(currentIndex) == '.')){
             ++currentIndex;
         }
 
@@ -34,14 +45,8 @@ public class ExpressionTokenizer {
 
         char c = expression.charAt(currentIndex++);
 
-        if('(' == c)
-            return Token.parenthesisOpening();
-
-        if(')' == c)
-            return Token.parenthesisClosing();
-
-        if(',' == c)
-            return Token.getFunctionParamDelimiter();
+        if(RESERVED_TOKENS.containsKey(c))
+            return RESERVED_TOKENS.get(c);
 
         if(environment.hasOperator(c))
             return Token.operator(expression.substring(startIndex, currentIndex));

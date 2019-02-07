@@ -37,6 +37,15 @@ public class ExpressionTokenizerTests {
     }
 
     @Test
+    public void shouldReturnDigitsWithDots(){
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer("2222.3333", environment);
+
+        while (tokenizer.hasNext()){
+            assertEquals(Token.number("2222.3333"), tokenizer.next());
+        }
+    }
+
+    @Test
     public void shouldReturnParenthesisAndDigit(){
         ExpressionTokenizer tokenizer = new ExpressionTokenizer("(2)", environment);
         List<Token> tokenList = new ArrayList<>();
