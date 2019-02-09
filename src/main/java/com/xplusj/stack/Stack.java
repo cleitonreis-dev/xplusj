@@ -6,6 +6,8 @@ public interface Stack<T> {
 
     T pull();
 
+    T peek();
+
     boolean isEmpty();
 
     static<T> Stack<T> defaultStack(){

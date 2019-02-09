@@ -19,6 +19,13 @@ public class LinkedStack<T> implements Stack<T>{
         return value;
     }
 
+    public T peek(){
+        if(head == null)
+            throw new IllegalStateException("Empty stack");
+
+        return head.value;
+    }
+
     public boolean isEmpty(){
         return head == null;
     }
