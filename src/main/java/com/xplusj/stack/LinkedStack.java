@@ -1,8 +1,8 @@
-package com.xplusj;
+package com.xplusj.stack;
 
 import lombok.AllArgsConstructor;
 
-public class Stack<T> {
+public class LinkedStack<T> implements Stack<T>{
 
     private Node<T> head;
 

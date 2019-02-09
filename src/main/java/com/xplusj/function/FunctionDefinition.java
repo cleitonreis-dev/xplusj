@@ -9,10 +9,10 @@ import java.util.function.Function;
 
 @AllArgsConstructor
 @EqualsAndHashCode(of = "name")
-@ToString(of = {"name", "totalOfParams"})
+@ToString(of = {"name", "params"})
 @Getter
 public class FunctionDefinition {
     private final String name;
-    private final int totalOfParams;
+    private final String[] params;
     private final Function<FunctionRuntimeContext, Double> function;
 }

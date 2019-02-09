@@ -1,5 +1,6 @@
 package com.xplusj;
 
+import com.xplusj.stack.Stack;
 import org.junit.Test;
 
 import java.util.stream.IntStream;

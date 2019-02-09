@@ -1,6 +1,5 @@
 package com.xplusj.operator;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
@@ -9,7 +8,7 @@ import lombok.ToString;
 public class OperatorPrecedence implements Comparable<OperatorPrecedence>{
     private static final OperatorPrecedence LOW = new OperatorPrecedence(0);
     private static final OperatorPrecedence MEDIUM = new OperatorPrecedence(Integer.MAX_VALUE/3);
-    private static final OperatorPrecedence HIGH = new OperatorPrecedence(Integer.MAX_VALUE/3 + Integer.MAX_VALUE/3);
+    private static final OperatorPrecedence HIGH = new OperatorPrecedence(MEDIUM.precedence + MEDIUM.precedence);
     private static final OperatorPrecedence HIGHER = new OperatorPrecedence(Integer.MAX_VALUE);
 
 
