@@ -1,5 +1,5 @@
 package com.xplusj;
 
 public interface RuntimeContext{
-    FunctionCaller getFuntion(String name);
+    FunctionCaller getFunction(String name);
 }

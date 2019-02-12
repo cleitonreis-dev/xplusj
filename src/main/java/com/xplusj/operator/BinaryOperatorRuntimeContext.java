@@ -1,8 +1,6 @@
 package com.xplusj.operator;
 
-import com.xplusj.RuntimeContext;
-
-public interface BinaryOperatorRuntimeContext extends RuntimeContext {
+public interface BinaryOperatorRuntimeContext extends OperatorRutimeContext {
     double getFirstValue();
     double getSecondValue();
 }

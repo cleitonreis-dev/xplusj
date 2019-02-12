@@ -7,6 +7,6 @@ public enum TokenType {
     VARIABLE,
     FUNCTION,
     FUNCTION_PARAM_DELIMITER,
-    OPERATOR,
+    BINARY_OPERATOR,
     EOE
 }
