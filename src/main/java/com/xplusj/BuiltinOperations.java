@@ -37,8 +37,8 @@ public interface BuiltinOperations {
 
     static List<ExpressionFunction> functions(){
         return asList(
-            function("max(a,b)", c->Math.max(c.getVar("a"),c.getVar("b"))),
-            function("abs(a)", c->Math.abs(c.getVar("a")))
+            function("max(a,b)", c->Math.max(c.getParam("a"),c.getParam("b"))),
+            function("abs(a)", c->Math.abs(c.getParam("a")))
         );
     }
 }
