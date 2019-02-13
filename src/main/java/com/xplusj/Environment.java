@@ -7,10 +7,20 @@ import com.xplusj.operator.UnaryOperatorRuntimeContext;
 
 public interface Environment {
     boolean hasFunction(String name);
-    boolean hasOperator(char name);
 
-    Operator<BinaryOperatorRuntimeContext> getBinaryOperator(char charAt);
-    Operator<UnaryOperatorRuntimeContext> getUnaryOperator(char charAt);
+    boolean hasBinaryOperator(char symbol);
+
+    boolean hasUnaryOperator(char symbol);
+
+    Operator<BinaryOperatorRuntimeContext> getBinaryOperator(char symbol);
+
+    Operator<UnaryOperatorRuntimeContext> getUnaryOperator(char symbol);
 
     ExpressionFunction getFunction(String name);
+
+    ExpressionEvaluator expression(String expression);
+
+    static DefaultEnvironment.Builder defaultEnv(){
+        return DefaultEnvironment.builder();
+    }
 }

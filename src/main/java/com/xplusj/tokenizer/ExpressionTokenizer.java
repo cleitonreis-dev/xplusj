@@ -48,7 +48,7 @@ public class ExpressionTokenizer {
         if(RESERVED_TOKENS.containsKey(c))
             return RESERVED_TOKENS.get(c);
 
-        if(environment.hasOperator(c))
+        if(environment.hasBinaryOperator(c))
             return Token.operator(expression.substring(startIndex, currentIndex));
 
         while(currentIndex < expressionLength && 'a'<= c && c <= 'z'){

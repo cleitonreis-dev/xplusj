@@ -78,7 +78,7 @@ public class ExpressionTokenizerTests {
         ExpressionTokenizer tokenizer = new ExpressionTokenizer("2+3", environment);
         List<Token> tokenList = new ArrayList<>();
 
-        when(environment.hasOperator('+')).thenReturn(true);
+        when(environment.hasBinaryOperator('+')).thenReturn(true);
 
         while (tokenizer.hasNext()){
             tokenList.add(tokenizer.next());
@@ -94,7 +94,7 @@ public class ExpressionTokenizerTests {
         ExpressionTokenizer tokenizer = new ExpressionTokenizer("2+fsp(3)", environment);
         List<Token> tokenList = new ArrayList<>();
 
-        when(environment.hasOperator('+')).thenReturn(true);
+        when(environment.hasBinaryOperator('+')).thenReturn(true);
         when(environment.hasFunction("fsp")).thenReturn(true);
 
         while (tokenizer.hasNext()){
@@ -114,7 +114,7 @@ public class ExpressionTokenizerTests {
         ExpressionTokenizer tokenizer = new ExpressionTokenizer("2+fmp(3,2,4)", environment);
         List<Token> tokenList = new ArrayList<>();
 
-        when(environment.hasOperator('+')).thenReturn(true);
+        when(environment.hasBinaryOperator('+')).thenReturn(true);
         when(environment.hasFunction("fmp")).thenReturn(true);
 
         while (tokenizer.hasNext()){

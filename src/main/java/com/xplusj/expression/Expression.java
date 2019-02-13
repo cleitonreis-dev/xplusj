@@ -1,18 +1,23 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
+import com.xplusj.ExpressionEvaluator;
 import com.xplusj.stack.Stack;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import com.xplusj.tokenizer.Token;
 import com.xplusj.tokenizer.TokenType;
 import lombok.AllArgsConstructor;
 
+import java.util.Map;
+
 @AllArgsConstructor
-public class InlineExpression {
+public class Expression implements ExpressionEvaluator {
 
     private final Environment env;
+    private final String expression;
 
-    public double eval(final String expression){
+    @Override
+    public double eval() {
         ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, env);
         Stack<StackBasedExecutor> opStack = Stack.defaultStack();
         Stack<Double> valStack = Stack.defaultStack();
@@ -27,7 +32,7 @@ public class InlineExpression {
 
             if(token.type == TokenType.BINARY_OPERATOR){
                 StackBasedExecutor operator = new BinaryOperatorStackBasedExecutor(
-                    env.getBinaryOperator(token.value.charAt(0)));
+                        env.getBinaryOperator(token.value.charAt(0)));
 
                 if(opStack.isEmpty()){
                     opStack.push(operator);
@@ -36,6 +41,7 @@ public class InlineExpression {
                         opStack.push(operator);
                     }else{
                         opStack.pull().execute(valStack);
+                        opStack.push(operator);
                     }
                 }
             }
@@ -46,5 +52,10 @@ public class InlineExpression {
         }
 
         return valStack.pull();
+    }
+
+    @Override
+    public double eval(Map<String, Double> variables) {
+        return 0;
     }
 }
