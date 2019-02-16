@@ -12,13 +12,13 @@ import java.util.function.Function;
 @Getter
 @ToString(of = {"type", "symbol", "precedence"})
 @EqualsAndHashCode(of = {"type", "symbol"})
-public abstract class Operator<T extends OperatorRutimeContext> implements OperationExecutor<T> {
+public class Operator<T extends OperatorRutimeContext> implements OperationExecutor<T> {
     private final OperationType type;
     private final char symbol;
     private final OperationPrecedence precedence;
     private final Function<T,Double> function;
 
-    Operator(OperationType type, char symbol,
+    private Operator(OperationType type, char symbol,
              OperationPrecedence precedence,
                      Function<T, Double> function) {
         this.type = type;
@@ -44,14 +44,14 @@ public abstract class Operator<T extends OperatorRutimeContext> implements Opera
 
     @Override
     public boolean precedes(OperationExecutor<?> executor) {
-        return 1 == precedence.compareTo(executor.getOperationPrecedence());
+        return precedence.compareTo(executor.getOperationPrecedence()) > 0;
     }
 
     public static Operator<BinaryOperatorRuntimeContext> binary(char symbol, OperationPrecedence precedence, Function<BinaryOperatorRuntimeContext,Double> function){
-        return new BinaryOperator(symbol,precedence,function);
+        return new Operator<>(OperationType.BINARY_OPERATOR, symbol,precedence,function);
     }
 
     public static Operator<UnaryOperatorRuntimeContext> unary(char symbol, OperationPrecedence precedence, Function<UnaryOperatorRuntimeContext,Double> function){
-        return new UnaryOperator(symbol,precedence,function);
+        return new Operator<>(OperationType.UNARY_OPERATOR, symbol,precedence,function);
     }
 }
