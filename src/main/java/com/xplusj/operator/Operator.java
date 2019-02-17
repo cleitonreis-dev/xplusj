@@ -4,10 +4,7 @@ import com.xplusj.OperationExecutor;
 import com.xplusj.OperationPrecedence;
 import com.xplusj.OperationType;
 import com.xplusj.RuntimeContext;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.function.Function;
 
@@ -28,6 +25,10 @@ public class Operator<T extends RuntimeContext> implements OperationExecutor<T> 
     @Override
     public OperationPrecedence getOperationPrecedence() {
         return precedence;
+    }
+
+    public char getSymbol() {
+        return symbol;
     }
 
     @Override
