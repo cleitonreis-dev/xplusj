@@ -6,6 +6,7 @@ import com.xplusj.operator.BinaryOperatorRuntimeContext;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.UnaryOperatorRuntimeContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,9 +72,9 @@ public class DefaultEnvironment implements Environment{
     }
 
     public static class Builder{
-        private List<ExpressionFunction> functions = BuiltinOperations.functions();
-        private List<Operator<BinaryOperatorRuntimeContext>> binaryOperators = BuiltinOperations.binaryOperators();
-        private List<Operator<UnaryOperatorRuntimeContext>> unaryOperators = BuiltinOperations.unaryOperators();
+        private List<ExpressionFunction> functions = new ArrayList<>(BuiltinOperations.functions());
+        private List<Operator<BinaryOperatorRuntimeContext>> binaryOperators = new ArrayList<>(BuiltinOperations.binaryOperators());
+        private List<Operator<UnaryOperatorRuntimeContext>> unaryOperators = new ArrayList<>(BuiltinOperations.unaryOperators());
 
         private Builder() {}
 
