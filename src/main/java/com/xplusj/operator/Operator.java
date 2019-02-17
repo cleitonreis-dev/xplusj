@@ -3,6 +3,7 @@ package com.xplusj.operator;
 import com.xplusj.OperationExecutor;
 import com.xplusj.OperationPrecedence;
 import com.xplusj.OperationType;
+import com.xplusj.RuntimeContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -12,15 +13,13 @@ import java.util.function.Function;
 @Getter
 @ToString(of = {"type", "symbol", "precedence"})
 @EqualsAndHashCode(of = {"type", "symbol"})
-public class Operator<T extends OperatorRutimeContext> implements OperationExecutor<T> {
+public class Operator<T extends RuntimeContext> implements OperationExecutor<T> {
     private final OperationType type;
     private final char symbol;
     private final OperationPrecedence precedence;
     private final Function<T,Double> function;
 
-    private Operator(OperationType type, char symbol,
-             OperationPrecedence precedence,
-                     Function<T, Double> function) {
+    private Operator(OperationType type, char symbol, OperationPrecedence precedence, Function<T, Double> function) {
         this.type = type;
         this.symbol = symbol;
         this.precedence = precedence;
@@ -29,7 +28,7 @@ public class Operator<T extends OperatorRutimeContext> implements OperationExecu
 
     @Override
     public OperationType getOperationType() {
-        return OperationType.BINARY_OPERATOR;
+        return type;
     }
 
     @Override
