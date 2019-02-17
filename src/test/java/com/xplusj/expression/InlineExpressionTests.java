@@ -1,7 +1,10 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
+import com.xplusj.function.ExpressionFunction;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -97,5 +100,15 @@ public class InlineExpressionTests {
     public void testFuncParameterWithInnerExpressionParenthesisPrecedence(){
         double result = env.expression("2+max(3,(2*(3+2)))").eval();
         assertEquals(12D, result, 0);
+    }
+
+    @Test
+    public void testMakeSureTheFunctionParamsAreGivenInCorrectOrder(){
+        Environment environment = Environment.defaultEnv().functions(Arrays.asList(
+                ExpressionFunction.function("minus(x,y)", c->c.getParam("x")-c.getParam("y"))
+        )).build();
+
+        double result = environment.expression("minus(10,5)").eval();
+        assertEquals(5D, result, 0);
     }
 }
