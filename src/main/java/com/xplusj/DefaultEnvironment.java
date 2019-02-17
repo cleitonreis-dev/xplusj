@@ -38,7 +38,7 @@ public class DefaultEnvironment implements Environment{
 
     @Override
     public boolean hasBinaryOperator(char symbol) {
-        return unaryOperatorsMap.containsKey(symbol);
+        return binaryOperatorsMap.containsKey(symbol);
     }
 
     @Override
