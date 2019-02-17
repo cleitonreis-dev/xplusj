@@ -29,8 +29,12 @@ public class Token {
         return new Token(TokenType.FUNCTION, value);
     }
 
-    public static Token operator(String value){
+    public static Token binaryOperator(String value){
         return new Token(TokenType.BINARY_OPERATOR, value);
+    }
+
+    public static Token unaryOperator(String value){
+        return new Token(TokenType.UNARY_OPERATOR, value);
     }
 
     public static Token parenthesisOpening(){

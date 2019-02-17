@@ -8,5 +8,6 @@ public enum TokenType {
     FUNCTION,
     FUNCTION_PARAM_DELIMITER,
     BINARY_OPERATOR,
+    UNARY_OPERATOR,
     EOE
 }

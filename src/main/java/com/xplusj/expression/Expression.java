@@ -2,6 +2,7 @@ package com.xplusj.expression;
 
 import com.xplusj.Environment;
 import com.xplusj.ExpressionEvaluator;
+import com.xplusj.OperationType;
 import com.xplusj.stack.Stack;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import com.xplusj.tokenizer.Token;
@@ -21,6 +22,8 @@ public class Expression implements ExpressionEvaluator {
         ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, env);
         Stack<StackBasedExecutor> opStack = Stack.defaultStack();
         Stack<Double> valStack = Stack.defaultStack();
+        int openParenthesis = 0;
+        int closedParenthesis = 0;
 
         while (tokenizer.hasNext()){
             Token token = tokenizer.next();
@@ -30,15 +33,48 @@ public class Expression implements ExpressionEvaluator {
                 continue;
             }
 
-            if(token.type == TokenType.BINARY_OPERATOR){
-                StackBasedExecutor operator = new BinaryOperatorStackBasedExecutor(
-                        env.getBinaryOperator(token.value.charAt(0)));
+            if(token.type == TokenType.PARENTHESIS_OPENING){
+                openParenthesis++;
+                continue;
+            }
 
-                if(opStack.isEmpty()){
+            if(token.type == TokenType.PARENTHESIS_CLOSING){
+                openParenthesis--;
+                closedParenthesis = openParenthesis;
+
+                if(!opStack.isEmpty())
+                    opStack.pull().execute(valStack);
+
+                continue;
+            }
+
+            if(token.type == TokenType.FUNCTION_PARAM_DELIMITER){
+                if(opStack.peek().getOperationExecutor().getOperationType() != OperationType.FUNCTION){
+                    throw new IllegalArgumentException("invalid character at xxx index");
+                }
+                continue;
+            }
+
+            StackBasedExecutor operator;
+            if(token.type == TokenType.BINARY_OPERATOR){
+                operator = new BinaryOperatorStackBasedExecutor(env.getBinaryOperator(token.value.charAt(0)), env);
+            }else if(token.type == TokenType.UNARY_OPERATOR){
+                operator = new UnaryOperatorStackBasedExecutor(env.getUnaryOperator(token.value.charAt(0)), env);
+            }else if(token.type == TokenType.FUNCTION){
+                operator = new FunctionStackBasedExecutor(env.getFunction(token.value), env);
+            }else{
+                operator = null;
+            }
+
+            if(opStack.isEmpty()){
+                opStack.push(operator);
+            }else{
+                if(operator.precedes(opStack.peek())){
                     opStack.push(operator);
                 }else{
-                    if(operator.precedes(opStack.peek())){
+                    if(closedParenthesis < openParenthesis){
                         opStack.push(operator);
+                        closedParenthesis++;
                     }else{
                         opStack.pull().execute(valStack);
                         opStack.push(operator);

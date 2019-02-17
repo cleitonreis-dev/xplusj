@@ -17,6 +17,7 @@ public class ExpressionTokenizer {
     private final int expressionLength;
     private final Environment environment;
     private int currentIndex;
+    private Token lastToken;
 
     public ExpressionTokenizer(final String expression, final Environment environment) {
         this.expression = expression;
@@ -41,15 +42,24 @@ public class ExpressionTokenizer {
         }
 
         if(startIndex < currentIndex)
-            return Token.number(expression.substring(startIndex, currentIndex));
+            return setLastToken(Token.number(expression.substring(startIndex, currentIndex)));
 
         char c = expression.charAt(currentIndex++);
 
         if(RESERVED_TOKENS.containsKey(c))
-            return RESERVED_TOKENS.get(c);
+            return setLastToken(RESERVED_TOKENS.get(c));
 
-        if(environment.hasBinaryOperator(c))
-            return Token.operator(expression.substring(startIndex, currentIndex));
+        boolean maybeUnary = lastToken == null
+                || lastToken.type == TokenType.PARENTHESIS_OPENING
+                || lastToken.type == TokenType.BINARY_OPERATOR
+                || lastToken.type == TokenType.UNARY_OPERATOR
+                || lastToken.type == TokenType.FUNCTION_PARAM_DELIMITER;
+
+        if(!maybeUnary && environment.hasBinaryOperator(c))
+            return setLastToken(Token.binaryOperator(expression.substring(startIndex, currentIndex)));
+
+        if(maybeUnary && environment.hasUnaryOperator(c))
+            return setLastToken(setLastToken(Token.unaryOperator(expression.substring(startIndex, currentIndex))));
 
         while(currentIndex < expressionLength && 'a'<= c && c <= 'z'){
             c = expression.charAt(++currentIndex);
@@ -58,10 +68,15 @@ public class ExpressionTokenizer {
         if(startIndex < currentIndex){
             String funcName = expression.substring(startIndex, currentIndex);
             if(environment.hasFunction(funcName)){
-                return Token.function(funcName);
+                return setLastToken(Token.function(funcName));
             }
         }
 
-        return Token.variable(expression.substring(startIndex, currentIndex));
+        return setLastToken(Token.variable(expression.substring(startIndex, currentIndex)));
+    }
+
+    private Token setLastToken(Token token){
+        lastToken = token;
+        return token;
     }
 }

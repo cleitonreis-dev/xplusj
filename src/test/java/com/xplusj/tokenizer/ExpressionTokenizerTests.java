@@ -85,7 +85,7 @@ public class ExpressionTokenizerTests {
         }
 
         assertEquals(Token.number("2"), tokenList.get(0));
-        assertEquals(Token.operator("+"), tokenList.get(1));
+        assertEquals(Token.binaryOperator("+"), tokenList.get(1));
         assertEquals(Token.number("3"), tokenList.get(2));
     }
 
@@ -102,7 +102,7 @@ public class ExpressionTokenizerTests {
         }
 
         assertEquals(Token.number("2"), tokenList.get(0));
-        assertEquals(Token.operator("+"), tokenList.get(1));
+        assertEquals(Token.binaryOperator("+"), tokenList.get(1));
         assertEquals(Token.function("fsp"), tokenList.get(2));
         assertEquals(Token.parenthesisOpening(), tokenList.get(3));
         assertEquals(Token.number("3"), tokenList.get(4));
@@ -122,7 +122,7 @@ public class ExpressionTokenizerTests {
         }
 
         assertEquals(Token.number("2"), tokenList.get(0));
-        assertEquals(Token.operator("+"), tokenList.get(1));
+        assertEquals(Token.binaryOperator("+"), tokenList.get(1));
         assertEquals(Token.function("fmp"), tokenList.get(2));
         assertEquals(Token.parenthesisOpening(), tokenList.get(3));
         assertEquals(Token.number("3"), tokenList.get(4));

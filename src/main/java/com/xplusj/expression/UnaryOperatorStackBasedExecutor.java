@@ -4,14 +4,15 @@ import com.xplusj.Environment;
 import com.xplusj.OperationExecutor;
 import com.xplusj.RuntimeContext;
 import com.xplusj.operator.BinaryOperatorRuntimeContext;
+import com.xplusj.operator.UnaryOperatorRuntimeContext;
 import com.xplusj.stack.Stack;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class BinaryOperatorStackBasedExecutor
+public class UnaryOperatorStackBasedExecutor
         implements StackBasedExecutor{
 
-    private final OperationExecutor<BinaryOperatorRuntimeContext> operationExecutor;
+    private final OperationExecutor<UnaryOperatorRuntimeContext> operationExecutor;
     private final Environment env;
 
     @Override
@@ -22,7 +23,7 @@ public class BinaryOperatorStackBasedExecutor
     @Override
     public void execute(Stack<Double> valueStack) {
         valueStack.push(operationExecutor.execute(
-            new ExpressionBinaryOperatorRuntimeContext(valueStack.pull(), valueStack.pull(), env))
+            new ExpressionUnaryOperatorRuntimeContext(valueStack.pull(), env))
         );
     }
 
