@@ -4,7 +4,7 @@ import com.xplusj.Environment;
 import com.xplusj.operator.BinaryOperatorRuntimeContext;
 
 public class ExpressionBinaryOperatorRuntimeContext
-        extends ExpressionRutimeContext
+        extends ExpressionRuntimeContext
         implements BinaryOperatorRuntimeContext {
 
     private final double firstValue;

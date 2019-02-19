@@ -4,7 +4,7 @@ import com.xplusj.Environment;
 import com.xplusj.operator.UnaryOperatorRuntimeContext;
 
 public class ExpressionUnaryOperatorRuntimeContext
-        extends ExpressionRutimeContext
+        extends ExpressionRuntimeContext
         implements UnaryOperatorRuntimeContext {
 
     private final double value;

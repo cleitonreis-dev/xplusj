@@ -6,7 +6,7 @@ import com.xplusj.function.FunctionRuntimeContext;
 import java.util.Map;
 
 public class ExpressionFunctionRuntimeContext
-        extends ExpressionRutimeContext
+        extends ExpressionRuntimeContext
         implements FunctionRuntimeContext {
 
     private final Map<String,Double> params;
