@@ -29,6 +29,7 @@ public class ExpressionTokenizer {
         return currentIndex < expressionLength;
     }
 
+    //TODO improve algorithm
     public Token next(){
         if(currentIndex >= expressionLength)
             return Token.EOE();
@@ -61,15 +62,20 @@ public class ExpressionTokenizer {
         if(maybeUnary && environment.hasUnaryOperator(c))
             return setLastToken(setLastToken(Token.unaryOperator(expression.substring(startIndex, currentIndex))));
 
-        while(currentIndex < expressionLength && 'a'<= c && c <= 'z'){
-            c = expression.charAt(++currentIndex);
+        while(currentIndex < expressionLength && (('a'<= c && c <= 'z') || ('A'<= c && c <= 'Z'))){
+            if(currentIndex + 1 == expressionLength)//if needed when expression ends with constant
+                c = expression.charAt(currentIndex++);
+            else
+                c = expression.charAt(++currentIndex);
         }
 
         if(startIndex < currentIndex){
-            String funcName = expression.substring(startIndex, currentIndex);
-            if(environment.hasFunction(funcName)){
-                return setLastToken(Token.function(funcName));
-            }
+            String value = expression.substring(startIndex, currentIndex);
+            if(environment.hasFunction(value))
+                return setLastToken(Token.function(value));
+
+            if(environment.hasConstant(value))
+                return setLastToken(Token.constant(value));
         }
 
         return setLastToken(Token.variable(expression.substring(startIndex, currentIndex)));

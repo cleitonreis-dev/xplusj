@@ -1,11 +1,10 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
-import com.xplusj.function.ExpressionFunction;
 import org.junit.Test;
 
-import java.util.Arrays;
-
+import static com.xplusj.function.ExpressionFunction.function;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class InlineExpressionTests {
@@ -104,8 +103,8 @@ public class InlineExpressionTests {
 
     @Test
     public void testMakeSureTheFunctionParamsAreGivenInCorrectOrder(){
-        Environment environment = Environment.defaultEnv().functions(Arrays.asList(
-                ExpressionFunction.function("minus(x,y)", c->c.getParam("x")-c.getParam("y"))
+        Environment environment = Environment.defaultEnv().functions(asList(
+            function("minus(x,y)", c->c.getParam("x")-c.getParam("y"))
         )).build();
 
         double result = environment.expression("minus(10,5)").eval();
@@ -114,12 +113,35 @@ public class InlineExpressionTests {
 
     @Test
     public void testFunctionCallingAnotherFunction(){
-        Environment environment = Environment.defaultEnv().functions(Arrays.asList(
-            ExpressionFunction.function("foo(x)", c -> c.getParam("x") * 2),
-            ExpressionFunction.function("bar(y)", c -> 3 * c.getFunction("foo").call(c.getParam("y")))
+        Environment environment = Environment.defaultEnv().functions(asList(
+            function("foo(x)", c -> c.getParam("x") * 2),
+            function("bar(y)", c -> 3 * c.getFunction("foo").call(c.getParam("y")))
         )).build();
 
         double result = environment.expression("bar(3)").eval();
         assertEquals(18D, result, 0);
+    }
+
+    @Test
+    public void testFunctionWithFunctionAsParam(){
+        Environment environment = Environment.defaultEnv().functions(asList(
+            function("foo(x,y)", c -> c.getParam("x") * c.getParam("y")),
+            function("bar(a,b)", c -> c.getParam("a") + c.getParam("b"))
+        )).build();
+
+        double result = environment.expression("bar(3,foo(2,3))").eval();
+        assertEquals(9D, result, 0);
+    }
+
+    @Test
+    public void testConstantInTheMiddleOfExpression(){
+        double result = env.expression("3*PI/2").eval();
+        assertEquals(3 * Math.PI / 2, result, 0);
+    }
+
+    @Test
+    public void testConstantAtTheEndOfExpression(){
+        double result = env.expression("3*PI").eval();
+        assertEquals(3 * Math.PI, result, 0);
     }
 }

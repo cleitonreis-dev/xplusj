@@ -37,6 +37,10 @@ public class Token {
         return new Token(TokenType.UNARY_OPERATOR, value);
     }
 
+    public static Token constant(String value){
+        return new Token(TokenType.CONSTANT, value);
+    }
+
     public static Token parenthesisOpening(){
         return PARENTHESIS_OPENING;
     }

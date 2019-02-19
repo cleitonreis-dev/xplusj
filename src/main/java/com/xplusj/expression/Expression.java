@@ -33,6 +33,11 @@ public class Expression implements ExpressionEvaluator {
                 continue;
             }
 
+            if(token.type == TokenType.CONSTANT){
+                valStack.push(env.getConstant(token.value));
+                continue;
+            }
+
             if(token.type == TokenType.PARENTHESIS_OPENING){
                 openParenthesis++;
                 continue;
