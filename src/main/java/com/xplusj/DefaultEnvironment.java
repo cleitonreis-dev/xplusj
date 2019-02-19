@@ -7,6 +7,7 @@ import com.xplusj.operator.Operator;
 import com.xplusj.operator.UnaryOperatorRuntimeContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +20,12 @@ public class DefaultEnvironment implements Environment{
     private final Map<String, ExpressionFunction> functionsMap;
     private final Map<Character, Operator<BinaryOperatorRuntimeContext>> binaryOperatorsMap;
     private final Map<Character, Operator<UnaryOperatorRuntimeContext>> unaryOperatorsMap;
+    private final Map<String, Double> constantsMap;
 
     private DefaultEnvironment(List<ExpressionFunction> functions,
                               List<Operator<BinaryOperatorRuntimeContext>> binaryOperators,
-                              List<Operator<UnaryOperatorRuntimeContext>> unaryOperators) {
+                              List<Operator<UnaryOperatorRuntimeContext>> unaryOperators,
+                               Map<String, Double> constantsMap) {
 
         this.functionsMap = unmodifiableMap(
                 functions.stream().collect(toMap(ExpressionFunction::getName, identity())));
@@ -30,6 +33,7 @@ public class DefaultEnvironment implements Environment{
                 binaryOperators.stream().collect(toMap(Operator::getSymbol, identity())));
         this.unaryOperatorsMap = unmodifiableMap(
                 unaryOperators.stream().collect(toMap(Operator::getSymbol, identity())));
+        this.constantsMap = unmodifiableMap(new HashMap<>(constantsMap));
     }
 
     @Override
@@ -45,6 +49,11 @@ public class DefaultEnvironment implements Environment{
     @Override
     public boolean hasUnaryOperator(char symbol) {
         return unaryOperatorsMap.containsKey(symbol);
+    }
+
+    @Override
+    public boolean hasConstant(String name) {
+        return constantsMap.containsKey(name);
     }
 
     @Override
@@ -67,14 +76,21 @@ public class DefaultEnvironment implements Environment{
         return new Expression(this, expression);
     }
 
+    @Override
+    public Double getConstant(String name) {
+        return constantsMap.get(name);
+    }
+
     static DefaultEnvironment.Builder builder(){
         return new Builder();
     }
 
+    //TODO rethink a better builder interface
     public static class Builder{
         private List<ExpressionFunction> functions = new ArrayList<>(BuiltinOperations.functions());
         private List<Operator<BinaryOperatorRuntimeContext>> binaryOperators = new ArrayList<>(BuiltinOperations.binaryOperators());
         private List<Operator<UnaryOperatorRuntimeContext>> unaryOperators = new ArrayList<>(BuiltinOperations.unaryOperators());
+        private Map<String,Double> constants = BuiltinOperations.constants();
 
         private Builder() {}
 
@@ -93,8 +109,13 @@ public class DefaultEnvironment implements Environment{
             return this;
         }
 
+        public Builder constants(Map<String,Double> constants){
+            this.constants.putAll(constants);
+            return this;
+        }
+
         public DefaultEnvironment build(){
-            return new DefaultEnvironment(functions,binaryOperators,unaryOperators);
+            return new DefaultEnvironment(functions,binaryOperators,unaryOperators,constants);
         }
     }
 }

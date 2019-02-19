@@ -5,7 +5,9 @@ import com.xplusj.operator.BinaryOperatorRuntimeContext;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.UnaryOperatorRuntimeContext;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.xplusj.OperationPrecedence.*;
 import static com.xplusj.function.ExpressionFunction.function;
@@ -40,5 +42,14 @@ public interface BuiltinOperations {
             function("max(a,b)", c->Math.max(c.getParam("a"),c.getParam("b"))),
             function("abs(a)", c->Math.abs(c.getParam("a")))
         );
+    }
+
+
+    static Map<String,Double> constants(){
+        Map<String,Double> constants = new HashMap<>();
+        constants.put("PI", Math.PI);
+        constants.put("E", Math.E);
+
+        return constants;
     }
 }

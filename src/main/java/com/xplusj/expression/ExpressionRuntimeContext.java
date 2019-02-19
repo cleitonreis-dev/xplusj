@@ -6,11 +6,16 @@ import com.xplusj.RuntimeContext;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public abstract class ExpressionRutimeContext implements RuntimeContext {
+public abstract class ExpressionRuntimeContext implements RuntimeContext {
     private final Environment env;
 
     @Override
     public FunctionCaller getFunction(String name) {
-        return null;
+        return new RuntimeFunctionCaller(env.getFunction(name), env);
+    }
+
+    @Override
+    public Double getConstant(String name) {
+        return env.getConstant(name);
     }
 }

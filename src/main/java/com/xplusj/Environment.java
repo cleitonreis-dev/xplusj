@@ -12,6 +12,8 @@ public interface Environment {
 
     boolean hasUnaryOperator(char symbol);
 
+    boolean hasConstant(String name);
+
     Operator<BinaryOperatorRuntimeContext> getBinaryOperator(char symbol);
 
     Operator<UnaryOperatorRuntimeContext> getUnaryOperator(char symbol);
@@ -19,6 +21,8 @@ public interface Environment {
     ExpressionFunction getFunction(String name);
 
     ExpressionEvaluator expression(String expression);
+
+    Double getConstant(String name);
 
     static DefaultEnvironment.Builder defaultEnv(){
         return DefaultEnvironment.builder();
