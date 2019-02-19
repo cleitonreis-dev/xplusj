@@ -111,4 +111,15 @@ public class InlineExpressionTests {
         double result = environment.expression("minus(10,5)").eval();
         assertEquals(5D, result, 0);
     }
+
+    @Test
+    public void testFunctionCallingAnotherFunction(){
+        Environment environment = Environment.defaultEnv().functions(Arrays.asList(
+            ExpressionFunction.function("foo(x)", c -> c.getParam("x") * 2),
+            ExpressionFunction.function("bar(y)", c -> 3 * c.getFunction("foo").call(c.getParam("y")))
+        )).build();
+
+        double result = environment.expression("bar(3)").eval();
+        assertEquals(18D, result, 0);
+    }
 }
