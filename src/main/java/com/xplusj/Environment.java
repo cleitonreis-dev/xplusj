@@ -20,6 +20,7 @@ public interface Environment {
 
     ExpressionFunction getFunction(String name);
 
+    @Deprecated//TODO Expression factory will create expressions
     ExpressionEvaluator expression(String expression);
 
     Double getConstant(String name);
