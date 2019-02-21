@@ -31,7 +31,7 @@ public class ExpressionFunction implements OperationExecutor<FunctionRuntimeCont
 
     @Override
     public boolean precedes(OperationExecutor<?> executor) {
-        return 1 == PRECEDENCE.compareTo(executor.getOperationPrecedence());
+        return PRECEDENCE.compareTo(executor.getOperationPrecedence()) > 0;
     }
 
     @Override
