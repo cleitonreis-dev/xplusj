@@ -1,6 +1,7 @@
-package com.xplusj;
+package com.xplusj.core;
 
-import com.xplusj.expression.Expression;
+import com.xplusj.BuiltinOperations;
+import com.xplusj.Environment;
 import com.xplusj.function.ExpressionFunction;
 import com.xplusj.operator.BinaryOperatorRuntimeContext;
 import com.xplusj.operator.Operator;
@@ -15,7 +16,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-public class DefaultEnvironment implements Environment{
+public class DefaultEnvironment implements Environment {
 
     private final Map<String, ExpressionFunction> functionsMap;
     private final Map<Character, Operator<BinaryOperatorRuntimeContext>> binaryOperatorsMap;
@@ -72,16 +73,11 @@ public class DefaultEnvironment implements Environment{
     }
 
     @Override
-    public ExpressionEvaluator expression(String expression) {
-        return new Expression(this, expression);
-    }
-
-    @Override
     public Double getConstant(String name) {
         return constantsMap.get(name);
     }
 
-    static DefaultEnvironment.Builder builder(){
+    public static DefaultEnvironment.Builder builder(){
         return new Builder();
     }
 

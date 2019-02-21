@@ -1,8 +1,20 @@
 package com.xplusj;
 
+import com.xplusj.core.DefaultExpressionFactory;
+
 public interface ExpressionFactory {
 
-    FormulaExpression formula(String formulaExpression);
+    FormulaExpression formula(final String formulaExpression);
 
-    ExpressionEvaluator expession(String expression);
+    ExpressionEvaluator expression(final String expression);
+
+    static ExpressionFactory defaultFactory(){
+        return defaultFactory(Environment.defaultEnv().build());
+    }
+
+    static ExpressionFactory defaultFactory(Environment environment){
+        return DefaultExpressionFactory.builder()
+                .environment(environment)
+                .build();
+    }
 }

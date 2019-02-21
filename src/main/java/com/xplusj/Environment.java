@@ -1,5 +1,6 @@
 package com.xplusj;
 
+import com.xplusj.core.DefaultEnvironment;
 import com.xplusj.function.ExpressionFunction;
 import com.xplusj.operator.BinaryOperatorRuntimeContext;
 import com.xplusj.operator.Operator;
@@ -19,9 +20,6 @@ public interface Environment {
     Operator<UnaryOperatorRuntimeContext> getUnaryOperator(char symbol);
 
     ExpressionFunction getFunction(String name);
-
-    @Deprecated//TODO Expression factory will create expressions
-    ExpressionEvaluator expression(String expression);
 
     Double getConstant(String name);
 
