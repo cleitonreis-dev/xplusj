@@ -2,9 +2,7 @@ package com.xplusj;
 
 import com.xplusj.operation.BuiltinOperations;
 import com.xplusj.operation.function.ExpressionFunction;
-import com.xplusj.operation.operator.BinaryOperatorRuntimeContext;
-import com.xplusj.operation.operator.Operator;
-import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
+import com.xplusj.operation.operator.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,27 +10,31 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 
 class DefaultEnvironment implements Environment {
 
     private final Map<String, ExpressionFunction> functionsMap;
-    private final Map<Character, Operator<BinaryOperatorRuntimeContext>> binaryOperatorsMap;
-    private final Map<Character, Operator<UnaryOperatorRuntimeContext>> unaryOperatorsMap;
+    private final Map<Character, BinaryOperator> binaryOperatorsMap;
+    private final Map<Character, UnaryOperator> unaryOperatorsMap;
     private final Map<String, Double> constantsMap;
 
     private DefaultEnvironment(List<ExpressionFunction> functions,
-                              List<Operator<BinaryOperatorRuntimeContext>> binaryOperators,
-                              List<Operator<UnaryOperatorRuntimeContext>> unaryOperators,
+                              List<BinaryOperator> binaryOperators,
+                              List<UnaryOperator> unaryOperators,
                                Map<String, Double> constantsMap) {
 
-        this.functionsMap = unmodifiableMap(
-                functions.stream().collect(toMap(ExpressionFunction::getName, identity())));
-        this.binaryOperatorsMap = unmodifiableMap(
-                binaryOperators.stream().collect(toMap(Operator::getSymbol, identity())));
-        this.unaryOperatorsMap = unmodifiableMap(
-                unaryOperators.stream().collect(toMap(Operator::getSymbol, identity())));
+        Map<String, ExpressionFunction> functionsMap = new HashMap<>(functions.size());
+        functions.forEach(f->functionsMap.put(f.getName(),f));
+        this.functionsMap = unmodifiableMap(functionsMap);
+
+        Map<Character, BinaryOperator> binaryOperatorsMap = new HashMap<>(binaryOperators.size());
+        binaryOperators.forEach(bo->binaryOperatorsMap.put(bo.getSymbol(),bo));
+        this.binaryOperatorsMap = unmodifiableMap(binaryOperatorsMap);
+
+        Map<Character, UnaryOperator> unaryOperatorsMap = new HashMap<>(unaryOperators.size());
+        unaryOperators.forEach(uo->unaryOperatorsMap.put(uo.getSymbol(), uo));
+        this.unaryOperatorsMap = unmodifiableMap(unaryOperatorsMap);
+
         this.constantsMap = unmodifiableMap(new HashMap<>(constantsMap));
     }
 
@@ -83,8 +85,8 @@ class DefaultEnvironment implements Environment {
     //TODO rethink a better builder interface
     public static class Builder{
         private List<ExpressionFunction> functions = new ArrayList<>(BuiltinOperations.functions());
-        private List<Operator<BinaryOperatorRuntimeContext>> binaryOperators = new ArrayList<>(BuiltinOperations.binaryOperators());
-        private List<Operator<UnaryOperatorRuntimeContext>> unaryOperators = new ArrayList<>(BuiltinOperations.unaryOperators());
+        private List<BinaryOperator> binaryOperators = new ArrayList<>(BuiltinOperations.binaryOperators());
+        private List<UnaryOperator> unaryOperators = new ArrayList<>(BuiltinOperations.unaryOperators());
         private Map<String,Double> constants = BuiltinOperations.constants();
 
         private Builder() {}
@@ -94,12 +96,12 @@ class DefaultEnvironment implements Environment {
             return this;
         }
 
-        public Builder binaryOperators(List<Operator<BinaryOperatorRuntimeContext>> operators){
+        public Builder binaryOperators(List<BinaryOperator> operators){
             this.binaryOperators.addAll(operators);
             return this;
         }
 
-        public Builder unaryOperators(List<Operator<UnaryOperatorRuntimeContext>> operators){
+        public Builder unaryOperators(List<UnaryOperator> operators){
             this.unaryOperators.addAll(operators);
             return this;
         }

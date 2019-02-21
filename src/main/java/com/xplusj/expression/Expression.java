@@ -2,6 +2,7 @@ package com.xplusj.expression;
 
 import com.xplusj.Environment;
 import com.xplusj.ExpressionEvaluator;
+import com.xplusj.operation.Operation;
 import com.xplusj.operation.OperationType;
 import com.xplusj.stack.Stack;
 import com.xplusj.tokenizer.ExpressionTokenizer;
@@ -20,8 +21,10 @@ public class Expression implements ExpressionEvaluator {
     @Override
     public double eval() {
         ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, env);
-        Stack<StackBasedExecutor> opStack = Stack.defaultStack();
+        Stack<Operation<?>> opStack = Stack.defaultStack();
         Stack<Double> valStack = Stack.defaultStack();
+        OperationValueStackVisitor visitor = new OperationValueStackVisitor(env, valStack);
+
         int openParenthesis = 0;
         int closedParenthesis = 0;
 
@@ -48,25 +51,25 @@ public class Expression implements ExpressionEvaluator {
                 closedParenthesis = openParenthesis;
 
                 if(!opStack.isEmpty())
-                    opStack.pull().execute(valStack);
+                    valStack.push(opStack.pull().accept(visitor));
 
                 continue;
             }
 
             if(token.type == TokenType.FUNCTION_PARAM_DELIMITER){
-                if(opStack.peek().getOperation().getOperationType() != OperationType.FUNCTION){
+                if(opStack.peek().getOperationType() != OperationType.FUNCTION){
                     throw new IllegalArgumentException("invalid character at xxx index");
                 }
                 continue;
             }
 
-            StackBasedExecutor operator;
+            Operation<?> operator;
             if(token.type == TokenType.BINARY_OPERATOR){
-                operator = new BinaryOperatorStackBasedExecutor(env.getBinaryOperator(token.value.charAt(0)), env);
+                operator = env.getBinaryOperator(token.value.charAt(0));
             }else if(token.type == TokenType.UNARY_OPERATOR){
-                operator = new UnaryOperatorStackBasedExecutor(env.getUnaryOperator(token.value.charAt(0)), env);
+                operator = env.getUnaryOperator(token.value.charAt(0));
             }else if(token.type == TokenType.FUNCTION){
-                operator = new FunctionStackBasedExecutor(env.getFunction(token.value), env);
+                operator = env.getFunction(token.value);
             }else{
                 operator = null;
             }
@@ -81,7 +84,7 @@ public class Expression implements ExpressionEvaluator {
                         opStack.push(operator);
                         closedParenthesis++;
                     }else{
-                        opStack.pull().execute(valStack);
+                        valStack.push(opStack.pull().accept(visitor));
                         opStack.push(operator);
                     }
                 }
@@ -89,7 +92,7 @@ public class Expression implements ExpressionEvaluator {
         }
 
         while (!opStack.isEmpty()){
-            opStack.pull().execute(valStack);
+            valStack.push(opStack.pull().accept(visitor));
         }
 
         return valStack.pull();

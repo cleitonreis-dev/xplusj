@@ -2,10 +2,12 @@ package com.xplusj.expression;
 
 import com.xplusj.Environment;
 import com.xplusj.ExpressionFactory;
+import com.xplusj.operation.operator.Operator;
 import org.junit.Test;
 
 import static com.xplusj.Environment.defaultEnv;
 import static com.xplusj.ExpressionFactory.defaultFactory;
+import static com.xplusj.operation.Precedence.low;
 import static com.xplusj.operation.function.ExpressionFunction.function;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -147,5 +149,31 @@ public class InlineExpressionTests {
     public void testConstantAtTheEndOfExpression(){
         double result = factory.expression("3*PI").eval();
         assertEquals(3 * Math.PI, result, 0);
+    }
+
+    @Test
+    public void testUnaryOperatorWithConstant(){
+        double result = factory.expression("-PI").eval();
+        assertEquals(-Math.PI, result, 0);
+    }
+
+    @Test
+    public void testFunctionCallingConstant(){
+        ExpressionFactory factory = defaultFactory(defaultEnv().functions(asList(
+            function("foo(x)", c -> c.param("x") * c.getConstant("PI"))
+        )).build());
+
+        double result = factory.expression("foo(2)").eval();
+        assertEquals(2 * Math.PI, result, 0);
+    }
+
+    @Test
+    public void testBinaryOperatorCallingConstant(){
+        ExpressionFactory factory = defaultFactory(defaultEnv().binaryOperators(asList(
+            Operator.binary('+', low(), c->(c.getFirstValue() + c.getSecondValue()) * c.getConstant("PI"))
+        )).build());
+
+        double result = factory.expression("2+2").eval();
+        assertEquals((2 + 2) * Math.PI, result, 0);
     }
 }

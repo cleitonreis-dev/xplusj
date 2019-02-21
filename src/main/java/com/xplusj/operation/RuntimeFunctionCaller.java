@@ -1,8 +1,8 @@
-package com.xplusj.expression;
+package com.xplusj.operation;
 
 import com.xplusj.Environment;
-import com.xplusj.operation.FunctionCaller;
 import com.xplusj.operation.function.ExpressionFunction;
+import com.xplusj.operation.function.FunctionRuntimeContext;
 import lombok.AllArgsConstructor;
 
 import java.util.HashMap;
@@ -27,6 +27,6 @@ public class RuntimeFunctionCaller implements FunctionCaller {
         for(int i = 0; i < functionParams.length; i++)
             paramsMap.put(functionParams[i], params[i]);
 
-        return function.execute(new ExpressionFunctionRuntimeContext(paramsMap, env));
+        return function.getFunction().apply(new FunctionRuntimeContext(paramsMap, env));
     }
 }

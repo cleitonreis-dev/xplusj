@@ -1,12 +1,14 @@
 package com.xplusj.operation;
 
-public interface Operation<T extends RuntimeContext> {
+import java.util.function.Function;
+
+public interface Operation<T extends RuntimeContext> extends OperationVisitable {
 
     OperationType getOperationType();
 
     Precedence getOperationPrecedence();
 
-    boolean precedes(Operation<?> executor);
+    Function<T,Double> getFunction();
 
-    double execute(T context);
+    boolean precedes(Operation<?> executor);
 }

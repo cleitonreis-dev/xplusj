@@ -1,7 +1,17 @@
 package com.xplusj.operation;
 
-public interface RuntimeContext{
-    FunctionCaller getFunction(String name);
+import com.xplusj.Environment;
+import lombok.AllArgsConstructor;
 
-    Double getConstant(String name);
+@AllArgsConstructor
+public abstract class RuntimeContext{
+    private final Environment env;
+
+    public FunctionCaller getFunction(String name){
+        return new RuntimeFunctionCaller(env.getFunction(name), env);
+    }
+
+    public Double getConstant(String name){
+        return env.getConstant(name);
+    }
 }

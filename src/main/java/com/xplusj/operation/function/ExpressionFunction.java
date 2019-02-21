@@ -1,6 +1,7 @@
 package com.xplusj.operation.function;
 
 import com.xplusj.operation.Operation;
+import com.xplusj.operation.OperationVisitor;
 import com.xplusj.operation.Precedence;
 import com.xplusj.operation.OperationType;
 import lombok.*;
@@ -35,9 +36,10 @@ public class ExpressionFunction implements Operation<FunctionRuntimeContext> {
     }
 
     @Override
-    public double execute(FunctionRuntimeContext context) {
-        return function.apply(context);
+    public double accept(OperationVisitor visitor) {
+        return visitor.execute(this);
     }
+
 
     public static ExpressionFunction function(String nameAndParams, Function<FunctionRuntimeContext, Double> function){
         int openingParenthesis = nameAndParams.indexOf('(');

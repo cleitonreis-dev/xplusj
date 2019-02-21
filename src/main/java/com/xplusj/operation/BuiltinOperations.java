@@ -1,9 +1,8 @@
 package com.xplusj.operation;
 
 import com.xplusj.operation.function.ExpressionFunction;
-import com.xplusj.operation.operator.BinaryOperatorRuntimeContext;
-import com.xplusj.operation.operator.Operator;
-import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
+import com.xplusj.operation.operator.BinaryOperator;
+import com.xplusj.operation.operator.UnaryOperator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,7 @@ import static java.util.Arrays.asList;
 
 public interface BuiltinOperations {
 
-    static List<Operator<BinaryOperatorRuntimeContext>> binaryOperators(){
+    static List<BinaryOperator> binaryOperators(){
         return asList(
             binary('+', low(), c -> c.getFirstValue() + c.getSecondValue()),
             binary('-', low(), c -> c.getFirstValue() - c.getSecondValue()),
@@ -28,7 +27,7 @@ public interface BuiltinOperations {
         );
     }
 
-    static List<Operator<UnaryOperatorRuntimeContext>> unaryOperators(){
+    static List<UnaryOperator> unaryOperators(){
         return asList(
             unary('-', highest(), c-> -c.getValue()),
             unary('+', highest(), c-> +c.getValue()),
