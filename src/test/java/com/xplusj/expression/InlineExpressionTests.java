@@ -108,7 +108,7 @@ public class InlineExpressionTests {
     @Test
     public void testMakeSureTheFunctionParamsAreGivenInCorrectOrder(){
         ExpressionFactory factory = defaultFactory(defaultEnv().functions(asList(
-            function("minus(x,y)", c->c.getParam("x")-c.getParam("y"))
+            function("minus(x,y)", c->c.param("x")-c.param("y"))
         )).build());
 
         double result = factory.expression("minus(10,5)").eval();
@@ -118,8 +118,8 @@ public class InlineExpressionTests {
     @Test
     public void testFunctionCallingAnotherFunction(){
         ExpressionFactory factory = defaultFactory(defaultEnv().functions(asList(
-            function("foo(x)", c -> c.getParam("x") * 2),
-            function("bar(y)", c -> 3 * c.getFunction("foo").call(c.getParam("y")))
+            function("foo(x)", c -> c.param("x") * 2),
+            function("bar(y)", c -> 3 * c.getFunction("foo").call(c.param("y")))
         )).build());
 
         double result = factory.expression("bar(3)").eval();
@@ -129,8 +129,8 @@ public class InlineExpressionTests {
     @Test
     public void testFunctionWithFunctionAsParam(){
         ExpressionFactory factory = defaultFactory(defaultEnv().functions(asList(
-            function("foo(x,y)", c -> c.getParam("x") * c.getParam("y")),
-            function("bar(a,b)", c -> c.getParam("a") + c.getParam("b"))
+            function("foo(x,y)", c -> c.param("x") * c.param("y")),
+            function("bar(a,b)", c -> c.param("a") + c.param("b"))
         )).build());
 
         double result = factory.expression("bar(3,foo(2,3))").eval();

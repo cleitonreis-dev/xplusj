@@ -18,7 +18,7 @@ public class ExpressionFunctionRuntimeContext
     }
 
     @Override
-    public double getParam(String name) {
+    public double param(String name) {
         return params.get(name);
     }
 }
