@@ -1,10 +1,16 @@
 package com.xplusj;
 
+import com.xplusj.operation.OperationPrecedence;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
 
 public class OperationPrecedenceTests {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testLow(){
@@ -14,7 +20,7 @@ public class OperationPrecedenceTests {
 
         assertEquals(-1, low.compareTo(OperationPrecedence.medium()));
         assertEquals(-1, low.compareTo(OperationPrecedence.high()));
-        assertEquals(-1, low.compareTo(OperationPrecedence.higher()));
+        assertEquals(-1, low.compareTo(OperationPrecedence.highest()));
     }
 
     @Test
@@ -25,7 +31,7 @@ public class OperationPrecedenceTests {
 
         assertEquals(1, medium.compareTo(OperationPrecedence.low()));
         assertEquals(-1, medium.compareTo(OperationPrecedence.high()));
-        assertEquals(-1, medium.compareTo(OperationPrecedence.higher()));
+        assertEquals(-1, medium.compareTo(OperationPrecedence.highest()));
     }
 
     @Test
@@ -36,12 +42,12 @@ public class OperationPrecedenceTests {
 
         assertEquals(1, high.compareTo(OperationPrecedence.low()));
         assertEquals(1, high.compareTo(OperationPrecedence.medium()));
-        assertEquals(-1, high.compareTo(OperationPrecedence.higher()));
+        assertEquals(-1, high.compareTo(OperationPrecedence.highest()));
     }
 
     @Test
     public void testHigher(){
-        OperationPrecedence higher = OperationPrecedence.higher();
+        OperationPrecedence higher = OperationPrecedence.highest();
 
         assertEquals(0, higher.compareTo(higher));
 
@@ -66,5 +72,17 @@ public class OperationPrecedenceTests {
     public void testSameAs(){
         OperationPrecedence same = OperationPrecedence.sameAs(OperationPrecedence.low());
         assertEquals(0, same.compareTo(OperationPrecedence.low()));
+    }
+
+    @Test
+    public void testMinPrecedenceException(){
+        thrown.expectMessage("Precedence already with LOWEST value");
+        OperationPrecedence.lowerThan(OperationPrecedence.lowest());
+    }
+
+    @Test
+    public void testMaxPrecedenceException(){
+        thrown.expectMessage("Precedence already with HIGHEST value");
+        OperationPrecedence.higherThan(OperationPrecedence.highest());
     }
 }
