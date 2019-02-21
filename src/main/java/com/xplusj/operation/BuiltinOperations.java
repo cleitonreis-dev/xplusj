@@ -1,18 +1,18 @@
-package com.xplusj;
+package com.xplusj.operation;
 
-import com.xplusj.function.ExpressionFunction;
-import com.xplusj.operator.BinaryOperatorRuntimeContext;
-import com.xplusj.operator.Operator;
-import com.xplusj.operator.UnaryOperatorRuntimeContext;
+import com.xplusj.operation.function.ExpressionFunction;
+import com.xplusj.operation.operator.BinaryOperatorRuntimeContext;
+import com.xplusj.operation.operator.Operator;
+import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.xplusj.OperationPrecedence.*;
-import static com.xplusj.function.ExpressionFunction.function;
-import static com.xplusj.operator.Operator.binary;
-import static com.xplusj.operator.Operator.unary;
+import static com.xplusj.operation.Precedence.*;
+import static com.xplusj.operation.function.ExpressionFunction.function;
+import static com.xplusj.operation.operator.Operator.binary;
+import static com.xplusj.operation.operator.Operator.unary;
 import static java.util.Arrays.asList;
 
 public interface BuiltinOperations {
@@ -30,8 +30,8 @@ public interface BuiltinOperations {
 
     static List<Operator<UnaryOperatorRuntimeContext>> unaryOperators(){
         return asList(
-            unary('-', higher(), c-> -c.getValue()),
-            unary('+', higher(), c-> +c.getValue()),
+            unary('-', highest(), c-> -c.getValue()),
+            unary('+', highest(), c-> +c.getValue()),
             unary('#', higherThan(high()), c-> Math.sqrt(c.getValue()))
 
         );

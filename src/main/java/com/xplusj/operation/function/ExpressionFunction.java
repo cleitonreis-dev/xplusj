@@ -1,8 +1,8 @@
-package com.xplusj.function;
+package com.xplusj.operation.function;
 
-import com.xplusj.OperationExecutor;
-import com.xplusj.OperationPrecedence;
-import com.xplusj.OperationType;
+import com.xplusj.operation.Operation;
+import com.xplusj.operation.Precedence;
+import com.xplusj.operation.OperationType;
 import lombok.*;
 
 import java.util.function.Function;
@@ -11,9 +11,9 @@ import java.util.function.Function;
 @EqualsAndHashCode(of = "name")
 @ToString(of = {"name", "params"})
 @Getter
-public class ExpressionFunction implements OperationExecutor<FunctionRuntimeContext> {
-    private static final OperationPrecedence PRECEDENCE =
-            OperationPrecedence.lowerThan(OperationPrecedence.higher());
+public class ExpressionFunction implements Operation<FunctionRuntimeContext> {
+    private static final Precedence PRECEDENCE =
+            Precedence.lowerThan(Precedence.highest());
 
     private final String name;
     private final String[] params;
@@ -25,12 +25,12 @@ public class ExpressionFunction implements OperationExecutor<FunctionRuntimeCont
     }
 
     @Override
-    public OperationPrecedence getOperationPrecedence() {
+    public Precedence getOperationPrecedence() {
         return PRECEDENCE;
     }
 
     @Override
-    public boolean precedes(OperationExecutor<?> executor) {
+    public boolean precedes(Operation<?> executor) {
         return PRECEDENCE.compareTo(executor.getOperationPrecedence()) > 0;
     }
 

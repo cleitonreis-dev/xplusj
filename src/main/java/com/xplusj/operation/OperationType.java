@@ -1,4 +1,4 @@
-package com.xplusj;
+package com.xplusj.operation;
 
 public enum OperationType {
     BINARY_OPERATOR,

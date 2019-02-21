@@ -1,7 +1,5 @@
 package com.xplusj;
 
-import com.xplusj.core.DefaultExpressionFactory;
-
 public interface ExpressionFactory {
 
     FormulaExpression formula(final String formulaExpression);

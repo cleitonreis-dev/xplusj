@@ -2,7 +2,7 @@ package com.xplusj.expression;
 
 import com.xplusj.Environment;
 import com.xplusj.ExpressionEvaluator;
-import com.xplusj.OperationType;
+import com.xplusj.operation.OperationType;
 import com.xplusj.stack.Stack;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import com.xplusj.tokenizer.Token;
@@ -54,7 +54,7 @@ public class Expression implements ExpressionEvaluator {
             }
 
             if(token.type == TokenType.FUNCTION_PARAM_DELIMITER){
-                if(opStack.peek().getOperationExecutor().getOperationType() != OperationType.FUNCTION){
+                if(opStack.peek().getOperation().getOperationType() != OperationType.FUNCTION){
                     throw new IllegalArgumentException("invalid character at xxx index");
                 }
                 continue;

@@ -1,6 +1,6 @@
-package com.xplusj.function;
+package com.xplusj.operation.function;
 
-import com.xplusj.RuntimeContext;
+import com.xplusj.operation.RuntimeContext;
 
 public interface FunctionRuntimeContext extends RuntimeContext {
     double getParam(String name);

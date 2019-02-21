@@ -1,9 +1,9 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
-import com.xplusj.OperationExecutor;
-import com.xplusj.RuntimeContext;
-import com.xplusj.function.ExpressionFunction;
+import com.xplusj.operation.Operation;
+import com.xplusj.operation.RuntimeContext;
+import com.xplusj.operation.function.ExpressionFunction;
 import com.xplusj.stack.Stack;
 import lombok.AllArgsConstructor;
 
@@ -18,7 +18,7 @@ public class FunctionStackBasedExecutor
     private final Environment env;
 
     @Override
-    public OperationExecutor<? extends RuntimeContext> getOperationExecutor() {
+    public Operation<? extends RuntimeContext> getOperation() {
         return function;
     }
 
@@ -35,6 +35,6 @@ public class FunctionStackBasedExecutor
 
     @Override
     public boolean precedes(StackBasedExecutor executor) {
-        return function.precedes(executor.getOperationExecutor());
+        return function.precedes(executor.getOperation());
     }
 }

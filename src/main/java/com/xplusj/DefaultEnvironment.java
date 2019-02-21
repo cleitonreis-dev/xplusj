@@ -1,11 +1,10 @@
-package com.xplusj.core;
+package com.xplusj;
 
-import com.xplusj.BuiltinOperations;
-import com.xplusj.Environment;
-import com.xplusj.function.ExpressionFunction;
-import com.xplusj.operator.BinaryOperatorRuntimeContext;
-import com.xplusj.operator.Operator;
-import com.xplusj.operator.UnaryOperatorRuntimeContext;
+import com.xplusj.operation.BuiltinOperations;
+import com.xplusj.operation.function.ExpressionFunction;
+import com.xplusj.operation.operator.BinaryOperatorRuntimeContext;
+import com.xplusj.operation.operator.Operator;
+import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-public class DefaultEnvironment implements Environment {
+class DefaultEnvironment implements Environment {
 
     private final Map<String, ExpressionFunction> functionsMap;
     private final Map<Character, Operator<BinaryOperatorRuntimeContext>> binaryOperatorsMap;
@@ -77,7 +76,7 @@ public class DefaultEnvironment implements Environment {
         return constantsMap.get(name);
     }
 
-    public static DefaultEnvironment.Builder builder(){
+    static DefaultEnvironment.Builder builder(){
         return new Builder();
     }
 

@@ -1,8 +1,8 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
-import com.xplusj.FunctionCaller;
-import com.xplusj.RuntimeContext;
+import com.xplusj.operation.FunctionCaller;
+import com.xplusj.operation.RuntimeContext;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

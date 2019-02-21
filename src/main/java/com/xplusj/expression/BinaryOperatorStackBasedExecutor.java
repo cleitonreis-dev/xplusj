@@ -1,9 +1,9 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
-import com.xplusj.OperationExecutor;
-import com.xplusj.RuntimeContext;
-import com.xplusj.operator.BinaryOperatorRuntimeContext;
+import com.xplusj.operation.Operation;
+import com.xplusj.operation.RuntimeContext;
+import com.xplusj.operation.operator.BinaryOperatorRuntimeContext;
 import com.xplusj.stack.Stack;
 import lombok.AllArgsConstructor;
 
@@ -11,23 +11,23 @@ import lombok.AllArgsConstructor;
 public class BinaryOperatorStackBasedExecutor
         implements StackBasedExecutor{
 
-    private final OperationExecutor<BinaryOperatorRuntimeContext> operationExecutor;
+    private final Operation<BinaryOperatorRuntimeContext> operation;
     private final Environment env;
 
     @Override
-    public OperationExecutor<? extends RuntimeContext> getOperationExecutor() {
-        return operationExecutor;
+    public Operation<? extends RuntimeContext> getOperation() {
+        return operation;
     }
 
     @Override
     public void execute(Stack<Double> valueStack) {
-        valueStack.push(operationExecutor.execute(
+        valueStack.push(operation.execute(
             new ExpressionBinaryOperatorRuntimeContext(valueStack.pull(), valueStack.pull(), env))
         );
     }
 
     @Override
     public boolean precedes(StackBasedExecutor executor) {
-        return operationExecutor.precedes(executor.getOperationExecutor());
+        return operation.precedes(executor.getOperation());
     }
 }

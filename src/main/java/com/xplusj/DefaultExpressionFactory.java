@@ -1,9 +1,5 @@
-package com.xplusj.core;
+package com.xplusj;
 
-import com.xplusj.Environment;
-import com.xplusj.ExpressionEvaluator;
-import com.xplusj.ExpressionFactory;
-import com.xplusj.FormulaExpression;
 import com.xplusj.expression.Expression;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,7 +7,7 @@ import lombok.Builder;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class DefaultExpressionFactory implements ExpressionFactory {
+class DefaultExpressionFactory implements ExpressionFactory {
 
     private final Environment environment;
 

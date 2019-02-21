@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static com.xplusj.Environment.defaultEnv;
 import static com.xplusj.ExpressionFactory.defaultFactory;
-import static com.xplusj.function.ExpressionFunction.function;
+import static com.xplusj.operation.function.ExpressionFunction.function;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 

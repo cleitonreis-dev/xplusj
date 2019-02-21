@@ -1,8 +1,8 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
-import com.xplusj.FunctionCaller;
-import com.xplusj.function.ExpressionFunction;
+import com.xplusj.operation.FunctionCaller;
+import com.xplusj.operation.function.ExpressionFunction;
 import lombok.AllArgsConstructor;
 
 import java.util.HashMap;

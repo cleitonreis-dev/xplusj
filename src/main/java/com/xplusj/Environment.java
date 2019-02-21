@@ -1,10 +1,9 @@
 package com.xplusj;
 
-import com.xplusj.core.DefaultEnvironment;
-import com.xplusj.function.ExpressionFunction;
-import com.xplusj.operator.BinaryOperatorRuntimeContext;
-import com.xplusj.operator.Operator;
-import com.xplusj.operator.UnaryOperatorRuntimeContext;
+import com.xplusj.operation.function.ExpressionFunction;
+import com.xplusj.operation.operator.BinaryOperatorRuntimeContext;
+import com.xplusj.operation.operator.Operator;
+import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
 
 public interface Environment {
     boolean hasFunction(String name);
