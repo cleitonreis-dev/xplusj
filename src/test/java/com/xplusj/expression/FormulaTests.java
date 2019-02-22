@@ -24,6 +24,12 @@ public class FormulaTests {
         assertEquals(2D, result, 0);
     }
 
+    @Test
+    public void testPlusAndMinus(){
+        double result = factory.formula("a+b-a").eval(vars(var("a", 3D),var("b", 1D)));
+        assertEquals(1D, result, 0);
+    }
+
     private static Map<String,Double> vars(Pair<String,Double>...vars){
         Map<String,Double> varsMap = new HashMap<>();
         Stream.of(vars).forEach(pair->varsMap.put(pair.getKey(),pair.getValue()));

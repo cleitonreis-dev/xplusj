@@ -24,6 +24,6 @@ public interface Instruction {
     }
 
     static Instruction execOperation(){
-        return pc -> pc.opStack.pull().accept(pc.visitor);
+        return pc -> pc.valueStack.push(pc.opStack.pull().accept(pc.visitor));
     }
 }

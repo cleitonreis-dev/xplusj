@@ -133,4 +133,37 @@ public class ExpressionTokenizerTests {
         assertEquals(Token.parenthesisClosing(), tokenList.get(9));
     }
 
+    @Test
+    public void testIssueWhenConstantAtTheEnd(){
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer("3*PI", environment);
+        List<Token> tokenList = new ArrayList<>();
+
+        when(environment.hasBinaryOperator('*')).thenReturn(true);
+        when(environment.hasConstant("PI")).thenReturn(true);
+
+        while (tokenizer.hasNext()){
+            tokenList.add(tokenizer.next());
+        }
+
+        assertEquals(Token.number("3"), tokenList.get(0));
+        assertEquals(Token.binaryOperator("*"), tokenList.get(1));
+        assertEquals(Token.constant("PI"), tokenList.get(2));
+    }
+
+    @Test
+    public void shouldParseVariables(){
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer("a+a", environment);
+        List<Token> tokenList = new ArrayList<>();
+
+        when(environment.hasBinaryOperator('+')).thenReturn(true);
+
+        while (tokenizer.hasNext()){
+            tokenList.add(tokenizer.next());
+        }
+
+        assertEquals(Token.variable("a"), tokenList.get(0));
+        assertEquals(Token.binaryOperator("+"), tokenList.get(1));
+        assertEquals(Token.variable("a"), tokenList.get(2));
+    }
+
 }
