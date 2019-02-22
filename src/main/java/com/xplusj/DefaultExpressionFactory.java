@@ -1,6 +1,7 @@
 package com.xplusj;
 
 import com.xplusj.expression.Expression;
+import com.xplusj.expression.Formula;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ class DefaultExpressionFactory implements ExpressionFactory {
 
     @Override
     public FormulaExpression formula(final String formulaExpression) {
-        return null;
+        return new Formula(environment, formulaExpression);
     }
 
     @Override
