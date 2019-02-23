@@ -121,7 +121,7 @@ public class InlineExpressionTests {
     public void testFunctionCallingAnotherFunction(){
         ExpressionFactory factory = defaultFactory(defaultEnv().functions(asList(
             function("foo(x)", c -> c.param("x") * 2),
-            function("bar(y)", c -> 3 * c.getFunction("foo").call(c.param("y")))
+            function("bar(y)", c -> 3 * c.call("foo", c.param("y")))
         )).build());
 
         double result = factory.expression("bar(3)").eval();
