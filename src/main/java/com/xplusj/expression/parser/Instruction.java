@@ -1,7 +1,6 @@
 package com.xplusj.expression.parser;
 
 import com.xplusj.operation.Operation;
-import com.xplusj.operation.OperationVisitor;
 
 public interface Instruction {
 

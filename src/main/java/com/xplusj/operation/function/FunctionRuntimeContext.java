@@ -6,14 +6,16 @@ import com.xplusj.operation.RuntimeContext;
 import java.util.Map;
 
 public class FunctionRuntimeContext extends RuntimeContext {
-    private final Map<String,Double> paramValues;
+    private final double[] values;
+    private final Map<String,Integer> indexes;
 
-    public FunctionRuntimeContext(Map<String, Double> paramValues, Environment env) {
+    public FunctionRuntimeContext(double[] values, Map<String,Integer> indexes, Environment env) {
         super(env);
-        this.paramValues = paramValues;
+        this.values = values;
+        this.indexes = indexes;
     }
 
     public double param(String name){
-        return paramValues.get(name);
+        return values[indexes.get(name)];
     }
 }

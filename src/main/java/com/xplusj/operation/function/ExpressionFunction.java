@@ -1,12 +1,16 @@
 package com.xplusj.operation.function;
 
 import com.xplusj.operation.Operation;
+import com.xplusj.operation.OperationType;
 import com.xplusj.operation.OperationVisitor;
 import com.xplusj.operation.Precedence;
-import com.xplusj.operation.OperationType;
 import lombok.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
+
+import static java.util.Collections.unmodifiableMap;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(of = "name")
@@ -17,7 +21,7 @@ public class ExpressionFunction implements Operation<FunctionRuntimeContext> {
             Precedence.lowerThan(Precedence.highest());
 
     private final String name;
-    private final String[] params;
+    private final Map<String,Integer> params;
     private final Function<FunctionRuntimeContext, Double> function;
 
     @Override
@@ -48,8 +52,13 @@ public class ExpressionFunction implements Operation<FunctionRuntimeContext> {
         //TODO validate name and parenthesis
 
         String name = nameAndParams.substring(0, openingParenthesis);
-        String[] params = nameAndParams.substring(openingParenthesis + 1, closingParenthesis).split(",");
 
-        return new ExpressionFunction(name,params,function);
+        String[] paramNames = nameAndParams.substring(openingParenthesis + 1, closingParenthesis).split(",");
+        Map<String,Integer> params = new HashMap<>(paramNames.length);
+
+        for(int i = 0; i < paramNames.length; i++)
+            params.put(paramNames[i], i);
+
+        return new ExpressionFunction(name, unmodifiableMap(params),function);
     }
 }

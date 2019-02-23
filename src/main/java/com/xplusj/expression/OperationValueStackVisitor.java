@@ -11,7 +11,6 @@ import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
 import com.xplusj.stack.Stack;
 import lombok.AllArgsConstructor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -21,13 +20,14 @@ class OperationValueStackVisitor implements OperationVisitor {
 
     @Override
     public double execute(ExpressionFunction function) {
-        String[] params = function.getParams();
-        Map<String,Double> paramsMap = new HashMap<>(params.length);
+        Map<String,Integer> paramsMap = function.getParams();
+        int paramsSize = paramsMap.size();
+        double[] params = new double[paramsSize];
 
-        for(int i = params.length - 1; i >= 0; i--)
-            paramsMap.put(params[i], valueStack.pull());
+        for(int i = paramsSize - 1; i >= 0; i--)
+            params[i] = valueStack.pull();
 
-        return function.getFunction().apply(new FunctionRuntimeContext(paramsMap, environment));
+        return function.getFunction().apply(new FunctionRuntimeContext(params, function.getParams(), environment));
     }
 
     @Override
