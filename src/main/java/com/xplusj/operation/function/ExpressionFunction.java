@@ -21,18 +21,18 @@ public class ExpressionFunction implements Operation<FunctionRuntimeContext> {
     private final Function<FunctionRuntimeContext, Double> function;
 
     @Override
-    public OperationType getOperationType() {
+    public OperationType geType() {
         return OperationType.FUNCTION;
     }
 
     @Override
-    public Precedence getOperationPrecedence() {
+    public Precedence getPrecedence() {
         return PRECEDENCE;
     }
 
     @Override
     public boolean precedes(Operation<?> executor) {
-        return PRECEDENCE.compareTo(executor.getOperationPrecedence()) > 0;
+        return PRECEDENCE.compareTo(executor.getPrecedence()) > 0;
     }
 
     @Override

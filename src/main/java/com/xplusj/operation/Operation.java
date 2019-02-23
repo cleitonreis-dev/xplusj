@@ -4,9 +4,9 @@ import java.util.function.Function;
 
 public interface Operation<T extends RuntimeContext> extends OperationVisitable {
 
-    OperationType getOperationType();
+    OperationType geType();
 
-    Precedence getOperationPrecedence();
+    Precedence getPrecedence();
 
     Function<T,Double> getFunction();
 

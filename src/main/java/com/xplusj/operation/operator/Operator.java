@@ -18,12 +18,12 @@ public abstract class Operator<T extends RuntimeContext> implements Operation<T>
     private final Function<T,Double> function;
 
     @Override
-    public OperationType getOperationType() {
+    public OperationType geType() {
         return type;
     }
 
     @Override
-    public Precedence getOperationPrecedence() {
+    public Precedence getPrecedence() {
         return precedence;
     }
 
@@ -33,7 +33,7 @@ public abstract class Operator<T extends RuntimeContext> implements Operation<T>
 
     @Override
     public boolean precedes(Operation<?> executor) {
-        return precedence.compareTo(executor.getOperationPrecedence()) > 0;
+        return precedence.compareTo(executor.getPrecedence()) > 0;
     }
 
     @Override

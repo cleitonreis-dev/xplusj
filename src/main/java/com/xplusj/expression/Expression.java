@@ -57,7 +57,7 @@ public class Expression implements ExpressionEvaluator {
             }
 
             if(token.type == TokenType.FUNCTION_PARAM_DELIMITER){
-                if(opStack.peek().getOperationType() != OperationType.FUNCTION){
+                if(opStack.peek().geType() != OperationType.FUNCTION){
                     throw new IllegalArgumentException("invalid character at xxx index");
                 }
                 continue;
