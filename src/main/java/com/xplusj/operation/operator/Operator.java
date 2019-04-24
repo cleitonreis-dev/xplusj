@@ -37,8 +37,8 @@ public abstract class Operator<T extends RuntimeContext> implements Operation<T>
     }
 
     @Override
-    public Function<T, Double> getFunction() {
-        return function;
+    public double execute(T context) {
+        return function.apply(context);
     }
 
     public static BinaryOperator binary(char symbol, Precedence precedence, Function<BinaryOperatorRuntimeContext,Double> function){

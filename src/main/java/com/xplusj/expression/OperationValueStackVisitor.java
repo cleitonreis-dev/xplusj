@@ -11,8 +11,6 @@ import com.xplusj.operation.operator.UnaryOperatorRuntimeContext;
 import com.xplusj.stack.Stack;
 import lombok.AllArgsConstructor;
 
-import java.util.Map;
-
 @AllArgsConstructor
 class OperationValueStackVisitor implements OperationVisitor {
     private final Environment environment;
@@ -20,19 +18,18 @@ class OperationValueStackVisitor implements OperationVisitor {
 
     @Override
     public double execute(ExpressionFunction function) {
-        Map<String,Integer> paramsMap = function.getParams();
-        int paramsSize = paramsMap.size();
-        double[] params = new double[paramsSize];
+        int paramsLength = function.getParamsLength();
+        double[] params = new double[paramsLength];
 
-        for(int i = paramsSize - 1; i >= 0; i--)
+        for(int i = paramsLength - 1; i >= 0; i--)
             params[i] = valueStack.pull();
 
-        return function.getFunction().apply(new FunctionRuntimeContext(params, function.getParams(), environment));
+        return function.execute(new FunctionRuntimeContext(params, function, environment));
     }
 
     @Override
     public double execute(UnaryOperator unaryOperator) {
-        return unaryOperator.getFunction().apply(
+        return unaryOperator.execute(
             new UnaryOperatorRuntimeContext(valueStack.pull(), environment));
     }
 
@@ -41,7 +38,7 @@ class OperationValueStackVisitor implements OperationVisitor {
         double secondValue = valueStack.pull();
         double firstValue = valueStack.pull();
 
-        return binaryOperator.getFunction().apply(
+        return binaryOperator.execute(
             new BinaryOperatorRuntimeContext(firstValue,secondValue,environment));
     }
 }

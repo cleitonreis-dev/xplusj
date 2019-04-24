@@ -16,14 +16,14 @@ public abstract class RuntimeContext{
         if(function == null)
             throw new IllegalArgumentException(format("Function '%s' not found", name));
 
-        int functionParamsSize = function.getParams().size();
+        int functionParamsSize = function.getParamsLength();
         if(values.length != functionParamsSize)
             throw new IllegalArgumentException(
                 format("Wrong number of parameters given to function '%s': expected %s, but current is %s",
                         name, functionParamsSize, values.length)
             );
 
-        return function.getFunction().apply(new FunctionRuntimeContext(values, function.getParams(), env));
+        return function.execute(new FunctionRuntimeContext(values, function, env));
     }
 
     public Double getConstant(String name){
