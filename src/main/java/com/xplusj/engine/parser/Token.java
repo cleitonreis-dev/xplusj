@@ -20,8 +20,8 @@ public class Token {
         return new Token(TokenType.NUMBER, value, index);
     }
 
-    public static Token symbol(String value, int index){
-        return new Token(TokenType.SYMBOL, value, index);
+    public static Token constant(String value, int index){
+        return new Token(TokenType.CONST, value, index);
     }
 
     public static Token operator(String value, int index){
@@ -42,5 +42,13 @@ public class Token {
 
     public static Token EOE(){
         return EOE;
+    }
+
+    public static Token var(String value, int index) {
+        return new Token(TokenType.VAR, value, index);
+    }
+
+    public static Token func(String name, int index) {
+        return new Token(TokenType.FUNC, name, index);
     }
 }

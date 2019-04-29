@@ -12,6 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -59,10 +60,15 @@ public class ExpressionParserTest {
     public void test1(){
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1+1";
+        StackLog expectedStack = new StackLog()
+                .pushValue(1)
+                .pushOperator("+")
+                .pushValue(1)
+                .callOperator("+");
 
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp,"pv1.0;po+;pv1.0;co+;", instructionLogger.getLog());
+        assertEquals(exp,expectedStack, instructionLogger.log);
     }
 
     @Test
@@ -70,9 +76,18 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1+1-25.678";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1)
+                .pushOperator("+")
+                .pushValue(1)
+                .callOperator("+")
+                .pushOperator("-")
+                .pushValue(25.678)
+                .callOperator("-");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp,"pv1.0;po+;pv1.0;co+;po-;pv25.678;co-;", instructionLogger.getLog());
+        assertEquals(exp,expectedStack, instructionLogger.log);
     }
 
     @Test
@@ -80,9 +95,18 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1+(1-25)";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1)
+                .pushOperator("+")
+                .pushValue(1)
+                .pushOperator("-")
+                .pushValue(25)
+                .callOperator("-")
+                .callOperator("+");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp, "pv1.0;po+;pv1.0;po-;pv25.0;co-;co+;", instructionLogger.getLog());
+        assertEquals(exp, expectedStack, instructionLogger.log);
     }
 
     @Test
@@ -90,10 +114,19 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1/(1*(25-1))-1";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("/")
+                .pushValue(1).pushOperator("*")
+                .pushValue(25).pushOperator("-").pushValue(1)
+                .callOperator("-")
+                .callOperator("*")
+                .callOperator("/")
+                .pushOperator("-").pushValue(1)
+                .callOperator("-");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp, "pv1.0;po/;pv1.0;po*;pv25.0;po-;pv1.0;co-;co*;co/;po-;pv1.0;co-;",
-                instructionLogger.getLog());
+        assertEquals(exp, expectedStack, instructionLogger.log);
     }
 
     @Test
@@ -101,10 +134,44 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1-(1*(25-1))/1";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("-")
+                .pushValue(1).pushOperator("*")
+                .pushValue(25).pushOperator("-").pushValue(1).callOperator("-")
+                .callOperator("*")
+                .pushOperator("/")
+                .pushValue(1)
+                .callOperator("/")
+                .callOperator("-");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp, "pv1.0;po-;pv1.0;po*;pv25.0;po-;pv1.0;co-;co*;po/;pv1.0;co/;co-;",
-                instructionLogger.getLog());
+        assertEquals(exp, expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testParentheses4(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "sum(1-(1*(25-1))/1,((-1)))";
+
+        StackLog expectedStack = new StackLog()
+                .pushOperator("sum(a,b)")
+                .pushValue(1).pushOperator("-")
+                .pushValue(1).pushOperator("*")
+                .pushValue(25).pushOperator("-").pushValue(1).callOperator("-")
+                .callOperator("*")
+                .pushOperator("/")
+                .pushValue(1)
+                .callOperator("/")
+                .callOperator("-")
+                .pushOperator("-")
+                .pushValue(1)
+                .callOperator("-")
+                .callOperator("sum(a,b)");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp, expectedStack, instructionLogger.log);
     }
 
     @Test
@@ -114,8 +181,7 @@ public class ExpressionParserTest {
 
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp,"po+;pv1.0;co+;",
-                instructionLogger.getLog());
+        assertEquals(exp,new StackLog().pushOperator("+").pushValue(1).callOperator("+"), instructionLogger.log);
     }
 
     @Test
@@ -123,10 +189,14 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1+(-1)";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("+")
+                .pushOperator("-").pushValue(1).callOperator("-")
+                .callOperator("+");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp,"pv1.0;po+;po-;pv1.0;co-;co+;",
-                instructionLogger.getLog());
+        assertEquals(exp,expectedStack,instructionLogger.log);
     }
 
     @Test
@@ -134,10 +204,14 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1+-1";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("+")
+                .pushOperator("-").pushValue(1).callOperator("-")
+                .callOperator("+");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp,"pv1.0;po+;po-;pv1.0;co-;co+;",
-                instructionLogger.getLog());
+        assertEquals(exp,expectedStack,instructionLogger.log);
     }
 
     @Test
@@ -145,45 +219,164 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1*sum(2,1+3)";
 
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("*")
+                .pushOperator("sum(a,b)").pushValue(2)
+                        .pushValue(1).pushOperator("+").pushValue(3).callOperator("+")
+                .callOperator("sum(a,b)")
+                .callOperator("*");
+
         parser.eval(exp, instructionLogger);
 
-        assertEquals(exp,"pv1.0;po*;posum(a,b);pv2.0;pv1.0;po+;pv3.0;co+;cosum(a,b);co*;",
-                instructionLogger.getLog());
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testVar(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "1*v";
+
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("*").pushVar("v").callOperator("*");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testVar2(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "v/a";
+
+        StackLog expectedStack = new StackLog()
+                .pushVar("v").pushOperator("/").pushVar("a").callOperator("/");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testVar3(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "1*sum(2,1+ab)-var_1";
+
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("*")
+                .pushOperator("sum(a,b)").pushValue(2)
+                    .pushValue(1).pushOperator("+").pushVar("ab").callOperator("+")
+                .callOperator("sum(a,b)")
+                .callOperator("*")
+                .pushOperator("-")
+                .pushVar("var_1")
+                .callOperator("-");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testVar4(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "1*sum(2,(1+ab))-var_1";
+
+        StackLog expectedStack = new StackLog()
+                .pushValue(1).pushOperator("*")
+                .pushOperator("sum(a,b)").pushValue(2)
+                .pushValue(1).pushOperator("+").pushVar("ab").callOperator("+")
+                .callOperator("sum(a,b)")
+                .callOperator("*")
+                .pushOperator("-")
+                .pushVar("var_1")
+                .callOperator("-");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    private static class StackLog{
+        private StringBuilder log = new StringBuilder();
+
+        public StackLog pushValue(double value) {
+            log.append("pv").append(value).append(';');
+            return this;
+        }
+
+        public StackLog pushVar(String value) {
+            log.append("px").append(value).append(';');
+            return this;
+        }
+
+        public StackLog pushConstant(String name) {
+            log.append("pc").append(name).append(';');
+            return this;
+        }
+
+        public StackLog pushOperator(String operator) {
+            log.append("po").append(operator).append(';');
+            return this;
+        }
+
+        public StackLog callOperator(String operator) {
+            log.append("co").append(operator).append(';');
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return log.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            StackLog stackLog = (StackLog) o;
+            return log.toString().equals(stackLog.log.toString());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(log);
+        }
     }
 
     private static class InstructionLogger implements ExpressionParser.InstructionHandler{
-
         private Stack<Operator<?>> opStack = Stack.defaultStack();
-        private StringBuilder log = new StringBuilder();
+        private StackLog log = new StackLog();
 
         @Override
         public void pushValue(double value) {
-            log.append("pv").append(value).append(';');
+            log.pushValue(value);
+        }
+
+        @Override
+        public void pushVar(String value) {
+            log.pushVar(value);
         }
 
         @Override
         public void pushConstant(String name) {
-            log.append("pc").append(name).append(';');
+            log.pushConstant(name);
         }
 
         @Override
         public void pushOperator(Operator<?> operator) {
-            log.append("po").append(operator).append(';');
+            log.pushOperator(operator.toString());
             opStack.push(operator);
         }
 
         @Override
         public void callOperator() {
-            log.append("co").append(opStack.pull()).append(';');
+            log.callOperator(opStack.pull().toString());
         }
 
         @Override
         public Operator<?> peekOperator() {
             return opStack.peek();
-        }
-
-        public String getLog(){
-            return log.toString();
         }
     }
 
