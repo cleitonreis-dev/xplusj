@@ -394,7 +394,7 @@ public class ExpressionParserTest {
         }
     }
 
-    private static class InstructionLogger implements InstructionsProcessor{
+    private static class InstructionLogger implements ExpressionInstructionsProcessor {
         private Stack<Operator<?>> opStack = Stack.defaultStack();
         private StackLog log = new StackLog();
 

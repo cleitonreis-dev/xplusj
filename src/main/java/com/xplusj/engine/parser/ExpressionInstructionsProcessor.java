@@ -2,7 +2,7 @@ package com.xplusj.engine.parser;
 
 import com.xplusj.core.operator.Operator;
 
-public interface InstructionsProcessor {
+public interface ExpressionInstructionsProcessor {
     void pushValue(double value);
 
     void pushVar(String value);
