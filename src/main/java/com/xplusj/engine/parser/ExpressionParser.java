@@ -5,6 +5,7 @@ import com.xplusj.core.operator.FunctionOperator;
 import com.xplusj.core.operator.Operator;
 
 public class ExpressionParser {
+    private enum ExecContext{PARENTHESIS,FUNC,EXP}
 
     private final GlobalContext globalContext;
     private final ExpressionTokenizer.OperatorChecker operatorChecker;
@@ -14,68 +15,66 @@ public class ExpressionParser {
         operatorChecker = op->globalContext.hasBinaryOperator(op) || globalContext.hasUnaryOperator(op);
     }
 
-    public void eval(String expression, InstructionHandler instructionHandler) {
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression,operatorChecker);
-        ParseContext parseContext = new ParseContext(ParseContext.Level.EXP,instructionHandler);
-
-        eval(parseContext,tokenizer);
-
-        while(parseContext.stackOperatorCount > 0)
-            instructionHandler.callOperator();
+    public void eval(final String expression, final InstructionsProcessor instructionHandler) {
+        eval(ExecContext.EXP, new ExpressionTokenizer(expression,operatorChecker),instructionHandler);
     }
 
-    private void eval(ParseContext context, ExpressionTokenizer tokenizer) {
+    private void eval(final ExecContext execContext, final ExpressionTokenizer tokenizer, final InstructionsProcessor instructionsProcessor) {
+        int stackOperatorCount = 0;
+        Token lastToken = null;
 
         while (tokenizer.hasNext()){
             Token token = tokenizer.next();
 
             if(token.type == TokenType.COMMA){
-                if(context.isFunc())
+                if(execContext == ExecContext.FUNC)
                     break;
 
                 throw invalidIdentifier(tokenizer.expression, token);
             }
 
             if(token.type == TokenType.PARENTHESIS_CLOSING){
-                context.lastToken = token;
-
-                if(context.isFunc() || context.isParenthesis())
+                if(execContext == ExecContext.FUNC || execContext == ExecContext.PARENTHESIS)
                     break;
 
                 throw invalidIdentifier(tokenizer.expression, token);
             }
 
             if(token.type == TokenType.PARENTHESIS_OPENING){
-                eval(context.parenthesis(), tokenizer);
-                context.lastToken = tokenizer.lastToken;
+                eval(ExecContext.PARENTHESIS, tokenizer, instructionsProcessor);
+                lastToken = tokenizer.lastToken;
                 continue;
             }
 
             if(token.type == TokenType.FUNC){
-                evalFunc(context, token, tokenizer);
+                evalFunc(token, tokenizer, instructionsProcessor);
+                lastToken = token;
                 continue;
             }
 
             if(token.type == TokenType.NUMBER){
-                context.pushValue(token);
+                instructionsProcessor.pushValue(Double.parseDouble(token.value));
+                lastToken = token;
                 continue;
             }
 
             if(token.type == TokenType.VAR){
-                context.pushVar(token);
+                instructionsProcessor.pushVar(token.value);
+                lastToken = token;
                 continue;
             }
 
             if(token.type == TokenType.CONST){
-                context.pushConstant(token);
+                instructionsProcessor.pushConstant(token.value);
+                lastToken = token;
                 continue;
             }
 
             if(token.type == TokenType.OPERATOR){
                 Operator<?> operator;
-                 boolean isUnary = context.lastToken == null || context.lastToken.type == TokenType.OPERATOR
-                         || context.lastToken.type == TokenType.PARENTHESIS_OPENING
-                         || context.lastToken.type == TokenType.COMMA;
+                 boolean isUnary = lastToken == null || lastToken.type == TokenType.OPERATOR
+                         || lastToken.type == TokenType.PARENTHESIS_OPENING
+                         || lastToken.type == TokenType.COMMA;
 
                 if(isUnary)
                     operator = globalContext.getUnaryOperator(token.value.charAt(0));
@@ -87,25 +86,33 @@ public class ExpressionParser {
                     throw new ExpressionParseException(tokenizer.expression, token.index, msg, token.value);
                 }
 
-                if(context.stackOperatorCount == 0 || operator.precedes(context.peekOperator()))
-                    context.pushOperator(operator, token);
-                else {
-                    context.callOperator();
-                    context.pushOperator(operator, token);
+                if(stackOperatorCount == 0 || operator.precedes(instructionsProcessor.getLastOperator())) {
+                    instructionsProcessor.pushOperator(operator);
+                    stackOperatorCount++;
+                }else {
+                    instructionsProcessor.callLastOperatorAndPushResult();
+                    instructionsProcessor.pushOperator(operator);
                 }
+
+                lastToken = token;
+                continue;
             }
+
+            throw invalidIdentifier(tokenizer.expression, token);
         }
 
-        while(context.stackOperatorCount > 0)
-            context.callOperator();
+        while(stackOperatorCount > 0) {
+            instructionsProcessor.callLastOperatorAndPushResult();
+            stackOperatorCount--;
+        }
     }
 
-    private void evalFunc(ParseContext currentContext, Token token, ExpressionTokenizer tokenizer){
+    private void evalFunc(Token token, ExpressionTokenizer tokenizer, InstructionsProcessor instructionsProcessor){
         if(!globalContext.hasFunction(token.value))
             throw new ExpressionParseException(tokenizer.expression, token.index, "Function '%s' not found", token.value);
 
         FunctionOperator function = globalContext.getFunction(token.value);
-        currentContext.pushOperator(function,token);
+        instructionsProcessor.pushOperator(function);
 
         tokenizer.next();//read next '('
         if(!tokenizer.hasNext())
@@ -113,92 +120,20 @@ public class ExpressionParser {
 
         int paramsLength = function.getParamsLength();
         for(int i = 0; i < paramsLength; i++) {
-            eval(currentContext.func(), tokenizer);
+            eval(ExecContext.FUNC, tokenizer, instructionsProcessor);
 
             TokenType lastTokenType = tokenizer.lastToken.type;
-            if(lastTokenType != TokenType.COMMA && lastTokenType != TokenType.PARENTHESIS_CLOSING)
+
+            if((i < (paramsLength - 1) && lastTokenType != TokenType.COMMA)
+                || (i == (paramsLength - 1) && lastTokenType != TokenType.PARENTHESIS_CLOSING))
                 throw new ExpressionParseException(tokenizer.expression, tokenizer.lastToken.index,"Invalid expression");
         }
 
-        currentContext.callOperator();
-
+        instructionsProcessor.callLastOperatorAndPushResult();
     }
 
     private ExpressionParseException invalidIdentifier(String expression, Token token){
         return new ExpressionParseException(expression, token.index,
                 "invalid identifier '%s' at index %s", token.value, token.index);
     }
-
-    private static class ParseContext{
-        enum Level{PARENTHESIS,FUNC,EXP}
-        final Level level;
-        final InstructionHandler instructionHandler;
-        int stackOperatorCount = 0;
-        Token lastToken = null;
-
-        public ParseContext(Level level, InstructionHandler instructionHandler) {
-            this.level = level;
-            this.instructionHandler = instructionHandler;
-        }
-
-        boolean isParenthesis(){
-            return level == Level.PARENTHESIS;
-        }
-
-        boolean isFunc(){
-            return level == Level.FUNC;
-        }
-
-        boolean isExp(){
-            return level == Level.EXP;
-        }
-
-        void pushValue(Token token) {
-            instructionHandler.pushValue(Double.parseDouble(token.value));
-            lastToken = token;
-        }
-
-        void pushVar(Token token) {
-            instructionHandler.pushVar(token.value);
-            lastToken = token;
-        }
-
-        void pushConstant(Token token) {
-            instructionHandler.pushConstant(token.value);
-            lastToken = token;
-        }
-
-        void pushOperator(Operator<?> operator, Token token) {
-            instructionHandler.pushOperator(operator);
-            stackOperatorCount++;
-            lastToken = token;
-        }
-
-        void callOperator() {
-            instructionHandler.callOperator();
-            stackOperatorCount--;
-        }
-
-        Operator<?> peekOperator() {
-            return instructionHandler.peekOperator();
-        }
-
-        ParseContext func(){
-            return new ParseContext(Level.FUNC,instructionHandler);
-        }
-
-        ParseContext parenthesis(){
-            return new ParseContext(Level.PARENTHESIS,instructionHandler);
-        }
-    }
-
-    public interface InstructionHandler{
-        void pushValue(double value);
-        void pushVar(String value);
-        void pushConstant(String name);
-        void pushOperator(Operator<?> operator);
-        void callOperator();
-        Operator<?> peekOperator();
-    }
-
 }

@@ -394,7 +394,7 @@ public class ExpressionParserTest {
         }
     }
 
-    private static class InstructionLogger implements ExpressionParser.InstructionHandler{
+    private static class InstructionLogger implements InstructionsProcessor{
         private Stack<Operator<?>> opStack = Stack.defaultStack();
         private StackLog log = new StackLog();
 
@@ -424,13 +424,13 @@ public class ExpressionParserTest {
         }
 
         @Override
-        public void callOperator() {
+        public void callLastOperatorAndPushResult() {
             log.callOperator(opStack.pull().toString());
             //System.out.println(log);
         }
 
         @Override
-        public Operator<?> peekOperator() {
+        public Operator<?> getLastOperator() {
             //System.out.println(log);
             return opStack.peek();
         }
