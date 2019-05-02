@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static java.lang.String.format;
-
 public class ExpressionTokenizer {
     private static final Map<Character, Function<Integer, Token>> RESERVED_TOKENS = new HashMap<>();
     static {
@@ -14,10 +12,12 @@ public class ExpressionTokenizer {
         RESERVED_TOKENS.put(',', Token::comma);
     }
 
-    private final String expression;
+    final String expression;
     private final int expressionLength;
     private final OperatorChecker operatorChecker;
     private int currentIndex;
+    private int startIndex;
+    Token lastToken;
 
     public ExpressionTokenizer(final String expression, final OperatorChecker operatorChecker) {
         this.expression = expression;
@@ -25,93 +25,113 @@ public class ExpressionTokenizer {
         this.operatorChecker = operatorChecker;
     }
 
+    public Token getLastToken(){
+        return lastToken;
+    }
+
     public boolean hasNext(){
         return currentIndex < expressionLength;
     }
 
-    //TODO improve algorithm and tokens definition
     public Token next(){
-        if(currentIndex >= expressionLength)
-            return Token.EOE();
-
-        int startIndex = currentIndex;
-        char c = nextValidChar();
-
-        if(isDigit(c))
-            return Token.number(readNumber(startIndex), startIndex);
-
-        if(operatorChecker.isOperator(c))
-            return Token.operator(expression.substring(startIndex,++currentIndex), startIndex);
-
-        if(RESERVED_TOKENS.containsKey(c)) {
-            currentIndex++;
-            return RESERVED_TOKENS.get(c).apply(startIndex);
+        if(!hasNext()){
+            lastToken = Token.EOE();
+            return lastToken;
         }
 
-        if(isConstEligible(c,startIndex))
-            return Token.constant(readConst(startIndex),startIndex);
+        char c = nextValidChar();
+        if(c == ' '){
+            lastToken = Token.EOE();
+            return lastToken;
+        }
 
-        if(isVarOrFunctionEligible(c,startIndex))
-            return getVarOrFunction(startIndex);
+        if(isDigit(c))
+            return readNumber();
 
-        throw invalidChar(currentIndex);
+        if(operatorChecker.isOperator(c))
+            return readOperator();
+
+        if(RESERVED_TOKENS.containsKey(c))
+            return getReservedDelimiter(c);
+
+        if(isConstEligible(c))
+            return readConst();
+
+        return getIdentifierToken();
     }
 
-    private String readNumber(int startIndex) {
+    private Token getIdentifierToken() {
+        int identifierStartIndex = startIndex;
+        String identifier = readIdentifier();
+
+        if(!hasNext()) {
+            lastToken = Token.var(identifier, identifierStartIndex);
+            return lastToken;
+        }
+
+        char c = nextValidChar();
+        currentIndex = startIndex;
+
+        if(c == '(') {
+            lastToken = Token.func(identifier, identifierStartIndex);
+            return lastToken;
+        }
+
+        if((!hasNext() && c == ' ') || operatorChecker.isOperator(c) || c == ',' || c == ')') {
+            lastToken = Token.var(identifier, identifierStartIndex);
+            return lastToken;
+        }
+
+        throw invalidChar(c);
+    }
+
+    private Token readNumber() {
         while(true){
             currentIndex++;
 
-            if(!hasNext())
-                break;
-
-            char c = expression.charAt(currentIndex);
-            if(!isDigit(c))
+            if(!hasNext() || !isDigit(expression.charAt(currentIndex)))
                 break;
         }
 
-        return expression.substring(startIndex,currentIndex);
+        lastToken = Token.number(expression.substring(startIndex,currentIndex),startIndex);
+        return lastToken;
     }
 
-    private Token getVarOrFunction(int startIndex) {
-        String identifier = readIdentifier(startIndex);
-        if(!hasNext())
-            return Token.var(identifier,startIndex);
+    private Token readOperator() {
+        lastToken = Token.operator(expression.substring(startIndex,++currentIndex), startIndex);
+        return lastToken;
+    }
 
-        char c = nextValidChar();
-
-        if(c == '(')
-            return Token.func(identifier,startIndex);
-
-        if(isDelimiter(c))
-            return Token.var(identifier,startIndex);
-
-        throw invalidChar(startIndex);
+    private Token getReservedDelimiter(char c) {
+        currentIndex++;
+        lastToken = RESERVED_TOKENS.get(c).apply(startIndex);
+        return lastToken;
     }
 
     private ExpressionParseException invalidChar(int index){
-        return new ExpressionParseException(format("Invalid symbol at index %s",index+1),
-                expression,currentIndex);
+        return new ExpressionParseException(expression,currentIndex,"Invalid symbol at index %s",index+1);
     }
 
     private char nextValidChar() {
         char c = expression.charAt(currentIndex);
 
-        while(true){
-            if(c != ' ')
-                break;
-
+        while(Character.isSpaceChar(c)){
             currentIndex++;
+
             if(!hasNext())
                 break;
 
             c = expression.charAt(currentIndex);
         }
 
+        startIndex = currentIndex;
         return c;
     }
 
-    private String readIdentifier(int startIndex) {
-        while(true){
+    private String readIdentifier() {
+        while (true){
+            currentIndex++;
+
             if(!hasNext())
                 break;
 
@@ -119,17 +139,14 @@ public class ExpressionTokenizer {
             if(isDelimiter(c))
                 break;
 
-            if(!isVarOrFunctionEligible(c,startIndex))
-                throw new ExpressionParseException(
-                        "Invalid identifier, variables and functions must have only lowercase letters",
-                        expression, currentIndex);
-            currentIndex++;
+            if(!isValidIdentifier(c,startIndex))
+                throw new ExpressionParseException(expression,currentIndex,"Invalid identifier");
         }
 
         return expression.substring(startIndex,currentIndex);
     }
 
-    private String readConst(int startIndex) {
+    private Token readConst() {
         while(true){
             currentIndex++;
 
@@ -140,29 +157,37 @@ public class ExpressionTokenizer {
             if(isDelimiter(c))
                 break;
 
-            if(!isConstEligible(c,startIndex))
-                throw new ExpressionParseException(
-                    "Invalid constant name, constants must have only capitalized letters",
-                    expression, currentIndex);
+            if(!isConstEligible(c))
+                throw new ExpressionParseException(expression, currentIndex,
+                    "Invalid constant name, constants must have only uppercase letters");
         }
 
-        return expression.substring(startIndex,currentIndex);
+        lastToken = Token.constant(expression.substring(startIndex,currentIndex),startIndex);
+        return lastToken;
     }
 
     private boolean isDelimiter(char c) {
         return c == ' ' || RESERVED_TOKENS.containsKey(c) || operatorChecker.isOperator(c);
     }
 
-    private boolean isConstEligible(char c, int startIndex) {
+    private boolean isConstEligible(char c) {
         return ('A' <= c && c <= 'Z')
                 || (startIndex < currentIndex && (c == '_' || isDigit(c))
         );
     }
 
-    private boolean isVarOrFunctionEligible(char c, int startIndex) {
+    private boolean isValidIdentifier(char c, int startIndex) {
         return ('a' <= c && c <= 'z')
                 || (startIndex < currentIndex && (c == '_' || isDigit(c))
         );
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ExpressionTokenizer{");
+        sb.append("expression='").append(expression).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
     private static boolean isDigit(char c){

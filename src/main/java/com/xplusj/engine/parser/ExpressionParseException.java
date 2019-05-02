@@ -1,18 +1,20 @@
 package com.xplusj.engine.parser;
 
+import static java.lang.String.format;
+
 public class ExpressionParseException extends RuntimeException {
     private final String expression;
     private final int errorIndex;
 
-    public ExpressionParseException(String message, String expression, int errorIndex) {
-        super(message);
+    public ExpressionParseException(String expression, int errorIndex, String message, Object...args) {
+        super(format(message,args));
         this.expression = expression;
         this.errorIndex = errorIndex;
     }
 
     @Override
     public String getMessage() {
-        return String.format("%s\n%s\n%s",
+        return format("%s\n%s\n%s",
                 super.getMessage(),
                 expression,
                 getIndexPointer()

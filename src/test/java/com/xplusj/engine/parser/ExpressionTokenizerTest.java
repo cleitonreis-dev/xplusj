@@ -88,6 +88,8 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldReturnTokens(){
+        String expression = "a+bc-1.9+abc(1,b)";
+
         List<Token> expectedTokens = Arrays.asList(
             Token.var("a",0),
             Token.operator("+",1),
@@ -104,7 +106,7 @@ public class ExpressionTokenizerTest {
             Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("a+bc-1.9+abc(1,b)", operatorChecker);
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -113,7 +115,7 @@ public class ExpressionTokenizerTest {
         tokens.add(tokenizer.next());
 
         for(int i = 0; i < expectedTokens.size(); i++){
-            assertEquals(expectedTokens.get(i), tokens.get(i));
+            assertEquals(expression,expectedTokens.get(i), tokens.get(i));
         }
     }
 
@@ -195,9 +197,126 @@ public class ExpressionTokenizerTest {
     public void shouldParseVarInvalidIdentifier(){
         thrown.expect(ExpressionParseException.class);
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CONa+aaaB", operatorChecker);
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CONa+aaa", operatorChecker);
 
         while (tokenizer.hasNext())
             tokenizer.next();
+    }
+
+    @Test
+    public void shouldIgnoreSpaces1(){
+        String expression = "  1  ";
+        List<Token> expectedTokens = Arrays.asList(
+                Token.number("1",2),
+                Token.EOE()
+        );
+
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void shouldIgnoreSpaces2(){
+        String expression = "  b  ";
+        List<Token> expectedTokens = Arrays.asList(
+                Token.var("b",2),
+                Token.EOE()
+        );
+
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void shouldIgnoreSpaces3(){
+        String expression = "  func( 1 )  ";
+        List<Token> expectedTokens = Arrays.asList(
+                Token.func("func",2),
+                Token.parenthesisOpening(6),
+                Token.number("1",8),
+                Token.parenthesisClosing(10),
+                Token.EOE()
+        );
+
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void shouldIgnoreSpaces4(){
+        String expression = "  func( b )  ";
+        List<Token> expectedTokens = Arrays.asList(
+                Token.func("func",2),
+                Token.parenthesisOpening(6),
+                Token.var("b",8),
+                Token.parenthesisClosing(10),
+                Token.EOE()
+        );
+
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void shouldIgnoreSpaces5(){
+        String expression = " 1 * c -  func( b + 1.1 ) / 4.2 ";
+        List<Token> expectedTokens = Arrays.asList(
+                Token.number("1",1),
+                Token.operator("*",3),
+                Token.var("c",5),
+                Token.operator("-",7),
+                Token.func("func", 10),
+                Token.parenthesisOpening(14),
+                Token.var("b",16),
+                Token.operator("+",18),
+                Token.number("1.1",20),
+                Token.parenthesisClosing(24),
+                Token.operator("/",26),
+                Token.number("4.2",28),
+                Token.EOE()
+        );
+
+        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
     }
 }

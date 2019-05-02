@@ -57,6 +57,56 @@ public class ExpressionParserTest {
     }
 
     @Test
+    public void test_1(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "1";
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,new StackLog().pushValue(1), instructionLogger.log);
+    }
+
+    @Test
+    public void test_2(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "ab";
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,new StackLog().pushVar("ab"), instructionLogger.log);
+    }
+
+    @Test
+    public void test_3(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "sum(1,2)";
+        StackLog log = new StackLog()
+                .pushOperator("sum(a,b)")
+                .pushValue(1)
+                .pushValue(2)
+                .callOperator("sum(a,b)");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp, log, instructionLogger.log);
+    }
+
+    @Test
+    public void test_4(){
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "sum(x,y)";
+        StackLog log = new StackLog()
+                .pushOperator("sum(a,b)")
+                .pushVar("x")
+                .pushVar("y")
+                .callOperator("sum(a,b)");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp, log, instructionLogger.log);
+    }
+
+    @Test
     public void test1(){
         ExpressionParser parser = new ExpressionParser(context);
         String exp = "1+1";
@@ -351,31 +401,37 @@ public class ExpressionParserTest {
         @Override
         public void pushValue(double value) {
             log.pushValue(value);
+            //System.out.println(log);
         }
 
         @Override
         public void pushVar(String value) {
             log.pushVar(value);
+            //System.out.println(log);
         }
 
         @Override
         public void pushConstant(String name) {
             log.pushConstant(name);
+            //System.out.println(log);
         }
 
         @Override
         public void pushOperator(Operator<?> operator) {
             log.pushOperator(operator.toString());
             opStack.push(operator);
+            //System.out.println(log);
         }
 
         @Override
         public void callOperator() {
             log.callOperator(opStack.pull().toString());
+            //System.out.println(log);
         }
 
         @Override
         public Operator<?> peekOperator() {
+            //System.out.println(log);
             return opStack.peek();
         }
     }

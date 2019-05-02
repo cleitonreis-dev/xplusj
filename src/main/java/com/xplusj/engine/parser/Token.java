@@ -28,27 +28,30 @@ public class Token {
         return new Token(TokenType.OPERATOR, value, index);
     }
 
+    public static Token var(String value, int index){
+        return new Token(TokenType.VAR, value, index);
+    }
+    public static Token func(String value, int index){
+        return new Token(TokenType.FUNC, value, index);
+    }
+
     public static Token parenthesisOpening(int index){
-        return new Token(TokenType.PARENTHESIS_OPENING, null, index);
+        return new Token(TokenType.PARENTHESIS_OPENING, "(", index);
     }
 
     public static Token parenthesisClosing(int index){
-        return new Token(TokenType.PARENTHESIS_CLOSING, null, index);
+        return new Token(TokenType.PARENTHESIS_CLOSING, ")", index);
     }
 
     public static Token comma(int index){
-        return new Token(TokenType.COMMA, null, index);
+        return new Token(TokenType.COMMA, ",", index);
     }
 
     public static Token EOE(){
         return EOE;
     }
 
-    public static Token var(String value, int index) {
-        return new Token(TokenType.VAR, value, index);
-    }
-
-    public static Token func(String name, int index) {
-        return new Token(TokenType.FUNC, name, index);
-    }
+    /*public static Token identifier(String value, int index) {
+        return new Token(TokenType.IDENTIFIER, value, index);
+    }*/
 }
