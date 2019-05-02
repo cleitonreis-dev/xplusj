@@ -27,14 +27,14 @@ public class ExpressionParser {
             Token token = tokenizer.next();
 
             if(token.type == TokenType.COMMA){
-                if(execContext == ExecContext.FUNC)
+                if(execContext == ExecContext.FUNC && lastToken != null)
                     break;
 
                 throw invalidIdentifier(tokenizer.expression, token);
             }
 
             if(token.type == TokenType.PARENTHESIS_CLOSING){
-                if(execContext == ExecContext.FUNC || execContext == ExecContext.PARENTHESIS)
+                if((execContext == ExecContext.FUNC || execContext == ExecContext.PARENTHESIS) && lastToken != null)
                     break;
 
                 throw invalidIdentifier(tokenizer.expression, token);
@@ -100,6 +100,11 @@ public class ExpressionParser {
 
             throw invalidIdentifier(tokenizer.expression, token);
         }
+
+        if(lastToken != null && (lastToken.type == TokenType.OPERATOR
+                || lastToken.type == TokenType.PARENTHESIS_OPENING
+                || lastToken.type == TokenType.COMMA))
+            throw new ExpressionParseException(tokenizer.expression,lastToken.index,"Unexpected end of expression");
 
         while(stackOperatorCount > 0) {
             instructionsProcessor.callLastOperatorAndPushResult();
