@@ -1,6 +1,6 @@
 package com.xplusj.interpreter.operator;
 
-import com.xplusj.core.GlobalContext;
+import com.xplusj.GlobalContext;
 
 public class UnaryOperatorContext extends AbstractOperatorContext
         implements com.xplusj.operator.UnaryOperatorContext {

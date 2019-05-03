@@ -1,6 +1,6 @@
 package com.xplusj.interpreter.parser;
 
-import com.xplusj.core.GlobalContext;
+import com.xplusj.GlobalContext;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;

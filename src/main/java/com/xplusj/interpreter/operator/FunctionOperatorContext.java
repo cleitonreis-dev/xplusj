@@ -1,6 +1,6 @@
 package com.xplusj.interpreter.operator;
 
-import com.xplusj.core.GlobalContext;
+import com.xplusj.GlobalContext;
 import com.xplusj.operator.FunctionOperator;
 
 public class FunctionOperatorContext extends AbstractOperatorContext

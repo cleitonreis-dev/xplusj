@@ -1,7 +1,7 @@
 package com.xplusj.context;
 
-import com.xplusj.core.ContextAppender;
-import com.xplusj.core.GlobalContext;
+import com.xplusj.ContextAppender;
+import com.xplusj.GlobalContext;
 import com.xplusj.operator.*;
 
 import static java.lang.String.format;

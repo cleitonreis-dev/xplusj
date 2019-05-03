@@ -1,7 +1,7 @@
 package com.xplusj.interpreter.processors;
 
-import com.xplusj.core.GlobalContext;
-import com.xplusj.core.VariableContext;
+import com.xplusj.GlobalContext;
+import com.xplusj.VariableContext;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;

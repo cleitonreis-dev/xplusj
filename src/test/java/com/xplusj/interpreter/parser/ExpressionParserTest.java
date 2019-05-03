@@ -1,6 +1,6 @@
 package com.xplusj.interpreter.parser;
 
-import com.xplusj.core.GlobalContext;
+import com.xplusj.GlobalContext;
 import com.xplusj.operator.*;
 import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.interpreter.operator.AbstractOperator;

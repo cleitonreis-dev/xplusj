@@ -1,4 +1,4 @@
-package com.xplusj.core;
+package com.xplusj;
 
 public interface VariableContext {
     double value(String name);
