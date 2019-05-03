@@ -20,7 +20,7 @@ public abstract class AbstractOperator<T extends OperatorContext> implements Ope
     final Function<T,Double> function;
 
     @Override
-    public OperatorType geType() {
+    public OperatorType getType() {
         return type;
     }
 

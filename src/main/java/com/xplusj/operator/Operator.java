@@ -2,7 +2,7 @@ package com.xplusj.operator;
 
 public interface Operator<T extends OperatorContext> {
 
-    OperatorType geType();
+    OperatorType getType();
 
     Precedence getPrecedence();
 

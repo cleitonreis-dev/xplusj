@@ -71,15 +71,15 @@ public class DefaultExpressionInterpreter implements ExpressionInterpreterProces
 
     private <Context extends OperatorContext> Context getContext(Operator<?> operator){
         OperatorContext context;
-        if(operator.geType() == OperatorType.UNARY)
+        if(operator.getType() == OperatorType.UNARY)
             context = new UnaryOperatorContext(globalContext,getParams(operator)[0]);
-        else if(operator.geType() == OperatorType.BINARY)
+        else if(operator.getType() == OperatorType.BINARY)
             context = new BinaryOperatorContext(globalContext,getParams(operator));
-        else if(operator.geType() == OperatorType.FUNCTION)
+        else if(operator.getType() == OperatorType.FUNCTION)
             context = new FunctionOperatorContext((FunctionOperator)operator,globalContext,getParams(operator));
         else
             //TODO create proper exception
-            throw new IllegalArgumentException("Invalid operator type" + operator.geType());
+            throw new IllegalArgumentException("Invalid operator type" + operator.getType());
 
         return (Context) context;
     }

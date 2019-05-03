@@ -45,7 +45,7 @@ public class FunctionOperator implements com.xplusj.operator.FunctionOperator {
     }
 
     @Override
-    public OperatorType geType() {
+    public OperatorType getType() {
         return OperatorType.FUNCTION;
     }
 

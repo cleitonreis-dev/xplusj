@@ -2,7 +2,6 @@ package com.xplusj.interpreter;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
-import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.operator.*;
 import org.junit.Before;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -58,11 +56,11 @@ public class DefaultExpressionInterpreterTest{
     public void setUp(){
         interpreter = new DefaultExpressionInterpreter(globalContext, variableContext, valStack, opStack);
 
-        when(unaryOperator.geType()).thenReturn(OperatorType.UNARY);
+        when(unaryOperator.getType()).thenReturn(OperatorType.UNARY);
         when(unaryOperator.getParamsLength()).thenReturn(1);
-        when(binaryOperator.geType()).thenReturn(OperatorType.BINARY);
+        when(binaryOperator.getType()).thenReturn(OperatorType.BINARY);
         when(binaryOperator.getParamsLength()).thenReturn(2);
-        when(functionOperator.geType()).thenReturn(OperatorType.FUNCTION);
+        when(functionOperator.getType()).thenReturn(OperatorType.FUNCTION);
         when(functionOperator.getParamsLength()).thenReturn(3);
     }
 
