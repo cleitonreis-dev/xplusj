@@ -7,9 +7,9 @@ import com.xplusj.core.operator.Operator;
 import com.xplusj.core.operator.OperatorContext;
 import com.xplusj.core.operator.OperatorType;
 import com.xplusj.engine.parser.ExpressionInstructionsProcessor;
-import com.xplusj.operator.BinaryOperatorContext;
-import com.xplusj.operator.FunctionOperatorContext;
-import com.xplusj.operator.UnaryOperatorContext;
+import com.xplusj.engine.operator.BinaryOperatorContext;
+import com.xplusj.engine.operator.FunctionOperatorContext;
+import com.xplusj.engine.operator.UnaryOperatorContext;
 import com.xplusj.stack.Stack;
 
 public class ExpressionInterpreterProcessor implements ExpressionInstructionsProcessor {

@@ -1,4 +1,4 @@
-package com.xplusj.operator;
+package com.xplusj.engine.operator;
 
 import com.xplusj.core.operator.OperatorType;
 import com.xplusj.core.operator.Precedence;
