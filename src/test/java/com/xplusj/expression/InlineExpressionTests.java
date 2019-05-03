@@ -1,20 +1,8 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
-import com.xplusj.ExpressionFactory;
-import com.xplusj.operation.operator.Operator;
-import org.junit.Test;
-
-import static com.xplusj.Environment.defaultEnv;
-import static com.xplusj.ExpressionFactory.defaultFactory;
-import static com.xplusj.operation.Precedence.low;
-import static com.xplusj.operation.function.ExpressionFunction.function;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-
 public class InlineExpressionTests {
 
-    private Environment env = defaultEnv().build();
+    /*private Environment env = defaultEnv().build();
     private ExpressionFactory factory = defaultFactory(env);
 
     @Test
@@ -175,5 +163,5 @@ public class InlineExpressionTests {
 
         double result = factory.expression("2+2").eval();
         assertEquals((2 + 2) * Math.PI, result, 0);
-    }
+    }*/
 }

@@ -1,21 +1,8 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
-import com.xplusj.ExpressionFactory;
-import javafx.util.Pair;
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static com.xplusj.Environment.defaultEnv;
-import static com.xplusj.ExpressionFactory.defaultFactory;
-import static org.junit.Assert.*;
-
 public class FormulaTests {
 
-    private Environment env = defaultEnv().build();
+    /*private Environment env = defaultEnv().build();
     private ExpressionFactory factory = defaultFactory(env);
 
     @Test
@@ -50,5 +37,5 @@ public class FormulaTests {
 
     private static Pair<String,Double> var(String name, double value){
         return new Pair<>(name,value);
-    }
+    }*/
 }
