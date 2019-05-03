@@ -3,7 +3,7 @@ package com.xplusj.context;
 
 import com.xplusj.core.GlobalContext;
 import com.xplusj.core.VariableContext;
-import com.xplusj.core.operator.*;
+import com.xplusj.operator.*;
 
 import java.util.Map;
 

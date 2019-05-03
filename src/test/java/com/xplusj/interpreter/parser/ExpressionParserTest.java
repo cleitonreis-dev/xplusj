@@ -1,7 +1,7 @@
 package com.xplusj.interpreter.parser;
 
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.operator.*;
+import com.xplusj.operator.*;
 import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.interpreter.operator.AbstractOperator;
 import org.junit.Before;
@@ -454,7 +454,7 @@ public class ExpressionParserTest {
     }
 
     private static class BOperator extends OperatorTest<BinaryOperatorContext>
-            implements com.xplusj.core.operator.BinaryOperator{
+            implements com.xplusj.operator.BinaryOperator{
 
         public BOperator(char symbol, Precedence precedence) {
             super(symbol, precedence);
@@ -467,7 +467,7 @@ public class ExpressionParserTest {
     }
 
     private static class UOperator extends OperatorTest<UnaryOperatorContext>
-            implements com.xplusj.core.operator.UnaryOperator{
+            implements com.xplusj.operator.UnaryOperator{
 
         public UOperator(char symbol, Precedence precedence) {
             super(symbol, precedence);

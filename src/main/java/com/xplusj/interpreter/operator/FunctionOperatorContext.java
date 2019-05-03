@@ -1,10 +1,10 @@
 package com.xplusj.interpreter.operator;
 
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.operator.FunctionOperator;
+import com.xplusj.operator.FunctionOperator;
 
 public class FunctionOperatorContext extends AbstractOperatorContext
-        implements com.xplusj.core.operator.FunctionOperatorContext {
+        implements com.xplusj.operator.FunctionOperatorContext {
 
     private final double[] values;
     private final FunctionOperator function;

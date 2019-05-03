@@ -1,6 +1,6 @@
 package com.xplusj.core;
 
-import com.xplusj.core.operator.*;
+import com.xplusj.operator.*;
 
 public interface GlobalContext {
 

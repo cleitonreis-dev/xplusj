@@ -1,9 +1,9 @@
 package com.xplusj.interpreter.operator;
 
-import com.xplusj.core.operator.FunctionOperatorContext;
-import com.xplusj.core.operator.Operator;
-import com.xplusj.core.operator.OperatorType;
-import com.xplusj.core.operator.Precedence;
+import com.xplusj.operator.FunctionOperatorContext;
+import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -16,14 +16,14 @@ import static java.lang.String.format;
 
 @EqualsAndHashCode(of = "name")
 @ToString(of = {"name", "params"})
-public class FunctionOperator implements com.xplusj.core.operator.FunctionOperator {
+public class FunctionOperator implements com.xplusj.operator.FunctionOperator {
     private static final Precedence PRECEDENCE = Precedence.lowerThan(Precedence.highest());
 
     private final String name;
     private final Map<String,Integer> params;
-    private final Function<com.xplusj.core.operator.FunctionOperatorContext, Double> function;
+    private final Function<com.xplusj.operator.FunctionOperatorContext, Double> function;
 
-    public FunctionOperator(String name, Set<String> params, Function<com.xplusj.core.operator.FunctionOperatorContext, Double> function) {
+    public FunctionOperator(String name, Set<String> params, Function<com.xplusj.operator.FunctionOperatorContext, Double> function) {
         this.name = name;
         this.function = function;
         this.params = new HashMap<>();

@@ -2,7 +2,7 @@ package com.xplusj.context;
 
 import com.xplusj.core.ContextAppender;
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.operator.*;
+import com.xplusj.operator.*;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;

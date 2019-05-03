@@ -1,13 +1,13 @@
 package com.xplusj.interpreter.operator;
 
-import com.xplusj.core.operator.OperatorType;
-import com.xplusj.core.operator.Precedence;
-import com.xplusj.core.operator.UnaryOperatorContext;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
+import com.xplusj.operator.UnaryOperatorContext;
 
 import java.util.function.Function;
 
-public class UnaryOperator extends AbstractOperator<com.xplusj.core.operator.UnaryOperatorContext>
-        implements com.xplusj.core.operator.UnaryOperator {
+public class UnaryOperator extends AbstractOperator<com.xplusj.operator.UnaryOperatorContext>
+        implements com.xplusj.operator.UnaryOperator {
 
     public UnaryOperator(char symbol, Precedence precedence, Function<UnaryOperatorContext, Double> function) {
         super(OperatorType.UNARY, symbol, precedence, function);

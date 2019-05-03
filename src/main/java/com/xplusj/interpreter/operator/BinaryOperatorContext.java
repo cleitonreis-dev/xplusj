@@ -3,7 +3,7 @@ package com.xplusj.interpreter.operator;
 import com.xplusj.core.GlobalContext;
 
 public class BinaryOperatorContext extends AbstractOperatorContext
-        implements com.xplusj.core.operator.BinaryOperatorContext {
+        implements com.xplusj.operator.BinaryOperatorContext {
 
     private final double[] params;
 

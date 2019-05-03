@@ -2,10 +2,10 @@ package com.xplusj.interpreter.processors;
 
 import com.xplusj.core.GlobalContext;
 import com.xplusj.core.VariableContext;
-import com.xplusj.core.operator.FunctionOperator;
-import com.xplusj.core.operator.Operator;
-import com.xplusj.core.operator.OperatorContext;
-import com.xplusj.core.operator.OperatorType;
+import com.xplusj.operator.FunctionOperator;
+import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorContext;
+import com.xplusj.operator.OperatorType;
 import com.xplusj.interpreter.parser.ExpressionInstructionsProcessor;
 import com.xplusj.interpreter.operator.BinaryOperatorContext;
 import com.xplusj.interpreter.operator.FunctionOperatorContext;

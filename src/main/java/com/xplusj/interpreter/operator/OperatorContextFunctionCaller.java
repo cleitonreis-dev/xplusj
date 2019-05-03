@@ -1,7 +1,7 @@
 package com.xplusj.interpreter.operator;
 
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.operator.FunctionOperator;
+import com.xplusj.operator.FunctionOperator;
 
 import static java.lang.String.format;
 

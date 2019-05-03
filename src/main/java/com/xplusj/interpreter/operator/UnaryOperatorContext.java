@@ -3,7 +3,7 @@ package com.xplusj.interpreter.operator;
 import com.xplusj.core.GlobalContext;
 
 public class UnaryOperatorContext extends AbstractOperatorContext
-        implements com.xplusj.core.operator.UnaryOperatorContext {
+        implements com.xplusj.operator.UnaryOperatorContext {
 
     private final double value;
 

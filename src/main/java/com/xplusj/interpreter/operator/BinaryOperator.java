@@ -1,13 +1,13 @@
 package com.xplusj.interpreter.operator;
 
-import com.xplusj.core.operator.BinaryOperatorContext;
-import com.xplusj.core.operator.OperatorType;
-import com.xplusj.core.operator.Precedence;
+import com.xplusj.operator.BinaryOperatorContext;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
 
 import java.util.function.Function;
 
-public class BinaryOperator extends AbstractOperator<com.xplusj.core.operator.BinaryOperatorContext>
-        implements com.xplusj.core.operator.BinaryOperator {
+public class BinaryOperator extends AbstractOperator<com.xplusj.operator.BinaryOperatorContext>
+        implements com.xplusj.operator.BinaryOperator {
 
     public BinaryOperator(char symbol, Precedence precedence, Function<BinaryOperatorContext, Double> function) {
         super(OperatorType.BINARY, symbol, precedence, function);
@@ -19,7 +19,7 @@ public class BinaryOperator extends AbstractOperator<com.xplusj.core.operator.Bi
     }
 
     @Override
-    public double execute(com.xplusj.core.operator.BinaryOperatorContext context) {
+    public double execute(com.xplusj.operator.BinaryOperatorContext context) {
         return function.apply(context);
     }
 }

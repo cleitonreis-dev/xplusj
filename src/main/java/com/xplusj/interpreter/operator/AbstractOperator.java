@@ -1,9 +1,9 @@
 package com.xplusj.interpreter.operator;
 
-import com.xplusj.core.operator.Operator;
-import com.xplusj.core.operator.OperatorContext;
-import com.xplusj.core.operator.OperatorType;
-import com.xplusj.core.operator.Precedence;
+import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorContext;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

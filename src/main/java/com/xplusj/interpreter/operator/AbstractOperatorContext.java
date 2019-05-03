@@ -1,7 +1,7 @@
 package com.xplusj.interpreter.operator;
 
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.operator.OperatorContext;
+import com.xplusj.operator.OperatorContext;
 import lombok.AllArgsConstructor;
 
 import static java.lang.String.format;

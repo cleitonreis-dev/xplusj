@@ -1,6 +1,6 @@
 package com.xplusj.interpreter.parser;
 
-import com.xplusj.core.operator.Operator;
+import com.xplusj.operator.Operator;
 
 public interface ExpressionInstructionsProcessor {
     void pushValue(double value);

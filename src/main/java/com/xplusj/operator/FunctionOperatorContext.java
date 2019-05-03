@@ -1,4 +1,4 @@
-package com.xplusj.core.operator;
+package com.xplusj.operator;
 
 public interface FunctionOperatorContext extends OperatorContext{
     double param(String name);

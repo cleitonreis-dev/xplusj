@@ -1,4 +1,4 @@
-package com.xplusj.core.operator;
+package com.xplusj.operator;
 
 public interface BinaryOperatorContext extends OperatorContext {
     double getFirstValue();
