@@ -1,6 +1,5 @@
-package com.xplusj;
+package com.xplusj.operator;
 
-import com.xplusj.operator.Precedence;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

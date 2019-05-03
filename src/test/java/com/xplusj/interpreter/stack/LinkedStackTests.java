@@ -1,4 +1,4 @@
-package com.xplusj.stack;
+package com.xplusj.interpreter.stack;
 
 import org.junit.Test;
 
