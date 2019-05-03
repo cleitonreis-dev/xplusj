@@ -19,4 +19,16 @@ public interface GlobalContext {
     FunctionOperator getFunction(String name);
 
     double getConstant(String name);
+
+    interface Builder{
+        Builder addUnaryOperator(UnaryOperator operator);
+
+        Builder addBinaryOperator(BinaryOperator operator);
+
+        Builder addFunction(FunctionOperator function);
+
+        Builder addConstant(String name, double value);
+
+        GlobalContext build();
+    }
 }

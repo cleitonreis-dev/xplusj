@@ -5,6 +5,7 @@ import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultGlobalContext implements GlobalContext {
@@ -12,16 +13,16 @@ public class DefaultGlobalContext implements GlobalContext {
     private final Map<String, FunctionOperator> functionsMap;
     private final Map<Character, BinaryOperator> binaryOperatorsMap;
     private final Map<Character, UnaryOperator> unaryOperatorsMap;
-    private final VariableContext constantsContainer;
+    private final VariableContext constantsContext;
 
-    public DefaultGlobalContext(Map<String, FunctionOperator> functionsMap,
+    private DefaultGlobalContext(Map<String, FunctionOperator> functionsMap,
                                 Map<Character, BinaryOperator> binaryOperatorsMap,
                                 Map<Character, UnaryOperator> unaryOperatorsMap,
-                                VariableContext constantsContainer) {
+                                VariableContext constantsContext) {
         this.functionsMap = functionsMap;
         this.binaryOperatorsMap = binaryOperatorsMap;
         this.unaryOperatorsMap = unaryOperatorsMap;
-        this.constantsContainer = constantsContainer;
+        this.constantsContext = constantsContext;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class DefaultGlobalContext implements GlobalContext {
 
     @Override
     public boolean hasConstant(String name) {
-        return constantsContainer.contains(name);
+        return constantsContext.contains(name);
     }
 
     @Override
@@ -61,6 +62,52 @@ public class DefaultGlobalContext implements GlobalContext {
 
     @Override
     public double getConstant(String name) {
-        return constantsContainer.value(name);
+        return constantsContext.value(name);
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder implements GlobalContext.Builder{
+
+        private Map<String, FunctionOperator> functionsMap = new HashMap<>();
+        private Map<Character, BinaryOperator> binaryOperatorsMap = new HashMap<>();
+        private Map<Character, UnaryOperator> unaryOperatorsMap = new HashMap<>();
+        private VariableContext.Builder constantsContextBuilder = DefaultVariableContext.builder();
+
+        @Override
+        public GlobalContext.Builder addUnaryOperator(UnaryOperator operator) {
+            unaryOperatorsMap.put(operator.getSymbol(), operator);
+            return this;
+        }
+
+        @Override
+        public GlobalContext.Builder addBinaryOperator(BinaryOperator operator) {
+            binaryOperatorsMap.put(operator.getSymbol(), operator);
+            return this;
+        }
+
+        @Override
+        public GlobalContext.Builder addFunction(FunctionOperator function) {
+            functionsMap.put(function.getName(),function);
+            return this;
+        }
+
+        @Override
+        public GlobalContext.Builder addConstant(String name, double value) {
+            constantsContextBuilder.add(name,value);
+            return this;
+        }
+
+        @Override
+        public GlobalContext build() {
+            return new DefaultGlobalContext(
+                    functionsMap,
+                    binaryOperatorsMap,
+                    unaryOperatorsMap,
+                    constantsContextBuilder.build()
+            );
+        }
     }
 }

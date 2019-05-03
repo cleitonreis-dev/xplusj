@@ -23,6 +23,10 @@ public class DefaultVariableContext implements VariableContext {
         return vars.containsKey(name);
     }
 
+    public static VariableContext.Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder implements VariableContext.Builder{
 
         private Map<String,Double> vars = new HashMap<>();
