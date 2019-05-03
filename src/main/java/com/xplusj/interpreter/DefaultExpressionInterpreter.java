@@ -11,14 +11,14 @@ import com.xplusj.interpreter.operator.BinaryOperatorContext;
 import com.xplusj.interpreter.operator.FunctionOperatorContext;
 import com.xplusj.interpreter.operator.UnaryOperatorContext;
 
-public class TwoStackExpressionInterpreter implements ExpressionInterpreterProcessor {
+public class DefaultExpressionInterpreter implements ExpressionInterpreterProcessor {
 
     private final Stack<Double> valueStack = Stack.defaultStack();
     private final Stack<Operator<?>> opStack = Stack.defaultStack();
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
 
-    public TwoStackExpressionInterpreter(GlobalContext globalContext, VariableContext variableContext) {
+    public DefaultExpressionInterpreter(GlobalContext globalContext, VariableContext variableContext) {
         this.globalContext = globalContext;
         this.variableContext = variableContext;
     }
