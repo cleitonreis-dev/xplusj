@@ -13,14 +13,16 @@ import com.xplusj.interpreter.operator.UnaryOperatorContext;
 
 public class DefaultExpressionInterpreter implements ExpressionInterpreterProcessor {
 
-    private final Stack<Double> valueStack = Stack.defaultStack();
-    private final Stack<Operator<?>> opStack = Stack.defaultStack();
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
+    private final Stack<Double> valueStack;
+    private final Stack<Operator<?>> opStack;
 
-    public DefaultExpressionInterpreter(GlobalContext globalContext, VariableContext variableContext) {
+    public DefaultExpressionInterpreter(GlobalContext globalContext, VariableContext variableContext,Stack<Double> valueStack,Stack<Operator<?>> opStack) {
         this.globalContext = globalContext;
         this.variableContext = variableContext;
+        this.valueStack = valueStack;
+        this.opStack = opStack;
     }
 
     @Override
@@ -30,8 +32,10 @@ public class DefaultExpressionInterpreter implements ExpressionInterpreterProces
 
     @Override
     public void pushVar(String value) {
-        if(variableContext.contains(value))
+        if(variableContext.contains(value)) {
             valueStack.push(variableContext.value(value));
+            return;
+        }
 
         //TODO create specialized exception
         throw new IllegalStateException("Variable '"+ value +"' not found");
@@ -39,8 +43,10 @@ public class DefaultExpressionInterpreter implements ExpressionInterpreterProces
 
     @Override
     public void pushConstant(String name) {
-        if(globalContext.hasConstant(name))
+        if(globalContext.hasConstant(name)) {
             valueStack.push(globalContext.getConstant(name));
+            return;
+        }
 
         //TODO create specialized exception
         throw new IllegalStateException("Constant '"+ name +"' not found");
