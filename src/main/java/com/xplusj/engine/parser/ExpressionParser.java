@@ -3,6 +3,7 @@ package com.xplusj.engine.parser;
 import com.xplusj.core.GlobalContext;
 import com.xplusj.core.operator.FunctionOperator;
 import com.xplusj.core.operator.Operator;
+import com.xplusj.core.operator.OperatorContext;
 
 public class ExpressionParser {
     private enum ExecContext{PARENTHESIS,FUNC,EXP}
@@ -71,7 +72,7 @@ public class ExpressionParser {
             }
 
             if(token.type == TokenType.OPERATOR){
-                Operator<?> operator;
+                Operator<? extends OperatorContext> operator;
                  boolean isUnary = lastToken == null || lastToken.type == TokenType.OPERATOR
                          || lastToken.type == TokenType.PARENTHESIS_OPENING
                          || lastToken.type == TokenType.COMMA;
