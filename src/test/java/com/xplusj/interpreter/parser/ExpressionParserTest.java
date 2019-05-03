@@ -1,6 +1,7 @@
 package com.xplusj.interpreter.parser;
 
 import com.xplusj.GlobalContext;
+import com.xplusj.interpreter.ExpressionInterpreterProcessor;
 import com.xplusj.operator.*;
 import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.interpreter.operator.AbstractOperator;
@@ -394,7 +395,7 @@ public class ExpressionParserTest {
         }
     }
 
-    private static class InstructionLogger implements ExpressionInstructionsProcessor {
+    private static class InstructionLogger implements ExpressionInterpreterProcessor {
         private Stack<Operator<?>> opStack = Stack.defaultStack();
         private StackLog log = new StackLog();
 

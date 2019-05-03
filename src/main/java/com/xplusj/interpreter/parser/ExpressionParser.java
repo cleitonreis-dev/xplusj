@@ -1,6 +1,7 @@
 package com.xplusj.interpreter.parser;
 
 import com.xplusj.GlobalContext;
+import com.xplusj.interpreter.ExpressionInterpreterProcessor;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
@@ -16,11 +17,11 @@ public class ExpressionParser {
         operatorChecker = op->globalContext.hasBinaryOperator(op) || globalContext.hasUnaryOperator(op);
     }
 
-    public void eval(final String expression, final ExpressionInstructionsProcessor instructionHandler) {
+    public void eval(final String expression, final ExpressionInterpreterProcessor instructionHandler) {
         eval(ExecContext.EXP, new ExpressionTokenizer(expression,operatorChecker),instructionHandler);
     }
 
-    private void eval(final ExecContext execContext, final ExpressionTokenizer tokenizer, final ExpressionInstructionsProcessor instructionsProcessor) {
+    private void eval(final ExecContext execContext, final ExpressionTokenizer tokenizer, final ExpressionInterpreterProcessor instructionsProcessor) {
         int stackOperatorCount = 0;
         Token lastToken = null;
 
@@ -113,7 +114,7 @@ public class ExpressionParser {
         }
     }
 
-    private void evalFunc(Token token, ExpressionTokenizer tokenizer, ExpressionInstructionsProcessor instructionsProcessor){
+    private void evalFunc(Token token, ExpressionTokenizer tokenizer, ExpressionInterpreterProcessor instructionsProcessor){
         if(!globalContext.hasFunction(token.value))
             throw new ExpressionParseException(tokenizer.expression, token.index, "Function '%s' not found", token.value);
 
