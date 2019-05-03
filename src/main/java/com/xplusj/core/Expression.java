@@ -4,5 +4,5 @@ public interface Expression {
 
     double eval();
 
-    double eval(VariableContainer variableContainer);
+    double eval(VariableContext variableContext);
 }

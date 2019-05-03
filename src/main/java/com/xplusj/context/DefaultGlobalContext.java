@@ -2,7 +2,7 @@ package com.xplusj.context;
 
 
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.VariableContainer;
+import com.xplusj.core.VariableContext;
 import com.xplusj.core.operator.*;
 
 import java.util.Map;
@@ -12,12 +12,12 @@ public class DefaultGlobalContext implements GlobalContext {
     private final Map<String, FunctionOperator> functionsMap;
     private final Map<Character, BinaryOperator> binaryOperatorsMap;
     private final Map<Character, UnaryOperator> unaryOperatorsMap;
-    private final VariableContainer constantsContainer;
+    private final VariableContext constantsContainer;
 
     public DefaultGlobalContext(Map<String, FunctionOperator> functionsMap,
                                 Map<Character, BinaryOperator> binaryOperatorsMap,
                                 Map<Character, UnaryOperator> unaryOperatorsMap,
-                                VariableContainer constantsContainer) {
+                                VariableContext constantsContainer) {
         this.functionsMap = functionsMap;
         this.binaryOperatorsMap = binaryOperatorsMap;
         this.unaryOperatorsMap = unaryOperatorsMap;

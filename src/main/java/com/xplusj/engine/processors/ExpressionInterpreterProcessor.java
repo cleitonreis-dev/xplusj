@@ -1,7 +1,7 @@
 package com.xplusj.engine.processors;
 
 import com.xplusj.core.GlobalContext;
-import com.xplusj.core.VariableContainer;
+import com.xplusj.core.VariableContext;
 import com.xplusj.core.operator.FunctionOperator;
 import com.xplusj.core.operator.Operator;
 import com.xplusj.core.operator.OperatorContext;
@@ -17,11 +17,11 @@ public class ExpressionInterpreterProcessor implements ExpressionInstructionsPro
     private final Stack<Double> valueStack = Stack.defaultStack();
     private final Stack<Operator<?>> opStack = Stack.defaultStack();
     private final GlobalContext globalContext;
-    private final VariableContainer variableContainer;
+    private final VariableContext variableContext;
 
-    public ExpressionInterpreterProcessor(GlobalContext globalContext, VariableContainer variableContainer) {
+    public ExpressionInterpreterProcessor(GlobalContext globalContext, VariableContext variableContext) {
         this.globalContext = globalContext;
-        this.variableContainer = variableContainer;
+        this.variableContext = variableContext;
     }
 
     @Override
@@ -31,8 +31,8 @@ public class ExpressionInterpreterProcessor implements ExpressionInstructionsPro
 
     @Override
     public void pushVar(String value) {
-        if(variableContainer.contains(value))
-            valueStack.push(variableContainer.value(value));
+        if(variableContext.contains(value))
+            valueStack.push(variableContext.value(value));
 
         //TODO create specialized exception
         throw new IllegalStateException("Variable '"+ value +"' not found");
