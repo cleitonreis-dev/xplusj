@@ -2,7 +2,7 @@ package com.xplusj.interpreter.processors;
 
 import org.junit.Test;
 
-public class ExpressionInterpreterProcessorTest {
+public class TwoStackExpressionInterpreterTest {
 
 
     @Test

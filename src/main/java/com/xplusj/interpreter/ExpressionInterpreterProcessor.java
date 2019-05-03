@@ -1,8 +1,8 @@
-package com.xplusj.interpreter.parser;
+package com.xplusj.interpreter;
 
 import com.xplusj.operator.Operator;
 
-public interface ExpressionInstructionsProcessor {
+public interface ExpressionInterpreterProcessor {
     void pushValue(double value);
 
     void pushVar(String value);

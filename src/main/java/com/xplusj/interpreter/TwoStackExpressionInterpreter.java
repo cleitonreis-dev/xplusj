@@ -1,4 +1,4 @@
-package com.xplusj.interpreter.processors;
+package com.xplusj.interpreter;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
@@ -7,19 +7,18 @@ import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
 import com.xplusj.operator.OperatorType;
-import com.xplusj.interpreter.parser.ExpressionInstructionsProcessor;
 import com.xplusj.interpreter.operator.BinaryOperatorContext;
 import com.xplusj.interpreter.operator.FunctionOperatorContext;
 import com.xplusj.interpreter.operator.UnaryOperatorContext;
 
-public class ExpressionInterpreterProcessor implements ExpressionInstructionsProcessor {
+public class TwoStackExpressionInterpreter implements ExpressionInterpreterProcessor {
 
     private final Stack<Double> valueStack = Stack.defaultStack();
     private final Stack<Operator<?>> opStack = Stack.defaultStack();
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
 
-    public ExpressionInterpreterProcessor(GlobalContext globalContext, VariableContext variableContext) {
+    public TwoStackExpressionInterpreter(GlobalContext globalContext, VariableContext variableContext) {
         this.globalContext = globalContext;
         this.variableContext = variableContext;
     }
