@@ -2,6 +2,7 @@ package com.xplusj.interpreter.processors;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
+import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
@@ -10,7 +11,6 @@ import com.xplusj.interpreter.parser.ExpressionInstructionsProcessor;
 import com.xplusj.interpreter.operator.BinaryOperatorContext;
 import com.xplusj.interpreter.operator.FunctionOperatorContext;
 import com.xplusj.interpreter.operator.UnaryOperatorContext;
-import com.xplusj.stack.Stack;
 
 public class ExpressionInterpreterProcessor implements ExpressionInstructionsProcessor {
 
