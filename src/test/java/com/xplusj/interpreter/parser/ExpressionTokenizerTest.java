@@ -1,4 +1,4 @@
-package com.xplusj.engine.parser;
+package com.xplusj.interpreter.parser;
 
 import org.junit.Rule;
 import org.junit.Test;

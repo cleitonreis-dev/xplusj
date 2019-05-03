@@ -1,4 +1,4 @@
-package com.xplusj.engine.parser;
+package com.xplusj.interpreter.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

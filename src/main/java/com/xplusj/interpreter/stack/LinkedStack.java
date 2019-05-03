@@ -1,4 +1,4 @@
-package com.xplusj.engine.stack;
+package com.xplusj.interpreter.stack;
 
 import lombok.AllArgsConstructor;
 
