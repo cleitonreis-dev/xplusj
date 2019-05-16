@@ -1,4 +1,4 @@
-package com.xplusj.interpreter;
+package com.xplusj.expression;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
@@ -16,7 +16,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultExpressionInterpreterTest{
+public class TwoStackBasedInterpreterTest {
 
     /*private static GlobalContext globalContext = DefaultGlobalContext.builder()
         .addUnaryOperator(UnaryOperator.create('+', Precedence.highest(), ctx->+ctx.getValue()))
@@ -50,11 +50,11 @@ public class DefaultExpressionInterpreterTest{
     @Mock
     private VariableContext variableContext;
 
-    private DefaultExpressionInterpreter interpreter;
+    private TwoStackBasedInterpreter interpreter;
 
     @Before
     public void setUp(){
-        interpreter = new DefaultExpressionInterpreter(globalContext, variableContext, valStack, opStack);
+        interpreter = new TwoStackBasedInterpreter(globalContext, variableContext, valStack, opStack);
 
         when(unaryOperator.getType()).thenReturn(OperatorType.UNARY);
         when(unaryOperator.getParamsLength()).thenReturn(1);

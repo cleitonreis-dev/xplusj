@@ -1,6 +1,118 @@
 package com.xplusj.expression;
 
+import com.xplusj.Environment;
+import com.xplusj.GlobalContext;
+import com.xplusj.context.DefaultEnvironment;
+import com.xplusj.context.DefaultGlobalContext;
+import com.xplusj.context.DefaultVariableContext;
+import com.xplusj.operator.BinaryOperator;
+import com.xplusj.operator.UnaryOperator;
+import org.junit.Test;
+
+import static com.xplusj.operator.Precedence.*;
+import static org.junit.Assert.assertEquals;
+
 public class InlineExpressionTests {
+    private static final GlobalContext CONTEXT =
+        DefaultGlobalContext.builder()
+            .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
+            .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
+            .addBinaryOperator(BinaryOperator.create('*', high(), ctx->ctx.getFirstValue() * ctx.getSecondValue()))
+            .addBinaryOperator(BinaryOperator.create('/', high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
+            .addUnaryOperator(UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue()))
+            .addUnaryOperator(UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue()))
+        .build();
+
+    private static final Environment ENV = new DefaultEnvironment(CONTEXT);
+
+    @Test
+    public void eval() {
+        String expression = "1+1";
+        assertEquals(expression, 2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval1() {
+        String expression = "2+3-2";
+        assertEquals(expression, 3D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval2() {
+        String expression = "2+4/2";
+        assertEquals(expression, 4D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval3() {
+        String expression = "2+3*2";
+        assertEquals(expression, 8D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval4() {
+        String expression = "2+(3-2)";
+        assertEquals(expression, 3D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval5() {
+        String expression = "(2+4)/2";
+        assertEquals(expression, 3D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval6() {
+        String expression = "(2+3)*2";
+        assertEquals(expression, 10D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval7() {
+        String expression = "-2";
+        assertEquals(expression, -2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval8() {
+        String expression = "+2";
+        assertEquals(expression, 2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval9() {
+        String expression = "(-2)";
+        assertEquals(expression, -2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval10() {
+        String expression = "(+2)";
+        assertEquals(expression, 2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval11() {
+        String expression = "4+-2";
+        assertEquals(expression, 2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval12() {
+        String expression = "4+(-2)";
+        assertEquals(expression, 2D, eval(expression).eval(), 0D);
+    }
+
+    @Test
+    public void eval13() {
+        String expression = "4+a";
+        assertEquals(expression, 6D, eval(expression).eval(DefaultVariableContext
+                .builder().add("a", 2D).build()), 0D);
+    }
+
+    private static InlineExpression eval(String expression){
+        return new InlineExpression(expression, ENV);
+    }
 
     /*private Environment env = defaultEnv().build();
     private ExpressionFactory factory = defaultFactory(env);

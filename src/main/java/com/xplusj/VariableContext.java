@@ -8,4 +8,16 @@ public interface VariableContext {
         Builder add(String name, double value);
         VariableContext build();
     }
+
+    VariableContext EMPTY = new VariableContext(){
+        @Override
+        public double value(String name) {
+            return 0;
+        }
+
+        @Override
+        public boolean contains(String name) {
+            return false;
+        }
+    };
 }

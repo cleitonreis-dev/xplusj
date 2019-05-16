@@ -6,7 +6,7 @@ import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
 
-public class ExpressionParser {
+public class ExpressionParser implements com.xplusj.interpreter.ExpressionParser {
     private enum ExecContext{PARENTHESIS,FUNC,EXP}
 
     private final GlobalContext globalContext;
@@ -17,6 +17,7 @@ public class ExpressionParser {
         operatorChecker = op->globalContext.hasBinaryOperator(op) || globalContext.hasUnaryOperator(op);
     }
 
+    @Override
     public void eval(final String expression, final ExpressionInterpreterProcessor instructionHandler) {
         eval(ExecContext.EXP, new ExpressionTokenizer(expression,operatorChecker),instructionHandler);
     }

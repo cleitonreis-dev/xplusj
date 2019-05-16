@@ -1,7 +1,8 @@
-package com.xplusj.interpreter;
+package com.xplusj.expression;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
+import com.xplusj.interpreter.ExpressionInterpreterProcessor;
 import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
@@ -11,14 +12,14 @@ import com.xplusj.interpreter.operator.BinaryOperatorContext;
 import com.xplusj.interpreter.operator.FunctionOperatorContext;
 import com.xplusj.interpreter.operator.UnaryOperatorContext;
 
-public class DefaultExpressionInterpreter implements ExpressionInterpreterProcessor {
+public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor {
 
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
     private final Stack<Operator<?>> opStack;
 
-    public DefaultExpressionInterpreter(GlobalContext globalContext, VariableContext variableContext,Stack<Double> valueStack,Stack<Operator<?>> opStack) {
+    TwoStackBasedInterpreter(GlobalContext globalContext, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
         this.globalContext = globalContext;
         this.variableContext = variableContext;
         this.valueStack = valueStack;
@@ -67,6 +68,10 @@ public class DefaultExpressionInterpreter implements ExpressionInterpreterProces
     @Override
     public Operator<?> getLastOperator() {
         return opStack.peek();
+    }
+
+    static TwoStackBasedInterpreter create(GlobalContext globalContext, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
+        return new TwoStackBasedInterpreter(globalContext,variableContext,valueStack,opStack);
     }
 
     private <Context extends OperatorContext> Context getContext(Operator<?> operator){
