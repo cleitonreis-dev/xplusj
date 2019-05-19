@@ -70,6 +70,10 @@ public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor 
         return opStack.peek();
     }
 
+    public double getCalculatedResult(){
+        return valueStack.pull();
+    }
+
     static TwoStackBasedInterpreter create(GlobalContext globalContext, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
         return new TwoStackBasedInterpreter(globalContext,variableContext,valueStack,opStack);
     }

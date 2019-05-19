@@ -6,7 +6,9 @@ import com.xplusj.operator.*;
 import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.interpreter.operator.AbstractOperator;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -33,6 +35,9 @@ public class ExpressionParserTest {
     private GlobalContext context;
 
     private InstructionLogger instructionLogger;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp(){
@@ -346,6 +351,15 @@ public class ExpressionParserTest {
         parser.eval(exp, instructionLogger);
 
         assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testParenthesis1(){
+        thrown.expect(ExpressionParseException.class);
+        ExpressionParser parser = new ExpressionParser(context);
+        String exp = "((1*2)";
+
+        parser.eval(exp, instructionLogger);
     }
 
     private static class StackLog{

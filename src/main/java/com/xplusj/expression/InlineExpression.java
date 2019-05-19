@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.Expression;
+import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
 import com.xplusj.interpreter.ExpressionInterpreterProcessor;
 import com.xplusj.interpreter.ExpressionParser;
@@ -10,11 +10,13 @@ import com.xplusj.interpreter.stack.Stack;
 public class InlineExpression implements Expression {
 
     private final String expression;
-    private final Environment environment;
+    private final GlobalContext context;
+    private final ExpressionParser parser;
 
-    public InlineExpression(final String expression, final Environment environment) {
+    public InlineExpression(final String expression, final GlobalContext context, final ExpressionParser parser) {
         this.expression = expression;
-        this.environment = environment;
+        this.context = context;
+        this.parser = parser;
     }
 
     @Override
@@ -27,17 +29,15 @@ public class InlineExpression implements Expression {
         if(expression.trim().isEmpty())
             return 0;
 
-        Stack<Double> valueStack = Stack.defaultStack();
-        ExpressionParser parser = environment.getExpressionParser();
-        ExpressionInterpreterProcessor interpreter = TwoStackBasedInterpreter.create(
-            environment.getGlobalContext(),
+        TwoStackBasedInterpreter interpreter = TwoStackBasedInterpreter.create(
+            context,
             variableContext,
-            valueStack,
+            Stack.defaultStack(),
             Stack.defaultStack()
         );
 
         parser.eval(expression, interpreter);
 
-        return valueStack.pull();
+        return interpreter.getCalculatedResult();
     }
 }

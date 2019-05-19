@@ -3,6 +3,7 @@ package com.xplusj.context;
 import com.xplusj.Environment;
 import com.xplusj.Expression;
 import com.xplusj.GlobalContext;
+import com.xplusj.expression.FormulaExpression;
 import com.xplusj.expression.InlineExpression;
 import com.xplusj.interpreter.ExpressionParser;
 
@@ -18,12 +19,12 @@ public class DefaultEnvironment implements Environment {
 
     @Override
     public Expression expression(String expression) {
-        return new InlineExpression(expression, this);
+        return new InlineExpression(expression, context, parser);
     }
 
     @Override
     public Expression formula(String formula) {
-        return null;
+        return new FormulaExpression(formula, context, parser);
     }
 
     @Override

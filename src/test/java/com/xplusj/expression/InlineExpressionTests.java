@@ -1,11 +1,11 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
-import com.xplusj.context.DefaultEnvironment;
 import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.context.DefaultVariableContext;
+import com.xplusj.interpreter.ExpressionParser;
 import com.xplusj.operator.BinaryOperator;
+import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.UnaryOperator;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import static com.xplusj.operator.Precedence.*;
 import static org.junit.Assert.assertEquals;
 
 public class InlineExpressionTests {
-    private static final GlobalContext CONTEXT =
+    static final GlobalContext CONTEXT =
         DefaultGlobalContext.builder()
             .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
             .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
@@ -21,9 +21,10 @@ public class InlineExpressionTests {
             .addBinaryOperator(BinaryOperator.create('/', high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
             .addUnaryOperator(UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue()))
             .addUnaryOperator(UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue()))
+            .addFunction(FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
         .build();
 
-    private static final Environment ENV = new DefaultEnvironment(CONTEXT);
+    static final ExpressionParser PARSER = new com.xplusj.interpreter.parser.ExpressionParser(CONTEXT);
 
     @Test
     public void eval() {
@@ -111,7 +112,7 @@ public class InlineExpressionTests {
     }
 
     private static InlineExpression eval(String expression){
-        return new InlineExpression(expression, ENV);
+        return new InlineExpression(expression, CONTEXT, PARSER);
     }
 
     /*private Environment env = defaultEnv().build();
