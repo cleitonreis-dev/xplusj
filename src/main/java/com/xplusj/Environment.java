@@ -1,6 +1,6 @@
 package com.xplusj;
 
-import com.xplusj.interpreter.ExpressionParser;
+import com.xplusj.context.DefaultEnvironment;
 
 public interface Environment {
 
@@ -8,8 +8,11 @@ public interface Environment {
 
     Expression formula(String formula);
 
-    GlobalContext getGlobalContext();
+    Environment appendContext(GlobalContext context);
 
-    ExpressionParser getExpressionParser();
+    static Environment env(){
+        return DefaultEnvironment.create(GlobalContext.builder()
 
+                .build());
+    }
 }

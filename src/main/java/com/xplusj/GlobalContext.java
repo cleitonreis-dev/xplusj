@@ -1,5 +1,6 @@
 package com.xplusj;
 
+import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.operator.*;
 
 public interface GlobalContext {
@@ -30,5 +31,9 @@ public interface GlobalContext {
         Builder addConstant(String name, double value);
 
         GlobalContext build();
+    }
+
+    static GlobalContext.Builder builder(){
+        return DefaultGlobalContext.builder();
     }
 }

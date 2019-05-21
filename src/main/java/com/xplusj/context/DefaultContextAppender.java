@@ -13,7 +13,7 @@ public class DefaultContextAppender implements ContextAppender {
     private final GlobalContext current;
     private final boolean hasParent;
 
-    public DefaultContextAppender(GlobalContext parent, GlobalContext current) {
+    private DefaultContextAppender(GlobalContext parent, GlobalContext current) {
         this.parent = parent;
         this.current = requireNonNull(current,"current context is required");
         this.hasParent = parent != null;
@@ -87,5 +87,9 @@ public class DefaultContextAppender implements ContextAppender {
     @Override
     public ContextAppender append(GlobalContext context) {
         return new DefaultContextAppender(this, context);
+    }
+
+    public static ContextAppender create(GlobalContext context){
+        return new DefaultContextAppender(null,context);
     }
 }
