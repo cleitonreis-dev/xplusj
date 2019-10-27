@@ -77,20 +77,26 @@ public class DefaultGlobalContext implements GlobalContext {
         private VariableContext.Builder constantsContextBuilder = DefaultVariableContext.builder();
 
         @Override
-        public GlobalContext.Builder addUnaryOperator(UnaryOperator operator) {
-            unaryOperatorsMap.put(operator.getSymbol(), operator);
+        public GlobalContext.Builder addUnaryOperator(UnaryOperator...operator) {
+            for(UnaryOperator op : operator)
+                unaryOperatorsMap.put(op.getSymbol(), op);
+
             return this;
         }
 
         @Override
-        public GlobalContext.Builder addBinaryOperator(BinaryOperator operator) {
-            binaryOperatorsMap.put(operator.getSymbol(), operator);
+        public GlobalContext.Builder addBinaryOperator(BinaryOperator...operator) {
+            for(BinaryOperator op : operator)
+                binaryOperatorsMap.put(op.getSymbol(), op);
+
             return this;
         }
 
         @Override
-        public GlobalContext.Builder addFunction(FunctionOperator function) {
-            functionsMap.put(function.getName(),function);
+        public GlobalContext.Builder addFunction(FunctionOperator...function) {
+            for(FunctionOperator func : function)
+                functionsMap.put(func.getName(),func);
+
             return this;
         }
 

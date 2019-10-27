@@ -1,6 +1,7 @@
 package com.xplusj;
 
 import com.xplusj.context.DefaultEnvironment;
+import com.xplusj.operator.Operators;
 
 public interface Environment {
 
@@ -12,7 +13,9 @@ public interface Environment {
 
     static Environment env(){
         return DefaultEnvironment.create(GlobalContext.builder()
-
+                .addBinaryOperator(Operators.Binaries.OPERATORS)
+                .addUnaryOperator(Operators.Unaries.OPERATORS)
+                .addFunction(Operators.Functions.FUNCTIONS)
                 .build());
     }
 }

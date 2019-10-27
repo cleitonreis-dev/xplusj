@@ -22,11 +22,11 @@ public interface GlobalContext {
     double getConstant(String name);
 
     interface Builder{
-        Builder addUnaryOperator(UnaryOperator operator);
+        Builder addUnaryOperator(UnaryOperator...operator);
 
-        Builder addBinaryOperator(BinaryOperator operator);
+        Builder addBinaryOperator(BinaryOperator...operator);
 
-        Builder addFunction(FunctionOperator function);
+        Builder addFunction(FunctionOperator...function);
 
         Builder addConstant(String name, double value);
 

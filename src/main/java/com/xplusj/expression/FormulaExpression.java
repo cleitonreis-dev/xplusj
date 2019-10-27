@@ -47,11 +47,8 @@ public class FormulaExpression implements Expression {
         return interpreter.getCalculatedResult();
     }
 
-    private void initialize() {
-        synchronized (formula){
-            if(instructions != null)
-                return;
-
+    private synchronized void initialize() {
+        if(instructions == null) {
             InstructionListInterpreter interpreter = new InstructionListInterpreter();
             parser.eval(formula, interpreter);
             instructions = interpreter.getInstructions();

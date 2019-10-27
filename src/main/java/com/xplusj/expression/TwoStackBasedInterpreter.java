@@ -4,13 +4,7 @@ import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
 import com.xplusj.interpreter.ExpressionInterpreterProcessor;
 import com.xplusj.interpreter.stack.Stack;
-import com.xplusj.operator.FunctionOperator;
-import com.xplusj.operator.Operator;
-import com.xplusj.operator.OperatorContext;
-import com.xplusj.operator.OperatorType;
-import com.xplusj.interpreter.operator.BinaryOperatorContext;
-import com.xplusj.interpreter.operator.FunctionOperatorContext;
-import com.xplusj.interpreter.operator.UnaryOperatorContext;
+import com.xplusj.operator.*;
 
 public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor {
 

@@ -13,11 +13,6 @@ public class DefaultEnvironment implements Environment {
     private final ContextAppender context;
     private final ExpressionParser parser;
 
-    private DefaultEnvironment(GlobalContext context) {
-        this(DefaultContextAppender.create(context),
-            new com.xplusj.interpreter.parser.ExpressionParser(context));
-    }
-
     private DefaultEnvironment(ContextAppender context, ExpressionParser parser) {
         this.context = context;
         this.parser = parser;
@@ -35,10 +30,12 @@ public class DefaultEnvironment implements Environment {
 
     @Override
     public Environment appendContext(GlobalContext context) {
-        return new DefaultEnvironment(this.context.append(context),this.parser);
+        ContextAppender appender = this.context.append(context);
+        return new DefaultEnvironment(appender,new com.xplusj.interpreter.parser.ExpressionParser(appender));
     }
 
     public static Environment create(GlobalContext context){
-        return new DefaultEnvironment(context);
+        ContextAppender appender = DefaultContextAppender.create(context);
+        return new DefaultEnvironment(appender,new com.xplusj.interpreter.parser.ExpressionParser(appender));
     }
 }

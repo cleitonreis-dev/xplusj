@@ -1,7 +1,18 @@
 package com.xplusj.operator;
 
-public interface OperatorContext {
-    double call(String name, double...params);
+import com.xplusj.GlobalContext;
+import lombok.AllArgsConstructor;
 
-    double getConstant(String name);
+@AllArgsConstructor
+public abstract class OperatorContext{
+    private final GlobalContext context;
+    private final OperatorContextFunctionCaller functionCaller;
+
+    public double call(String name, double...values){
+        return functionCaller.call(context,name,values);
+    }
+
+    public double getConstant(String name){
+        return context.getConstant(name);
+    }
 }

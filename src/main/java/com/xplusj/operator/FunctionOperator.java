@@ -1,18 +1,54 @@
 package com.xplusj.operator;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.util.*;
 import java.util.function.Function;
 
-public interface FunctionOperator extends Operator<FunctionOperatorContext> {
-    String getName();
+import static java.lang.String.format;
 
-    int paramIndex(String name);
+@EqualsAndHashCode(of = "name", callSuper = true)
+@ToString(of = {"name", "params"}, callSuper = true)
+public class FunctionOperator extends Operator<FunctionOperatorContext>{
+    private static final Precedence PRECEDENCE = Precedence.lowerThan(Precedence.highest());
+
+    private final String name;
+    private final Map<String,Integer> params;
+
+    public FunctionOperator(String name, Set<String> params, Function<com.xplusj.operator.FunctionOperatorContext, Double> function) {
+        super(OperatorType.FUNCTION,PRECEDENCE,function);
+        this.name = name;
+        this.params = new HashMap<>();
+
+        int i = 0;
+        for(String param : params){
+            this.params.put(param,i++);
+        }
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getParamsLength() {
+        return params.size();
+    }
+
+    @Override
+    public double execute(FunctionOperatorContext context) {
+        return function.apply(context);
+    }
+
+    public int paramIndex(String name) {
+        if(!params.containsKey(name))
+            throw new IllegalArgumentException(format("Param %s not found for function %s. Valid params are: %s",name, this.name, this.params.keySet()));
+
+        return params.get(name);
+    }
 
     //TODO improve exception handling put the creation logic in another class
-    static FunctionOperator create(String name, Function<FunctionOperatorContext, Double> function) {
+    public static FunctionOperator create(String name, Function<FunctionOperatorContext, Double> function) {
         int openParenthesisIndex = name.indexOf('(');
         if (openParenthesisIndex <= 0)
             throw new IllegalArgumentException("incorrect function name");
@@ -38,6 +74,6 @@ public interface FunctionOperator extends Operator<FunctionOperatorContext> {
                 throw new IllegalArgumentException("incorrect function name");
         }
 
-        return new com.xplusj.interpreter.operator.FunctionOperator(fName, params,function);
+        return new FunctionOperator(fName, params,function);
     }
 }

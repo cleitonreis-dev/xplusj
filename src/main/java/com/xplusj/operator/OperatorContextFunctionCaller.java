@@ -1,15 +1,14 @@
-package com.xplusj.interpreter.operator;
+package com.xplusj.operator;
 
 import com.xplusj.GlobalContext;
-import com.xplusj.operator.FunctionOperator;
 
 import static java.lang.String.format;
 
 public interface OperatorContextFunctionCaller {
 
-    double call(GlobalContext context, String functionName, double...params);
+    double call(GlobalContext context, String functionName, double... params);
 
-    OperatorContextFunctionCaller DEFAULT = (context,name,params)->{
+    OperatorContextFunctionCaller DEFAULT = (context, name, params)->{
         FunctionOperator function = context.getFunction(name);
 
         if(function == null)

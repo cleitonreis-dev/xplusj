@@ -1,14 +1,32 @@
 package com.xplusj.operator;
 
-public interface Operator<T extends OperatorContext> {
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-    OperatorType getType();
+import java.util.function.Function;
 
-    Precedence getPrecedence();
+@AllArgsConstructor
+@ToString(of = {"type", "precedence"})
+@EqualsAndHashCode(of = {"type"})
+public abstract class Operator<T extends OperatorContext>{
+    private final OperatorType type;
+    private final Precedence precedence;
+    final Function<T,Double> function;
 
-    int getParamsLength();
+    public OperatorType getType() {
+        return type;
+    }
 
-    double execute(T context);
+    public Precedence getPrecedence() {
+        return precedence;
+    }
 
-    boolean precedes(Operator<?> operator);
+    public boolean precedes(Operator<?> operator) {
+        return precedence.compareTo(operator.getPrecedence()) > 0;
+    }
+
+    public abstract int getParamsLength();
+
+    public abstract double execute(T context);
 }

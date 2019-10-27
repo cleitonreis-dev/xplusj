@@ -2,19 +2,15 @@ package com.xplusj;
 
 import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.expression.FormulaExpression;
-import com.xplusj.expression.InlineExpression;
-import com.xplusj.interpreter.ExpressionParser;
 import com.xplusj.operator.BinaryOperator;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.UnaryOperator;
 
 import static com.xplusj.operator.Precedence.*;
-import static com.xplusj.operator.Precedence.high;
 
 public class PerformanceTest {
 
-    static final GlobalContext CONTEXT =
+   /*static final GlobalContext CONTEXT =
             DefaultGlobalContext.builder()
                 .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
                 .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
@@ -23,9 +19,11 @@ public class PerformanceTest {
                 .addUnaryOperator(UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue()))
                 .addUnaryOperator(UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue()))
                 .addFunction(FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
-                .build();
+                .build();*/
 
-    static final ExpressionParser PARSER = new com.xplusj.interpreter.parser.ExpressionParser(CONTEXT);
+    //static final ExpressionParser PARSER = new com.xplusj.interpreter.parser.ExpressionParser(CONTEXT);
+
+    static final Environment env = Environment.env();
 
     public static void main(String[] args) {
         String expression = "(a/(2+b)-max(a,b)*2)*(a/(2+b)-max(a,b)*2)*(a/(2+b)-max(a,b)*2)";
@@ -38,8 +36,8 @@ public class PerformanceTest {
                 .add("b", b)
                 .build();
 
-        InlineExpression iExp = new InlineExpression(expression,CONTEXT,PARSER);
-        FormulaExpression fExp = new FormulaExpression(expression,CONTEXT,PARSER);
+        Expression iExp = env.expression(expression);
+        Expression fExp = env.formula(expression);
 
         double iVal = iExp.eval(vars);
         double fVal = fExp.eval(vars);
