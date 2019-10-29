@@ -1,4 +1,4 @@
-package com.xplusj.interpreter.parser;
+package com.xplusj.tokenizer;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,9 +12,9 @@ import lombok.ToString;
 public class Token {
     private static final Token EOE = new Token(TokenType.EOE, null,-1);
 
-    final TokenType type;
-    final String value;
-    final int index;
+    public final TokenType type;
+    public final String value;
+    public final int index;
 
     public static Token number(String value, int index){
         return new Token(TokenType.NUMBER, value, index);

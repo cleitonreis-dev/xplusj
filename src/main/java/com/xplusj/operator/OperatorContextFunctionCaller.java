@@ -1,15 +1,15 @@
 package com.xplusj.operator;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.Environment;
 
 import static java.lang.String.format;
 
 public interface OperatorContextFunctionCaller {
 
-    double call(GlobalContext context, String functionName, double... params);
+    double call(Environment env, String functionName, double... params);
 
-    OperatorContextFunctionCaller DEFAULT = (context, name, params)->{
-        FunctionOperator function = context.getFunction(name);
+    OperatorContextFunctionCaller DEFAULT = (env, name, params)->{
+        FunctionOperator function = env.getContext().getFunction(name);
 
         if(function == null)
             throw new IllegalArgumentException(format("Function '%s' not found", name));
@@ -21,6 +21,6 @@ public interface OperatorContextFunctionCaller {
                         name, paramsLength, params.length)
             );
 
-        return function.execute(new FunctionOperatorContext(function,context,params));
+        return function.execute(new FunctionOperatorContext(function,env,params));
     };
 }

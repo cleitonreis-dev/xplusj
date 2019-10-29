@@ -1,9 +1,9 @@
 package com.xplusj.expression;
 
+import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.interpreter.ExpressionParser;
 import com.xplusj.operator.BinaryOperator;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.UnaryOperator;
@@ -24,7 +24,8 @@ public class InlineExpressionTests {
             .addFunction(FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
         .build();
 
-    static final ExpressionParser PARSER = new com.xplusj.interpreter.parser.ExpressionParser(CONTEXT);
+
+    static final Environment ENV = Environment.builder().setContext(CONTEXT).build();
 
     @Test
     public void eval() {
@@ -112,7 +113,7 @@ public class InlineExpressionTests {
     }
 
     private static InlineExpression eval(String expression){
-        return new InlineExpression(expression, CONTEXT, PARSER);
+        return new InlineExpression(expression, ENV);
     }
 
     /*private Environment env = defaultEnv().build();

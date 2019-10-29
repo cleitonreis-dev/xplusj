@@ -1,4 +1,4 @@
-package com.xplusj.interpreter.parser;
+package com.xplusj.parser;
 
 import static java.lang.String.format;
 

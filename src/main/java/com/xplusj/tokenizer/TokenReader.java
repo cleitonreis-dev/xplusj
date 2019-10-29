@@ -1,38 +1,48 @@
-package com.xplusj.interpreter.parser;
+package com.xplusj.tokenizer;
+
+import com.xplusj.parser.ExpressionParseException;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ExpressionTokenizer {
-    private static final Map<Character, Function<Integer, Token>> RESERVED_TOKENS = new HashMap<>();
-    static {
-        RESERVED_TOKENS.put('(', Token::parenthesisOpening);
-        RESERVED_TOKENS.put(')', Token::parenthesisClosing);
-        RESERVED_TOKENS.put(',', Token::comma);
-    }
+public class TokenReader implements ExpressionTokenizer.TokenReader {
+    private static final Map<Character, Function<Integer, Token>> RESERVED_TOKENS =
+        new HashMap<Character, Function<Integer, Token>>(){{
+            put('(', Token::parenthesisOpening);
+            put(')', Token::parenthesisClosing);
+            put(',', Token::comma);
+        }};
 
-    final String expression;
+    private final String expression;
     private final int expressionLength;
     private final OperatorChecker operatorChecker;
     private int currentIndex;
     private int startIndex;
-    Token lastToken;
+    private Token lastToken;
 
-    public ExpressionTokenizer(final String expression, final OperatorChecker operatorChecker) {
+    public TokenReader(String expression, OperatorChecker operatorChecker) {
         this.expression = expression;
         this.expressionLength = expression.length();
         this.operatorChecker = operatorChecker;
     }
 
+    @Override
     public Token getLastToken(){
         return lastToken;
     }
 
+    @Override
     public boolean hasNext(){
         return currentIndex < expressionLength;
     }
 
+    @Override
+    public String getExpression() {
+        return expression;
+    }
+
+    @Override
     public Token next(){
         if(!hasNext()){
             lastToken = Token.EOE();
@@ -159,7 +169,7 @@ public class ExpressionTokenizer {
 
             if(!isConstEligible(c))
                 throw new ExpressionParseException(expression, currentIndex,
-                    "Invalid constant name, constants must have only uppercase letters");
+                        "Invalid constant name, constants must have only uppercase letters");
         }
 
         lastToken = Token.constant(expression.substring(startIndex,currentIndex),startIndex);
@@ -192,10 +202,6 @@ public class ExpressionTokenizer {
 
     private static boolean isDigit(char c){
         return Character.isDigit(c) || c == '.';
-    }
-
-    public static ExpressionTokenizer of(String expression, OperatorChecker operatorChecker){
-        return new ExpressionTokenizer(expression, operatorChecker);
     }
 
     public interface OperatorChecker {

@@ -1,8 +1,8 @@
-package com.xplusj.interpreter.stack;
+package com.xplusj.expression;
 
 import lombok.AllArgsConstructor;
 
-public class LinkedStack<T> implements Stack<T> {
+public class Stack<T>{
 
     private Node<T> head;
 
@@ -28,6 +28,10 @@ public class LinkedStack<T> implements Stack<T> {
 
     public boolean isEmpty(){
         return head == null;
+    }
+
+    public static<T> Stack<T> instance(){
+        return new Stack<>();
     }
 
     @AllArgsConstructor
