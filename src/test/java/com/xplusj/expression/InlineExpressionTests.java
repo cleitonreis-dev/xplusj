@@ -8,10 +8,13 @@ import com.xplusj.operator.BinaryOperator;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.UnaryOperator;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.xplusj.operator.Precedence.*;
 import static org.junit.Assert.assertEquals;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InlineExpressionTests {
     static final GlobalContext CONTEXT =
         DefaultGlobalContext.builder()

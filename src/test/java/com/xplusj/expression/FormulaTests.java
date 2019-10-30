@@ -3,9 +3,12 @@ package com.xplusj.expression;
 import com.xplusj.VariableContext;
 import com.xplusj.context.DefaultVariableContext;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FormulaTests {
 
     @Test

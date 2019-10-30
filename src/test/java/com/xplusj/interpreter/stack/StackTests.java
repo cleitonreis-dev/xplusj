@@ -2,11 +2,14 @@ package com.xplusj.interpreter.stack;
 
 import com.xplusj.expression.Stack;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class StackTests {
 
     @Test
