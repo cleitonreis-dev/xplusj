@@ -5,4 +5,4 @@ os:
   - linux
 
 after_success:
-  - mvn  coveralls:report
+  - mvn coveralls:report -e
