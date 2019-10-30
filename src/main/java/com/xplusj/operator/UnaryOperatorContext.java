@@ -1,18 +1,19 @@
 package com.xplusj.operator;
 
+import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 
 public class UnaryOperatorContext extends OperatorContext{
 
     private final double value;
 
-    public UnaryOperatorContext(GlobalContext context, OperatorContextFunctionCaller functionCaller, double value) {
-        super(context, functionCaller);
+    public UnaryOperatorContext(Environment env, OperatorContextFunctionCaller functionCaller, double value) {
+        super(env, functionCaller);
         this.value = value;
     }
 
-    public UnaryOperatorContext(GlobalContext context, double value) {
-        this(context, OperatorContextFunctionCaller.DEFAULT, value);
+    public UnaryOperatorContext(Environment env, double value) {
+        this(env, OperatorContextFunctionCaller.DEFAULT, value);
     }
 
     public double getValue(){

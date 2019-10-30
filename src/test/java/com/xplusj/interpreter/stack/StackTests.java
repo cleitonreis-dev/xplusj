@@ -1,16 +1,17 @@
 package com.xplusj.interpreter.stack;
 
+import com.xplusj.expression.Stack;
 import org.junit.Test;
 
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
-public class LinkedStackTests {
+public class StackTests {
 
     @Test
     public void testPushAndPull(){
-        Stack<Integer> stack = new LinkedStack<>();
+        Stack<Integer> stack = new Stack<>();
 
         assertTrue(stack.isEmpty());
 
@@ -25,7 +26,7 @@ public class LinkedStackTests {
 
     @Test(expected = IllegalStateException.class)
     public void testEmptyStack(){
-        Stack<Integer> stack = new LinkedStack<>();
+        Stack<Integer> stack = new Stack<>();
 
         stack.push(1);
         stack.pull();

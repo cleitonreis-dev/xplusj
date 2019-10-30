@@ -1,12 +1,17 @@
 package com.xplusj.interpreter.parser;
 
+import com.xplusj.parser.ExpressionParseException;
+import com.xplusj.tokenizer.Token;
+import com.xplusj.tokenizer.Tokenizer;
+import com.xplusj.tokenizer.TokenType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ExpressionTokenizerTest {
 
@@ -17,11 +22,11 @@ public class ExpressionTokenizerTest {
        '+','-','*','/'
     ));
 
-    private static ExpressionTokenizer.OperatorChecker operatorChecker = c->operators.contains(c);
+    private static Tokenizer.OperatorChecker operatorChecker = c->operators.contains(c);
 
     @Test
     public void shouldFindNumber(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("1", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("1", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.NUMBER, token.type);
@@ -31,7 +36,7 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldFindDottedNumber(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("1", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("1", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.NUMBER, token.type);
@@ -41,7 +46,7 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldFindSymbol1(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("+", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("+", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.OPERATOR, token.type);
@@ -51,7 +56,7 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldFindSymbol2(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("func_name", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("func_name", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.VAR, token.type);
@@ -61,7 +66,7 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldFindParenthesisOpening(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("(", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("(", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.PARENTHESIS_OPENING, token.type);
@@ -70,7 +75,7 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldFindParenthesisClosing(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(")", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(")", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.PARENTHESIS_CLOSING, token.type);
@@ -79,7 +84,7 @@ public class ExpressionTokenizerTest {
 
     @Test
     public void shouldFindComma(){
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(",", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(",", operatorChecker);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.COMMA, token.type);
@@ -106,7 +111,7 @@ public class ExpressionTokenizerTest {
             Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -126,7 +131,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CON", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CON", operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -148,7 +153,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CON+AAA_B", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CON+AAA_B", operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -165,7 +170,7 @@ public class ExpressionTokenizerTest {
     public void shouldParseConstantInvalidIdentifier3(){
         thrown.expect(ExpressionParseException.class);
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CONa+AAA_B", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CONa+AAA_B", operatorChecker);
 
         while (tokenizer.hasNext())
             tokenizer.next();
@@ -180,7 +185,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CON+aaa_b", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CON+aaa_b", operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -197,7 +202,7 @@ public class ExpressionTokenizerTest {
     public void shouldParseVarInvalidIdentifier(){
         thrown.expect(ExpressionParseException.class);
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer("CONa+aaa", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CONa+aaa", operatorChecker);
 
         while (tokenizer.hasNext())
             tokenizer.next();
@@ -211,7 +216,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -220,7 +225,7 @@ public class ExpressionTokenizerTest {
         tokens.add(tokenizer.next());
 
         for(int i = 0; i < expectedTokens.size(); i++)
-            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+            assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
     }
 
     @Test
@@ -231,7 +236,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -240,7 +245,7 @@ public class ExpressionTokenizerTest {
         tokens.add(tokenizer.next());
 
         for(int i = 0; i < expectedTokens.size(); i++)
-            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+            assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
     }
 
     @Test
@@ -254,7 +259,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -263,7 +268,7 @@ public class ExpressionTokenizerTest {
         tokens.add(tokenizer.next());
 
         for(int i = 0; i < expectedTokens.size(); i++)
-            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+            assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
     }
 
     @Test
@@ -277,7 +282,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -286,7 +291,7 @@ public class ExpressionTokenizerTest {
         tokens.add(tokenizer.next());
 
         for(int i = 0; i < expectedTokens.size(); i++)
-            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+            assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
     }
 
     @Test
@@ -308,7 +313,7 @@ public class ExpressionTokenizerTest {
                 Token.EOE()
         );
 
-        ExpressionTokenizer tokenizer = new ExpressionTokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -317,6 +322,6 @@ public class ExpressionTokenizerTest {
         tokens.add(tokenizer.next());
 
         for(int i = 0; i < expectedTokens.size(); i++)
-            assertEquals(tokenizer.expression, expectedTokens.get(i), tokens.get(i));
+            assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
     }
 }

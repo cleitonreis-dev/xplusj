@@ -1,22 +1,21 @@
 package com.xplusj.expression;
 
+import com.xplusj.Environment;
 import com.xplusj.Expression;
-import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
-import com.xplusj.interpreter.ExpressionInterpreterProcessor;
-import com.xplusj.interpreter.ExpressionParser;
-import com.xplusj.interpreter.stack.Stack;
+import com.xplusj.parser.ExpressionParser;
 
-public class InlineExpression implements Expression {
+public class DefaultExpression implements Expression {
 
     private final String expression;
-    private final GlobalContext context;
+    private final Environment env;
     private final ExpressionParser parser;
 
-    public InlineExpression(final String expression, final GlobalContext context, final ExpressionParser parser) {
+    private DefaultExpression(final String expression,
+                             final Environment env) {
         this.expression = expression;
-        this.context = context;
-        this.parser = parser;
+        this.env = env;
+        this.parser = env.getParser();
     }
 
     @Override
@@ -30,14 +29,18 @@ public class InlineExpression implements Expression {
             return 0;
 
         TwoStackBasedInterpreter interpreter = TwoStackBasedInterpreter.create(
-            context,
+            env,
             variableContext,
-            Stack.defaultStack(),
-            Stack.defaultStack()
+            Stack.instance(),
+            Stack.instance()
         );
 
         parser.eval(expression, interpreter);
 
         return interpreter.getCalculatedResult();
+    }
+
+    public static DefaultExpression create(final String formula, final Environment env){
+        return new DefaultExpression(formula,env);
     }
 }

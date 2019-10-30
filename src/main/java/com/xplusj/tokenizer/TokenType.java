@@ -1,4 +1,4 @@
-package com.xplusj.interpreter.parser;
+package com.xplusj.tokenizer;
 
 public enum TokenType {
     NUMBER,

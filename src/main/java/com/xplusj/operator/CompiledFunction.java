@@ -1,44 +1,61 @@
 package com.xplusj.operator;
 
+import com.xplusj.Environment;
 import com.xplusj.Expression;
-import com.xplusj.expression.FormulaExpression;
+import com.xplusj.GlobalContext;
+import com.xplusj.VariableContext;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CompiledFunction implements Function<FunctionOperatorContext,Double> {
 
-    private final String name;
-    private final Expression expression;
+    private final String expressionStr;
+    private Expression expression;
 
-    public CompiledFunction(String name, String expression) {
-        this.name = name;
-        this.expression = new FormulaExpression(null,null,null);
+    public CompiledFunction(String expression) {
+        this.expressionStr = expression;
     }
 
     @Override
-    public Double apply(FunctionOperatorContext functionOperatorContext) {
+    public Double apply(FunctionOperatorContext context) {
+        if(this.expression == null){
+            this.expression = context.getEnvironment().formula(expressionStr);
+        }
 
-        //functionOperatorContext.
-        return null;
+        return this.expression.eval(new VariableContext() {
+            @Override
+            public double value(String name) {
+                return context.param(name);
+            }
+
+            @Override
+            public boolean contains(String name) {
+                return true;
+            }
+        });
     }
 
     public static void main(String[] args) {
-        /*Stream<Object> stream = null;
-stream.reduce()
-        Optional.empty().get
-        BigDecimal one = new BigDecimal(-0.1D);
-        System.out.println(one.compareTo(BigDecimal.ZERO));
-        BigDecimal.ZERO.multiply()
+        Environment env = Environment.env()
+            .appendContext(GlobalContext.builder()
+                .addFunction(FunctionOperator.create("test(a,b)", "pow(max(a,b),2)"))
+                .addFunction(FunctionOperator.create("test2(a,b)", (ctx)->ctx.call("pow", ctx.call("max", ctx.param(0), ctx.param(1)), 2)))
+                .addFunction(FunctionOperator.create("test3(a,b)", (ctx)->Math.pow(Math.max(ctx.param(0), ctx.param(1)), 2)))
+                .build()
+            );
 
-        Map<String,Object> map = null;
-        String.join()*/
+        double v = -1d;
+        int loop = 500;
+
+        long start = System.currentTimeMillis();
+        Expression expression = env.formula("2*test(2,3)");
+        for(int i = 0; i < loop; i++)
+            v = expression.eval();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println(v);
+        System.out.printf("Time %s", (end - start));
 
     }
 }

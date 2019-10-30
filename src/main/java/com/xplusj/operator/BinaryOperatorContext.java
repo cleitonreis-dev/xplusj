@@ -1,13 +1,14 @@
 package com.xplusj.operator;
 
+import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 
 public class BinaryOperatorContext extends OperatorContext {
 
     private final double[] params;
 
-    public BinaryOperatorContext(GlobalContext context, OperatorContextFunctionCaller functionCaller, double...params) {
-        super(context, functionCaller);
+    public BinaryOperatorContext(Environment env, OperatorContextFunctionCaller functionCaller, double...params) {
+        super(env, functionCaller);
 
         if(params.length != 2)
             throw new IllegalArgumentException("Two parameters are required");
@@ -15,8 +16,8 @@ public class BinaryOperatorContext extends OperatorContext {
         this.params = params;
     }
 
-    public BinaryOperatorContext(GlobalContext context, double...params) {
-        this(context, OperatorContextFunctionCaller.DEFAULT,params);
+    public BinaryOperatorContext(Environment env, double...params) {
+        this(env, OperatorContextFunctionCaller.DEFAULT,params);
     }
 
     public double getFirstValue(){

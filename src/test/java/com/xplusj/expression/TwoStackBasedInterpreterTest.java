@@ -1,9 +1,12 @@
 package com.xplusj.expression;
 
+import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
-import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.operator.*;
+import com.xplusj.parser.DefaultExpressionParser;
+import com.xplusj.parser.ExpressionParser;
+import com.xplusj.tokenizer.DefaultExpressionTokenizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +33,9 @@ public class TwoStackBasedInterpreterTest {
         .build();*/
 
     @Mock
+    private Environment environment;
+
+    @Mock
     private GlobalContext globalContext;
 
     @Mock
@@ -54,7 +60,10 @@ public class TwoStackBasedInterpreterTest {
 
     @Before
     public void setUp(){
-        interpreter = new TwoStackBasedInterpreter(globalContext, variableContext, valStack, opStack);
+        when(environment.getContext()).thenReturn(globalContext);
+
+        ExpressionParser parser = DefaultExpressionParser.create(globalContext, DefaultExpressionTokenizer.create(globalContext));
+        when(environment.getParser()).thenReturn(parser);
 
         when(unaryOperator.getType()).thenReturn(OperatorType.UNARY);
         when(unaryOperator.getParamsLength()).thenReturn(1);
@@ -62,11 +71,13 @@ public class TwoStackBasedInterpreterTest {
         when(binaryOperator.getParamsLength()).thenReturn(2);
         when(functionOperator.getType()).thenReturn(OperatorType.FUNCTION);
         when(functionOperator.getParamsLength()).thenReturn(3);
+
+        interpreter = new TwoStackBasedInterpreter(environment, variableContext, valStack, opStack);
     }
 
     @Test
     public void pushValue() {
-        interpreter.pushValue(1D);
+        interpreter.addValue(1D);
         verify(valStack).push(1D);
     }
 
@@ -75,7 +86,7 @@ public class TwoStackBasedInterpreterTest {
         when(variableContext.contains("a")).thenReturn(true);
         when(variableContext.value("a")).thenReturn(2D);
 
-        interpreter.pushVar("a");
+        interpreter.addVar("a");
 
         verify(valStack).push(2D);
     }
@@ -85,14 +96,14 @@ public class TwoStackBasedInterpreterTest {
         when(globalContext.hasConstant("AB")).thenReturn(true);
         when(globalContext.getConstant("AB")).thenReturn(3D);
 
-        interpreter.pushConstant("AB");
+        interpreter.addConstant("AB");
 
         verify(valStack).push(3D);
     }
 
     @Test
     public void pushOperator() {
-        interpreter.pushOperator(unaryOperator);
+        interpreter.addOperator(unaryOperator);
         verify(opStack).push(unaryOperator);
     }
 
@@ -110,7 +121,7 @@ public class TwoStackBasedInterpreterTest {
 
         ArgumentCaptor<UnaryOperatorContext> opContextCap = ArgumentCaptor.forClass(UnaryOperatorContext.class);
 
-        interpreter.callLastOperatorAndPushResult();
+        interpreter.callLastOperatorAndAddResult();
 
         verify(valStack).pull();
         verify(opStack).pull();
@@ -130,7 +141,7 @@ public class TwoStackBasedInterpreterTest {
 
         ArgumentCaptor<BinaryOperatorContext> opContextCap = ArgumentCaptor.forClass(BinaryOperatorContext.class);
 
-        interpreter.callLastOperatorAndPushResult();
+        interpreter.callLastOperatorAndAddResult();
 
         verify(valStack,times(2)).pull();
         verify(opStack).pull();
@@ -152,7 +163,7 @@ public class TwoStackBasedInterpreterTest {
         ArgumentCaptor<FunctionOperatorContext> opContextCap = ArgumentCaptor
                 .forClass(FunctionOperatorContext.class);
 
-        interpreter.callLastOperatorAndPushResult();
+        interpreter.callLastOperatorAndAddResult();
 
         verify(valStack,times(3)).pull();
         verify(opStack).pull();

@@ -1,32 +1,34 @@
 package com.xplusj.expression;
 
+import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
-import com.xplusj.interpreter.ExpressionInterpreterProcessor;
-import com.xplusj.interpreter.stack.Stack;
 import com.xplusj.operator.*;
+import com.xplusj.parser.ExpressionParserProcessor;
 
-public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor {
+public class TwoStackBasedInterpreter implements ExpressionParserProcessor {
 
+    private final Environment env;
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
     private final Stack<Operator<?>> opStack;
 
-    TwoStackBasedInterpreter(GlobalContext globalContext, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
-        this.globalContext = globalContext;
+    TwoStackBasedInterpreter(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
+        this.env = env;
+        this.globalContext = env.getContext();
         this.variableContext = variableContext;
         this.valueStack = valueStack;
         this.opStack = opStack;
     }
 
     @Override
-    public void pushValue(double value) {
+    public void addValue(double value) {
         valueStack.push(value);
     }
 
     @Override
-    public void pushVar(String value) {
+    public void addVar(String value) {
         if(variableContext.contains(value)) {
             valueStack.push(variableContext.value(value));
             return;
@@ -37,7 +39,7 @@ public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor 
     }
 
     @Override
-    public void pushConstant(String name) {
+    public void addConstant(String name) {
         if(globalContext.hasConstant(name)) {
             valueStack.push(globalContext.getConstant(name));
             return;
@@ -48,12 +50,12 @@ public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor 
     }
 
     @Override
-    public void pushOperator(Operator<? extends OperatorContext> operator) {
+    public void addOperator(Operator<? extends OperatorContext> operator) {
         opStack.push(operator);
     }
 
     @Override
-    public void callLastOperatorAndPushResult() {
+    public void callLastOperatorAndAddResult() {
         Operator<? extends OperatorContext> operator = opStack.pull();
         double value = operator.execute(getContext(operator));
         valueStack.push(value);
@@ -68,18 +70,18 @@ public class TwoStackBasedInterpreter implements ExpressionInterpreterProcessor 
         return valueStack.pull();
     }
 
-    static TwoStackBasedInterpreter create(GlobalContext globalContext, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
-        return new TwoStackBasedInterpreter(globalContext,variableContext,valueStack,opStack);
+    static TwoStackBasedInterpreter create(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
+        return new TwoStackBasedInterpreter(env,variableContext,valueStack,opStack);
     }
 
     private <Context extends OperatorContext> Context getContext(Operator<?> operator){
         OperatorContext context;
         if(operator.getType() == OperatorType.UNARY)
-            context = new UnaryOperatorContext(globalContext,getParams(operator)[0]);
+            context = new UnaryOperatorContext(env,getParams(operator)[0]);
         else if(operator.getType() == OperatorType.BINARY)
-            context = new BinaryOperatorContext(globalContext,getParams(operator));
+            context = new BinaryOperatorContext(env,getParams(operator));
         else if(operator.getType() == OperatorType.FUNCTION)
-            context = new FunctionOperatorContext((FunctionOperator)operator,globalContext,getParams(operator));
+            context = new FunctionOperatorContext((FunctionOperator)operator,env,getParams(operator));
         else
             //TODO create proper exception
             throw new IllegalArgumentException("Invalid operator type" + operator.getType());
