@@ -3,3 +3,6 @@ jdk:
   - openjdk8
 os:
   - linux
+
+after_success:
+  - mvn  coveralls:report
