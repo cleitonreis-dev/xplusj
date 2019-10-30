@@ -8,6 +8,10 @@
     <artifactId>xplusj</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <coverallsPublicRepoKey>private</coverallsPublicRepoKey>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -39,6 +43,14 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                    <repoToken>${coverallsPublicRepoKey}</repoToken>
                 </configuration>
             </plugin>
         </plugins>
