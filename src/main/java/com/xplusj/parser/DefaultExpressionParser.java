@@ -21,10 +21,10 @@ public class DefaultExpressionParser implements ExpressionParser {
 
     @Override
     public void eval(final String expression, final ExpressionParserProcessor instructionHandler) {
-        eval(ExecContext.EXP, tokenizer.start(expression),instructionHandler);
+        eval(ExecContext.EXP, tokenizer.tokenize(expression),instructionHandler);
     }
 
-    private void eval(final ExecContext execContext, final ExpressionTokenizer.TokenReader tokenizer, final ExpressionParserProcessor instructionsProcessor) {
+    private void eval(final ExecContext execContext, final ExpressionTokenizer.Tokenizer tokenizer, final ExpressionParserProcessor instructionsProcessor) {
         int stackOperatorCount = 0;
         Token lastToken = null;
         String expression = tokenizer.getExpression();
@@ -118,7 +118,7 @@ public class DefaultExpressionParser implements ExpressionParser {
         }
     }
 
-    private void evalFunc(Token token, final ExpressionTokenizer.TokenReader tokenizer, ExpressionParserProcessor instructionsProcessor){
+    private void evalFunc(Token token, final ExpressionTokenizer.Tokenizer tokenizer, ExpressionParserProcessor instructionsProcessor){
         if(!globalContext.hasFunction(token.value))
             throw new ExpressionParseException(tokenizer.getExpression(), token.index, "Function '%s' not found", token.value);
 

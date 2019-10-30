@@ -44,7 +44,7 @@ public class ExpressionParserTest {
 
     private InstructionLogger instructionLogger;
 
-    ExpressionTokenizer tokenizer = DefaultExpressionTokenizer.create(env);
+    private ExpressionTokenizer tokenizer;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -54,6 +54,9 @@ public class ExpressionParserTest {
         instructionLogger = new InstructionLogger();
 
         when(env.getContext()).thenReturn(context);
+
+        tokenizer = DefaultExpressionTokenizer.create(env.getContext());
+
         when(env.getParser()).thenReturn(DefaultExpressionParser.create(context, tokenizer));
 
         when(context.hasBinaryOperator('+')).thenReturn(true);
@@ -72,7 +75,6 @@ public class ExpressionParserTest {
 
         when(context.hasFunction("sum")).thenReturn(true);
         when(context.getFunction("sum")).thenReturn(new Func("sum","a","b"));
-
     }
 
     @Test
@@ -366,7 +368,7 @@ public class ExpressionParserTest {
         assertEquals(exp,expectedStack, instructionLogger.log);
     }
 
-    @Test @Ignore
+    @Test
     public void testParenthesis1(){
         thrown.expect(ExpressionParseException.class);
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);

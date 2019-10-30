@@ -14,10 +14,10 @@ public class DefaultEnvironment implements Environment {
     private final ExpressionParserFactory parserFactory;
     private final ExpressionFactory expressionFactory;
 
-    private DefaultEnvironment(ContextAppender context,
-                               ExpressionTokenizerFactory tokenizerFactory,
-                               ExpressionParserFactory expressionParserFactory,
-                               ExpressionFactory expressionFactory) {
+    private DefaultEnvironment(final ContextAppender context,
+                               final ExpressionTokenizerFactory tokenizerFactory,
+                               final ExpressionParserFactory expressionParserFactory,
+                               final ExpressionFactory expressionFactory) {
         this.context = context;
         this.tokenizerFactory = tokenizerFactory;
         this.parserFactory = expressionParserFactory;

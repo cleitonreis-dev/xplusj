@@ -58,13 +58,11 @@ public class TwoStackBasedInterpreterTest {
 
     private TwoStackBasedInterpreter interpreter;
 
-    private ExpressionParser parser = DefaultExpressionParser.create(globalContext, DefaultExpressionTokenizer.create(environment));
-
     @Before
     public void setUp(){
-        interpreter = new TwoStackBasedInterpreter(environment, variableContext, valStack, opStack);
-
         when(environment.getContext()).thenReturn(globalContext);
+
+        ExpressionParser parser = DefaultExpressionParser.create(globalContext, DefaultExpressionTokenizer.create(globalContext));
         when(environment.getParser()).thenReturn(parser);
 
         when(unaryOperator.getType()).thenReturn(OperatorType.UNARY);
@@ -73,6 +71,8 @@ public class TwoStackBasedInterpreterTest {
         when(binaryOperator.getParamsLength()).thenReturn(2);
         when(functionOperator.getType()).thenReturn(OperatorType.FUNCTION);
         when(functionOperator.getParamsLength()).thenReturn(3);
+
+        interpreter = new TwoStackBasedInterpreter(environment, variableContext, valStack, opStack);
     }
 
     @Test

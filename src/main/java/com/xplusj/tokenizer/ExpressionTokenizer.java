@@ -2,9 +2,9 @@ package com.xplusj.tokenizer;
 
 public interface ExpressionTokenizer {
 
-    TokenReader start(String expression);
+    Tokenizer tokenize(String expression);
 
-    interface TokenReader{
+    interface Tokenizer {
         Token getLastToken();
 
         boolean hasNext();

@@ -9,7 +9,7 @@ public class DefaultExpressionTokenizerFactory implements ExpressionTokenizerFac
 
     @Override
     public ExpressionTokenizer create(final Environment env) {
-        return DefaultExpressionTokenizer.create(env);
+        return DefaultExpressionTokenizer.create(env.getContext());
     }
 
     public static DefaultExpressionTokenizerFactory instance(){

@@ -1,24 +1,23 @@
 package com.xplusj.tokenizer;
 
-import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 
 public class DefaultExpressionTokenizer implements ExpressionTokenizer{
 
     private final GlobalContext context;
-    private final com.xplusj.tokenizer.TokenReader.OperatorChecker operatorChecker;
+    private final com.xplusj.tokenizer.Tokenizer.OperatorChecker operatorChecker;
 
-    private DefaultExpressionTokenizer(Environment env) {
-        this.context = env.getContext();
+    private DefaultExpressionTokenizer(GlobalContext context) {
+        this.context = context;
         this.operatorChecker = op->context.hasBinaryOperator(op) || context.hasUnaryOperator(op);
     }
 
     @Override
-    public TokenReader start(final String expression) {
-        return new com.xplusj.tokenizer.TokenReader(expression, operatorChecker);
+    public Tokenizer tokenize(final String expression) {
+        return new com.xplusj.tokenizer.Tokenizer(expression, operatorChecker);
     }
 
-    public static DefaultExpressionTokenizer create(Environment env){
-        return new DefaultExpressionTokenizer(env);
+    public static DefaultExpressionTokenizer create(GlobalContext context){
+        return new DefaultExpressionTokenizer(context);
     }
 }

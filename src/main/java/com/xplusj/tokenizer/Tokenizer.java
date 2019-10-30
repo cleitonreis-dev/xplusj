@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class TokenReader implements ExpressionTokenizer.TokenReader {
+public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     private static final Map<Character, Function<Integer, Token>> RESERVED_TOKENS =
         new HashMap<Character, Function<Integer, Token>>(){{
             put('(', Token::parenthesisOpening);
@@ -21,7 +21,7 @@ public class TokenReader implements ExpressionTokenizer.TokenReader {
     private int startIndex;
     private Token lastToken;
 
-    public TokenReader(String expression, OperatorChecker operatorChecker) {
+    public Tokenizer(String expression, OperatorChecker operatorChecker) {
         this.expression = expression;
         this.expressionLength = expression.length();
         this.operatorChecker = operatorChecker;
