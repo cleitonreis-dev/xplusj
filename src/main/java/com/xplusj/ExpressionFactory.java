@@ -1,11 +1,14 @@
 package com.xplusj;
 
 
-import com.xplusj.parser.ExpressionParser;
-import com.xplusj.tokenizer.ExpressionTokenizer;
+import com.xplusj.expression.DefaultExpressionFactory;
 
 public interface ExpressionFactory {
-    Expression expression(Environment env, ExpressionTokenizer tokenizer, ExpressionParser parser);
+    Expression expression(String expression, Environment env);
 
-    Expression formula(Environment env, ExpressionTokenizer tokenizer, ExpressionParser parser);
+    Expression formula(String expression, Environment env);
+
+    static ExpressionFactory defaultFactory(){
+        return DefaultExpressionFactory.getInstance();
+    }
 }

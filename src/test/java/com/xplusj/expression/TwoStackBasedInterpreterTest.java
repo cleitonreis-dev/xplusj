@@ -58,7 +58,7 @@ public class TwoStackBasedInterpreterTest {
 
     private TwoStackBasedInterpreter interpreter;
 
-    private ExpressionParser parser = DefaultExpressionParser.create(environment, DefaultExpressionTokenizer.create(environment));
+    private ExpressionParser parser = DefaultExpressionParser.create(globalContext, DefaultExpressionTokenizer.create(environment));
 
     @Before
     public void setUp(){

@@ -15,7 +15,7 @@ public class FormulaExpression implements Expression {
     private final ExpressionParser parser;
     private List<Consumer<ExpressionParserProcessor>> instructions;
 
-    public FormulaExpression(final String formula,
+    private FormulaExpression(final String formula,
                              final Environment env) {
         this.formula = formula;
         this.env = env;
@@ -53,5 +53,9 @@ public class FormulaExpression implements Expression {
             parser.eval(formula, interpreter);
             instructions = interpreter.getInstructions();
         }
+    }
+
+    public static FormulaExpression create(final String formula, final Environment env){
+        return new FormulaExpression(formula,env);
     }
 }

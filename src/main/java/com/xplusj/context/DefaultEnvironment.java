@@ -1,8 +1,6 @@
 package com.xplusj.context;
 
 import com.xplusj.*;
-import com.xplusj.expression.FormulaExpression;
-import com.xplusj.expression.InlineExpression;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 
@@ -13,34 +11,33 @@ public class DefaultEnvironment implements Environment {
 
     private final ContextAppender context;
     private final ExpressionTokenizerFactory tokenizerFactory;
-    private final ExpressionParserFactory expressionParserFactory;
-    private final ExpressionParser parser;
+    private final ExpressionParserFactory parserFactory;
+    private final ExpressionFactory expressionFactory;
 
     private DefaultEnvironment(ContextAppender context,
                                ExpressionTokenizerFactory tokenizerFactory,
-                               ExpressionParserFactory expressionParserFactory) {
+                               ExpressionParserFactory expressionParserFactory,
+                               ExpressionFactory expressionFactory) {
         this.context = context;
         this.tokenizerFactory = tokenizerFactory;
-        this.expressionParserFactory = expressionParserFactory;
-
-        ExpressionTokenizer tokenizer = tokenizerFactory.create(this);
-        this.parser = expressionParserFactory.create(this, tokenizer);
+        this.parserFactory = expressionParserFactory;
+        this.expressionFactory = expressionFactory;
     }
 
     @Override
     public Expression expression(String expression) {
-        return new InlineExpression(expression, this);
+        return expressionFactory.expression(expression, this);
     }
 
     @Override
     public Expression formula(String formula) {
-        return new FormulaExpression(formula, this);
+        return expressionFactory.formula(formula, this);
     }
 
     @Override
     public Environment appendContext(GlobalContext context) {
         ContextAppender appender = this.context.append(context);
-        return new DefaultEnvironment(appender, tokenizerFactory, expressionParserFactory);
+        return new DefaultEnvironment(appender, tokenizerFactory, parserFactory, expressionFactory);
     }
 
     @Override
@@ -50,13 +47,19 @@ public class DefaultEnvironment implements Environment {
 
     @Override
     public ExpressionParser getParser() {
-        return this.parser;
+        return parserFactory.create(this);
+    }
+
+    @Override
+    public ExpressionTokenizer getTokenizer() {
+        return tokenizerFactory.create(this);
     }
 
     public static class Builder implements Environment.Builder{
         private GlobalContext context;
         private ExpressionParserFactory parserFactory = ExpressionParserFactory.defaultFactory();
         private ExpressionTokenizerFactory tokenizerFactory = ExpressionTokenizerFactory.defaultFactory();
+        private ExpressionFactory expressionFactory = ExpressionFactory.defaultFactory();
 
         @Override
         public Environment.Builder setContext(GlobalContext context) {
@@ -77,12 +80,18 @@ public class DefaultEnvironment implements Environment {
         }
 
         @Override
+        public Environment.Builder setExpressionFactory(ExpressionFactory expressionFactory) {
+            this.expressionFactory = expressionFactory;
+            return this;
+        }
+
+        @Override
         public Environment build() {
             ContextAppender appender = DefaultContextAppender.create(requireNonNull(context,
                 ()->format("A %s instance is required to build the environment", GlobalContext.class.getSimpleName())
             ));
 
-            return new DefaultEnvironment(appender, tokenizerFactory, parserFactory);
+            return new DefaultEnvironment(appender, tokenizerFactory, parserFactory, expressionFactory);
         }
     }
 

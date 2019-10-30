@@ -5,14 +5,14 @@ import com.xplusj.Expression;
 import com.xplusj.VariableContext;
 import com.xplusj.parser.ExpressionParser;
 
-public class InlineExpression implements Expression {
+public class DefaultExpression implements Expression {
 
     private final String expression;
     private final Environment env;
     private final ExpressionParser parser;
 
-    public InlineExpression(final String expression,
-                            final Environment env) {
+    private DefaultExpression(final String expression,
+                             final Environment env) {
         this.expression = expression;
         this.env = env;
         this.parser = env.getParser();
@@ -38,5 +38,9 @@ public class InlineExpression implements Expression {
         parser.eval(expression, interpreter);
 
         return interpreter.getCalculatedResult();
+    }
+
+    public static DefaultExpression create(final String formula, final Environment env){
+        return new DefaultExpression(formula,env);
     }
 }

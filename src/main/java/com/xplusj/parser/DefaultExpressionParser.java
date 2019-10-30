@@ -1,6 +1,5 @@
 package com.xplusj.parser;
 
-import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
@@ -15,8 +14,8 @@ public class DefaultExpressionParser implements ExpressionParser {
     private final GlobalContext globalContext;
     private final ExpressionTokenizer tokenizer;
 
-    private DefaultExpressionParser(Environment env, ExpressionTokenizer tokenizer) {
-        this.globalContext= env.getContext();
+    private DefaultExpressionParser(GlobalContext globalContext, ExpressionTokenizer tokenizer) {
+        this.globalContext= globalContext;
         this.tokenizer = tokenizer;
     }
 
@@ -150,7 +149,7 @@ public class DefaultExpressionParser implements ExpressionParser {
                 "invalid identifier '%s' at index %s", token.value, token.index);
     }
 
-    public static DefaultExpressionParser create(Environment env, ExpressionTokenizer tokenizer){
-        return new DefaultExpressionParser(env,tokenizer);
+    public static DefaultExpressionParser create(GlobalContext context, ExpressionTokenizer tokenizer){
+        return new DefaultExpressionParser(context,tokenizer);
     }
 }

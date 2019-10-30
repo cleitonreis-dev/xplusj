@@ -37,7 +37,7 @@ public class FormulaTests {
     }
 
     private static FormulaExpression eval(String expression){
-        return new FormulaExpression(expression, InlineExpressionTests.ENV);
+        return FormulaExpression.create(expression, InlineExpressionTests.ENV);
     }
 
     private static VariableContext.Builder vars(){

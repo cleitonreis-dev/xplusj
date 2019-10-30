@@ -1,12 +1,10 @@
 package com.xplusj;
 
-import com.xplusj.parser.ExpressionParser;
 import com.xplusj.parser.DefaultExpressionParserFactory;
-
-import com.xplusj.tokenizer.ExpressionTokenizer;
+import com.xplusj.parser.ExpressionParser;
 
 public interface ExpressionParserFactory {
-    ExpressionParser create(Environment env, ExpressionTokenizer tokenizer);
+    ExpressionParser create(Environment env);
 
     static ExpressionParserFactory defaultFactory(){
         return DefaultExpressionParserFactory.instance();

@@ -3,6 +3,7 @@ package com.xplusj;
 import com.xplusj.context.DefaultEnvironment;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.operator.Operators;
+import com.xplusj.tokenizer.ExpressionTokenizer;
 
 public interface Environment {
 
@@ -16,10 +17,13 @@ public interface Environment {
 
     ExpressionParser getParser();
 
+    ExpressionTokenizer getTokenizer();
+
     interface Builder{
         Builder setContext(GlobalContext context);
         Builder setParserFactory(ExpressionParserFactory parserFactory);
         Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory);
+        Builder setExpressionFactory(ExpressionFactory expressionFactory);
         Environment build();
     }
 

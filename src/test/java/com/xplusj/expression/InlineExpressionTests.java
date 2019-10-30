@@ -112,8 +112,8 @@ public class InlineExpressionTests {
                 .builder().add("a", 2D).build()), 0D);
     }
 
-    private static InlineExpression eval(String expression){
-        return new InlineExpression(expression, ENV);
+    private static DefaultExpression eval(String expression){
+        return DefaultExpression.create(expression, ENV);
     }
 
     /*private Environment env = defaultEnv().build();

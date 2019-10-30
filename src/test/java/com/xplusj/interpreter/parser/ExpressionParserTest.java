@@ -54,7 +54,7 @@ public class ExpressionParserTest {
         instructionLogger = new InstructionLogger();
 
         when(env.getContext()).thenReturn(context);
-        when(env.getParser()).thenReturn(DefaultExpressionParser.create(env, tokenizer));
+        when(env.getParser()).thenReturn(DefaultExpressionParser.create(context, tokenizer));
 
         when(context.hasBinaryOperator('+')).thenReturn(true);
         when(context.getBinaryOperator('+')).thenReturn(PLUS);
@@ -77,7 +77,7 @@ public class ExpressionParserTest {
 
     @Test
     public void test_1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1";
 
         parser.eval(exp, instructionLogger);
@@ -87,7 +87,7 @@ public class ExpressionParserTest {
 
     @Test
     public void test_2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "ab";
 
         parser.eval(exp, instructionLogger);
@@ -97,7 +97,7 @@ public class ExpressionParserTest {
 
     @Test
     public void test_3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "sum(1,2)";
         StackLog log = new StackLog()
                 .pushOperator("sum(a,b)")
@@ -112,7 +112,7 @@ public class ExpressionParserTest {
 
     @Test
     public void test_4(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "sum(x,y)";
         StackLog log = new StackLog()
                 .pushOperator("sum(a,b)")
@@ -127,7 +127,7 @@ public class ExpressionParserTest {
 
     @Test
     public void test1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1+1";
         StackLog expectedStack = new StackLog()
                 .pushValue(1)
@@ -142,7 +142,7 @@ public class ExpressionParserTest {
 
     @Test
     public void test2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1+1-25.678";
 
         StackLog expectedStack = new StackLog()
@@ -161,7 +161,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testParentheses1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1+(1-25)";
 
         StackLog expectedStack = new StackLog()
@@ -180,7 +180,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testParentheses2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1/(1*(25-1))-1";
 
         StackLog expectedStack = new StackLog()
@@ -200,7 +200,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testParentheses3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1-(1*(25-1))/1";
 
         StackLog expectedStack = new StackLog()
@@ -220,7 +220,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testParentheses4(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "sum(1-(1*(25-1))/1,((-1)))";
 
         StackLog expectedStack = new StackLog()
@@ -245,7 +245,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testUnaryOperator1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "+1";
 
         parser.eval(exp, instructionLogger);
@@ -255,7 +255,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testUnaryOperator2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1+(-1)";
 
         StackLog expectedStack = new StackLog()
@@ -270,7 +270,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testUnaryOperator3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1+-1";
 
         StackLog expectedStack = new StackLog()
@@ -285,7 +285,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testFunction(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1*sum(2,1+3)";
 
         StackLog expectedStack = new StackLog()
@@ -302,7 +302,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testVar(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1*v";
 
         StackLog expectedStack = new StackLog()
@@ -315,7 +315,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testVar2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "v/a";
 
         StackLog expectedStack = new StackLog()
@@ -328,7 +328,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testVar3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1*sum(2,1+ab)-var_1";
 
         StackLog expectedStack = new StackLog()
@@ -348,7 +348,7 @@ public class ExpressionParserTest {
 
     @Test
     public void testVar4(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "1*sum(2,(1+ab))-var_1";
 
         StackLog expectedStack = new StackLog()
@@ -369,7 +369,7 @@ public class ExpressionParserTest {
     @Test @Ignore
     public void testParenthesis1(){
         thrown.expect(ExpressionParseException.class);
-        DefaultExpressionParser parser = DefaultExpressionParser.create(env, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         String exp = "((1*2)";
 
         parser.eval(exp, instructionLogger);
