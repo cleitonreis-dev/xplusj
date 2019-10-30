@@ -9,7 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PrecedenceTests {
+public class PrecedenceTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

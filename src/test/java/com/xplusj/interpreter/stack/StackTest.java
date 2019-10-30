@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StackTests {
+public class StackTest {
 
     @Test
     public void testPushAndPull(){

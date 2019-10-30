@@ -15,7 +15,7 @@ import static com.xplusj.operator.Precedence.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InlineExpressionTests {
+public class InlineExpressionTest {
     static final GlobalContext CONTEXT =
         DefaultGlobalContext.builder()
             .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))

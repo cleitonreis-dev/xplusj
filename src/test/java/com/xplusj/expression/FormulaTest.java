@@ -9,7 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FormulaTests {
+public class FormulaTest {
 
     @Test
     public void testPlus(){
@@ -40,7 +40,7 @@ public class FormulaTests {
     }
 
     private static FormulaExpression eval(String expression){
-        return FormulaExpression.create(expression, InlineExpressionTests.ENV);
+        return FormulaExpression.create(expression, InlineExpressionTest.ENV);
     }
 
     private static VariableContext.Builder vars(){
