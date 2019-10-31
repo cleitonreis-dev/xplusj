@@ -1,28 +1,23 @@
-package com.xplusj.interpreter.parser;
+package com.xplusj.tokenizer;
 
 import com.xplusj.parser.ExpressionParseException;
-import com.xplusj.tokenizer.Token;
-import com.xplusj.tokenizer.Tokenizer;
-import com.xplusj.tokenizer.TokenType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
 
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ExpressionTokenizerTest {
+public class TokenizerTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     private static Set<Character> operators = new HashSet<>(Arrays.asList(
-       '+','-','*','/'
+            '+','-','*','/'
     ));
 
     private static Tokenizer.OperatorChecker operatorChecker = c->operators.contains(c);
@@ -99,19 +94,19 @@ public class ExpressionTokenizerTest {
         String expression = "a+bc-1.9+abc(1,b)";
 
         List<Token> expectedTokens = Arrays.asList(
-            Token.var("a",0),
-            Token.operator("+",1),
-            Token.var("bc",2),
-            Token.operator("-",4),
-            Token.number("1.9",5),
-            Token.operator("+",8),
-            Token.func("abc",9),
-            Token.parenthesisOpening(12),
-            Token.number("1",13),
-            Token.comma(14),
-            Token.var("b",15),
-            Token.parenthesisClosing(16),
-            Token.EOE()
+                Token.var("a",0),
+                Token.operator("+",1),
+                Token.var("bc",2),
+                Token.operator("-",4),
+                Token.number("1.9",5),
+                Token.operator("+",8),
+                Token.func("abc",9),
+                Token.parenthesisOpening(12),
+                Token.number("1",13),
+                Token.comma(14),
+                Token.var("b",15),
+                Token.parenthesisClosing(16),
+                Token.EOE()
         );
 
         Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
@@ -326,5 +321,99 @@ public class ExpressionTokenizerTest {
 
         for(int i = 0; i < expectedTokens.size(); i++)
             assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void shouldIgnoreSpaces6(){
+        String expression = " 1 * c1 -  func12( b3 + 1.1 ) / 4.2 ";
+        List<Token> expectedTokens = Arrays.asList(
+                Token.number("1",1),
+                Token.operator("*",3),
+                Token.var("c1",5),
+                Token.operator("-",8),
+                Token.func("func12", 11),
+                Token.parenthesisOpening(17),
+                Token.var("b3",19),
+                Token.operator("+",22),
+                Token.number("1.1",24),
+                Token.parenthesisClosing(28),
+                Token.operator("/",30),
+                Token.number("4.2",32),
+                Token.EOE()
+        );
+
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(tokenizer.getExpression(), expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void testToString(){
+        String expression = "1+2-1";
+        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+
+        assertEquals(
+            format("%s{expression='%s'}", Tokenizer.class.getSimpleName(), expression),
+            tokenizer.toString()
+        );
+    }
+
+    @Test
+    public void shouldThrowExceptionForInvalidIdentifier(){
+        String expression = "1+abc|d";
+
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(expression,5,"Invalid identifier").getMessage());
+
+        Tokenizer tokenizer = new Tokenizer(expression,operatorChecker);
+        while (tokenizer.hasNext())
+            tokenizer.next();
+    }
+
+    @Test
+    public void shouldThrowExceptionForInvalidIdentifier2(){
+        String expression = "1+abc .";
+
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(expression,6,"Invalid symbol at index %s", 7).getMessage());
+
+        Tokenizer tokenizer = new Tokenizer(expression,operatorChecker);
+        while (tokenizer.hasNext())
+            tokenizer.next();
+    }
+
+    @Test
+    public void testTokenToString(){
+        String expression = "1+a*2-func(AB,v)";
+
+        List<String> expectedStrings = Arrays.asList(
+            "Token(type=NUMBER, value=1, index=0)",
+            "Token(type=OPERATOR, value=+, index=1)",
+            "Token(type=VAR, value=a, index=2)",
+            "Token(type=OPERATOR, value=*, index=3)",
+            "Token(type=NUMBER, value=2, index=4)",
+            "Token(type=OPERATOR, value=-, index=5)",
+            "Token(type=FUNC, value=func, index=6)",
+            "Token(type=PARENTHESIS_OPENING, value=(, index=10)",
+            "Token(type=CONST, value=AB, index=11)",
+            "Token(type=COMMA, value=,, index=13)",
+            "Token(type=VAR, value=v, index=14)",
+            "Token(type=PARENTHESIS_CLOSING, value=), index=15)",
+            "Token(type=EOE, value=, index=16)"
+        );
+
+        Tokenizer tokenizer = new Tokenizer(expression,operatorChecker);
+        int i = 0;
+        while (tokenizer.hasNext()) {
+            Token token = tokenizer.next();
+            assertEquals(expectedStrings.get(i++), token.toString());
+        }
     }
 }

@@ -21,7 +21,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     private int startIndex;
     private Token lastToken;
 
-    public Tokenizer(String expression, OperatorChecker operatorChecker) {
+    Tokenizer(final String expression, final OperatorChecker operatorChecker) {
         this.expression = expression;
         this.expressionLength = expression.length();
         this.operatorChecker = operatorChecker;
@@ -50,7 +50,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
         }
 
         char c = nextValidChar();
-        if(c == ' '){
+        if(Character.isSpaceChar(c)){
             lastToken = Token.EOE();
             return lastToken;
         }
@@ -87,21 +87,18 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
             return lastToken;
         }
 
-        if((!hasNext() && c == ' ') || operatorChecker.isOperator(c) || c == ',' || c == ')') {
+        if((!hasNext() && Character.isSpaceChar(c)) || operatorChecker.isOperator(c) || c == ',' || c == ')') {
             lastToken = Token.var(identifier, identifierStartIndex);
             return lastToken;
         }
 
-        throw invalidChar(c);
+        throw invalidChar(currentIndex);
     }
 
     private Token readNumber() {
-        while(true){
+        do {
             currentIndex++;
-
-            if(!hasNext() || !isDigit(expression.charAt(currentIndex)))
-                break;
-        }
+        } while (hasNext() && isDigit(expression.charAt(currentIndex)));
 
         lastToken = Token.number(expression.substring(startIndex,currentIndex),startIndex);
         return lastToken;
@@ -119,7 +116,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     }
 
     private ExpressionParseException invalidChar(int index){
-        return new ExpressionParseException(expression,currentIndex,"Invalid symbol at index %s",index+1);
+        return new ExpressionParseException(expression,index,"Invalid symbol at index %s",index+1);
     }
 
     private char nextValidChar() {
@@ -188,16 +185,17 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     private boolean isValidIdentifier(char c, int startIndex) {
         return ('a' <= c && c <= 'z')
-                || (startIndex < currentIndex && (c == '_' || isDigit(c))
+                || (startIndex < currentIndex && (c == '_' || Character.isDigit(c))
         );
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ExpressionTokenizer{");
-        sb.append("expression='").append(expression).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return new StringBuilder(this.getClass().getSimpleName())
+            .append('{')
+            .append("expression='").append(expression).append('\'')
+            .append('}')
+            .toString();
     }
 
     private static boolean isDigit(char c){
