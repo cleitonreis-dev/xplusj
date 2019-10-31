@@ -5,4 +5,4 @@ os:
   - linux
 
 after_success:
-  - mvn clean cobertura:cobertura coveralls:report -e
+  - mvn clean test jacoco:report coveralls:report -e
