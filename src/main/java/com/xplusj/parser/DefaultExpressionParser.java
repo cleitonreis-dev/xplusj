@@ -77,29 +77,7 @@ public class DefaultExpressionParser implements ExpressionParser {
             }
 
             if(token.type == TokenType.OPERATOR){
-                Operator<? extends OperatorContext> operator;
-                 boolean isUnary = lastToken == null || lastToken.type == TokenType.OPERATOR
-                         || lastToken.type == TokenType.PARENTHESIS_OPENING
-                         || lastToken.type == TokenType.COMMA;
-
-                if(isUnary)
-                    operator = globalContext.getUnaryOperator(token.value.charAt(0));
-                else
-                    operator = globalContext.getBinaryOperator(token.value.charAt(0));
-
-                if(operator == null){
-                    String msg = isUnary ? "Unary operator '%s' not found" : "Binary operator '%s' not found";
-                    throw new ExpressionParseException(expression, token.index, msg, token.value);
-                }
-
-                if(stackOperatorCount == 0 || operator.precedes(instructionsProcessor.getLastOperator())) {
-                    instructionsProcessor.addOperator(operator);
-                    stackOperatorCount++;
-                }else {
-                    instructionsProcessor.callLastOperatorAndAddResult();
-                    instructionsProcessor.addOperator(operator);
-                }
-
+                stackOperatorCount = defineOperator(instructionsProcessor, stackOperatorCount, lastToken, expression, token);
                 lastToken = token;
                 continue;
             }
@@ -110,12 +88,39 @@ public class DefaultExpressionParser implements ExpressionParser {
         if(lastToken != null && (lastToken.type == TokenType.OPERATOR
                 || lastToken.type == TokenType.PARENTHESIS_OPENING
                 || lastToken.type == TokenType.COMMA))
-            throw new ExpressionParseException(expression,lastToken.index,"Unexpected end of expression");
+            throw unexpectedEnd(expression,lastToken.index);
 
         while(stackOperatorCount > 0) {
             instructionsProcessor.callLastOperatorAndAddResult();
             stackOperatorCount--;
         }
+    }
+
+    private int defineOperator(ExpressionParserProcessor instructionsProcessor, int currentStackCount, Token lastToken, String expression, Token token) {
+        Operator<? extends OperatorContext> operator;
+        boolean isUnary = lastToken == null || lastToken.type == TokenType.OPERATOR
+                || lastToken.type == TokenType.PARENTHESIS_OPENING
+                || lastToken.type == TokenType.COMMA;
+
+        if(isUnary)
+            operator = globalContext.getUnaryOperator(token.value.charAt(0));
+        else
+            operator = globalContext.getBinaryOperator(token.value.charAt(0));
+
+        if(operator == null){
+            String msg = isUnary ? "Unary operator '%s' not found" : "Binary operator '%s' not found";
+            throw new ExpressionParseException(expression, token.index, msg, token.value);
+        }
+
+        if(currentStackCount == 0 || operator.precedes(instructionsProcessor.getLastOperator())) {
+            instructionsProcessor.addOperator(operator);
+            currentStackCount++;
+        }else {
+            instructionsProcessor.callLastOperatorAndAddResult();
+            instructionsProcessor.addOperator(operator);
+        }
+
+        return currentStackCount;
     }
 
     private void evalFunc(Token token, final ExpressionTokenizer.Tokenizer tokenizer, ExpressionParserProcessor instructionsProcessor){
@@ -144,9 +149,13 @@ public class DefaultExpressionParser implements ExpressionParser {
         instructionsProcessor.callLastOperatorAndAddResult();
     }
 
-    private ExpressionParseException invalidIdentifier(String expression, Token token){
+    private static ExpressionParseException invalidIdentifier(String expression, Token token){
         return new ExpressionParseException(expression, token.index,
                 "invalid identifier '%s' at index %s", token.value, token.index);
+    }
+
+    private static ExpressionParseException unexpectedEnd(String expression, int index){
+        return new ExpressionParseException(expression,index,"Unexpected end of expression");
     }
 
     public static DefaultExpressionParser create(GlobalContext context, ExpressionTokenizer tokenizer){
