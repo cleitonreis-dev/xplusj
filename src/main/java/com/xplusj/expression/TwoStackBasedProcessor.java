@@ -12,7 +12,7 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
-    private final Stack<Operator<?>> opStack;
+    private final Stack<Operator<? extends OperatorContext>> opStack;
 
     TwoStackBasedProcessor(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
         this.env = env;
@@ -29,24 +29,18 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
 
     @Override
     public void addVar(String value) {
-        if(variableContext.contains(value)) {
-            valueStack.push(variableContext.value(value));
-            return;
-        }
+        if(!variableContext.contains(value))
+            throw new ExpressionException("Variable '"+ value +"' not found");
 
-        //TODO create specialized exception
-        throw new IllegalStateException("Variable '"+ value +"' not found");
+        valueStack.push(variableContext.value(value));
     }
 
     @Override
     public void addConstant(String name) {
-        if(globalContext.hasConstant(name)) {
-            valueStack.push(globalContext.getConstant(name));
-            return;
-        }
+        if(!globalContext.hasConstant(name))
+            throw new ExpressionException("Constant '"+ name +"' not found");
 
-        //TODO create specialized exception
-        throw new IllegalStateException("Constant '"+ name +"' not found");
+        valueStack.push(globalContext.getConstant(name));
     }
 
     @Override
@@ -66,12 +60,8 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
         return opStack.peek();
     }
 
-    public double getCalculatedResult(){
+    double getCalculatedResult(){
         return valueStack.pull();
-    }
-
-    static TwoStackBasedProcessor create(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
-        return new TwoStackBasedProcessor(env,variableContext,valueStack,opStack);
     }
 
     private <Context extends OperatorContext> Context getContext(Operator<?> operator){
@@ -83,8 +73,7 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
         else if(operator.getType() == OperatorType.FUNCTION)
             context = new FunctionOperatorContext((FunctionOperator)operator,env,getParams(operator));
         else
-            //TODO create proper exception
-            throw new IllegalArgumentException("Invalid operator type" + operator.getType());
+            throw new ExpressionException("Invalid operator type " + operator.getType());
 
         return (Context) context;
     }
@@ -96,5 +85,9 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
             values[i] = valueStack.pull();
 
         return values;
+    }
+
+    static TwoStackBasedProcessor create(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
+        return new TwoStackBasedProcessor(env,variableContext,valueStack,opStack);
     }
 }

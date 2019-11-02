@@ -8,7 +8,9 @@ import com.xplusj.parser.DefaultExpressionParser;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.DefaultExpressionTokenizer;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -21,16 +23,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class TwoStackBasedProcessorTest {
 
-    /*private static GlobalContext globalContext = DefaultGlobalContext.builder()
-        .addUnaryOperator(UnaryOperator.create('+', Precedence.highest(), ctx->+ctx.getValue()))
-        .addUnaryOperator(UnaryOperator.create('-', Precedence.highest(), ctx->-ctx.getValue()))
-        .addBinaryOperator(BinaryOperator.create('+', Precedence.low(), ctx->ctx.getFirstValue()+ctx.getSecondValue()))
-        .addBinaryOperator(BinaryOperator.create('-', Precedence.low(), ctx->ctx.getFirstValue()-ctx.getSecondValue()))
-        .addBinaryOperator(BinaryOperator.create('/', Precedence.high(), ctx->ctx.getFirstValue()/ctx.getSecondValue()))
-        .addBinaryOperator(BinaryOperator.create('*', Precedence.high(), ctx->ctx.getFirstValue()*ctx.getSecondValue()))
-        .addConstant("PI",Math.PI)
-        .addFunction(FunctionOperator.create("sum(a,b)", ctx->ctx.param("a") + ctx.param("b")))
-        .build();*/
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private Environment environment;
@@ -92,6 +86,16 @@ public class TwoStackBasedProcessorTest {
     }
 
     @Test
+    public void pushVar2() {
+        thrown.expect(ExpressionException.class);
+        thrown.expectMessage("Variable 'a' not found");
+
+        when(variableContext.contains("a")).thenReturn(false);
+
+        interpreter.addVar("a");
+    }
+
+    @Test
     public void pushConstant() {
         when(globalContext.hasConstant("AB")).thenReturn(true);
         when(globalContext.getConstant("AB")).thenReturn(3D);
@@ -99,6 +103,16 @@ public class TwoStackBasedProcessorTest {
         interpreter.addConstant("AB");
 
         verify(valStack).push(3D);
+    }
+
+    @Test
+    public void pushConstant2() {
+        thrown.expect(ExpressionException.class);
+        thrown.expectMessage("Constant 'AB' not found");
+
+        when(globalContext.hasConstant("AB")).thenReturn(false);
+
+        interpreter.addConstant("AB");
     }
 
     @Test
