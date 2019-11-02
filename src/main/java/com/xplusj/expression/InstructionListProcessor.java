@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class InstructionListInterpreter implements ExpressionParserProcessor {
+public class InstructionListProcessor implements ExpressionParserProcessor {
 
     private final List<Consumer<ExpressionParserProcessor>> instructions = new ArrayList<>();
     private final Stack<Operator<?>> opStack = Stack.instance();

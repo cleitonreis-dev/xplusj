@@ -49,7 +49,7 @@ public class FormulaExpression implements Expression {
 
     private synchronized void initialize() {
         if(instructions == null) {
-            InstructionListInterpreter interpreter = new InstructionListInterpreter();
+            InstructionListProcessor interpreter = new InstructionListProcessor();
             parser.eval(formula, interpreter);
             instructions = interpreter.getInstructions();
         }
