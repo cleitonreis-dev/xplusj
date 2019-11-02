@@ -35,7 +35,7 @@ public class FormulaExpression implements Expression {
         if(instructions == null)
             initialize();
 
-        TwoStackBasedInterpreter interpreter = TwoStackBasedInterpreter.create(
+        TwoStackBasedProcessor interpreter = TwoStackBasedProcessor.create(
             env,
             variableContext,
             Stack.instance(),

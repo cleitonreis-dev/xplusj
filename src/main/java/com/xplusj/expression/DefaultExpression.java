@@ -28,7 +28,7 @@ public class DefaultExpression implements Expression {
         if(expression.trim().isEmpty())
             return 0;
 
-        TwoStackBasedInterpreter interpreter = TwoStackBasedInterpreter.create(
+        TwoStackBasedProcessor interpreter = TwoStackBasedProcessor.create(
             env,
             variableContext,
             Stack.instance(),

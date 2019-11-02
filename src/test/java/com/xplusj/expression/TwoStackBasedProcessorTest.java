@@ -19,7 +19,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TwoStackBasedInterpreterTest {
+public class TwoStackBasedProcessorTest {
 
     /*private static GlobalContext globalContext = DefaultGlobalContext.builder()
         .addUnaryOperator(UnaryOperator.create('+', Precedence.highest(), ctx->+ctx.getValue()))
@@ -56,7 +56,7 @@ public class TwoStackBasedInterpreterTest {
     @Mock
     private VariableContext variableContext;
 
-    private TwoStackBasedInterpreter interpreter;
+    private TwoStackBasedProcessor interpreter;
 
     @Before
     public void setUp(){
@@ -72,7 +72,7 @@ public class TwoStackBasedInterpreterTest {
         when(functionOperator.getType()).thenReturn(OperatorType.FUNCTION);
         when(functionOperator.getParamsLength()).thenReturn(3);
 
-        interpreter = new TwoStackBasedInterpreter(environment, variableContext, valStack, opStack);
+        interpreter = new TwoStackBasedProcessor(environment, variableContext, valStack, opStack);
     }
 
     @Test
