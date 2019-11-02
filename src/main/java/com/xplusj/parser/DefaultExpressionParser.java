@@ -26,7 +26,9 @@ public class DefaultExpressionParser implements ExpressionParser {
 
     private void eval(final ExecContext execContext, final ExpressionTokenizer.Tokenizer tokenizer, final ExpressionParserProcessor instructionsProcessor) {
         int stackOperatorCount = 0;
+        boolean parenthesisClosed = false;
         Token lastToken = null;
+        int currentIndex = tokenizer.getLastToken() == null ? 0 : tokenizer.getLastToken().index;
         String expression = tokenizer.getExpression();
 
         while (tokenizer.hasNext()){
@@ -40,8 +42,10 @@ public class DefaultExpressionParser implements ExpressionParser {
             }
 
             if(token.type == TokenType.PARENTHESIS_CLOSING){
-                if((execContext == ExecContext.FUNC || execContext == ExecContext.PARENTHESIS) && lastToken != null)
+                if((execContext == ExecContext.FUNC || execContext == ExecContext.PARENTHESIS) && lastToken != null) {
+                    parenthesisClosed = true;
                     break;
+                }
 
                 throw invalidIdentifier(expression, token);
             }
@@ -84,6 +88,9 @@ public class DefaultExpressionParser implements ExpressionParser {
 
             throw invalidIdentifier(expression, token);
         }
+
+        if(execContext == ExecContext.PARENTHESIS && !parenthesisClosed)
+            throw unclosedParenthesis(expression,currentIndex);
 
         if(lastToken != null && (lastToken.type == TokenType.OPERATOR
                 || lastToken.type == TokenType.PARENTHESIS_OPENING
@@ -132,7 +139,7 @@ public class DefaultExpressionParser implements ExpressionParser {
 
         tokenizer.next();//read next '('
         if(!tokenizer.hasNext())
-            throw new ExpressionParseException(tokenizer.getExpression(), tokenizer.getExpression().length()-1,"Invalid expression");
+            throw unclosedParenthesis(tokenizer.getExpression(), tokenizer.getLastToken().index);
 
         int paramsLength = function.getParamsLength();
         for(int i = 0; i < paramsLength; i++) {
@@ -140,10 +147,13 @@ public class DefaultExpressionParser implements ExpressionParser {
 
             TokenType lastTokenType = tokenizer.getLastToken().type;
 
-            if((i < (paramsLength - 1) && lastTokenType != TokenType.COMMA)
-                || (i == (paramsLength - 1) && lastTokenType != TokenType.PARENTHESIS_CLOSING))
+            if(i < (paramsLength - 1) && lastTokenType != TokenType.COMMA)
                 throw new ExpressionParseException(tokenizer.getExpression(),
-                        tokenizer.getLastToken().index,"Invalid expression");
+                    token.index,"Function requires %s parameters", function.getParamsLength());
+
+            if(i == (paramsLength - 1) && lastTokenType != TokenType.PARENTHESIS_CLOSING)
+                throw new ExpressionParseException(tokenizer.getExpression(),
+                    tokenizer.getLastToken().index,"Function not closed properly");
         }
 
         instructionsProcessor.callLastOperatorAndAddResult();
@@ -156,6 +166,10 @@ public class DefaultExpressionParser implements ExpressionParser {
 
     private static ExpressionParseException unexpectedEnd(String expression, int index){
         return new ExpressionParseException(expression,index,"Unexpected end of expression");
+    }
+
+    private static ExpressionParseException unclosedParenthesis(String expression, int index){
+        return new ExpressionParseException(expression,index,"Unclosed parenthesis at index %s",index);
     }
 
     public static DefaultExpressionParser create(GlobalContext context, ExpressionTokenizer tokenizer){

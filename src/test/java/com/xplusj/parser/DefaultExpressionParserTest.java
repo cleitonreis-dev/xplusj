@@ -7,7 +7,6 @@ import com.xplusj.operator.function.FunctionIdentifier;
 import com.xplusj.tokenizer.DefaultExpressionTokenizer;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -69,7 +68,9 @@ public class DefaultExpressionParserTest {
         when(context.getConstant("PI")).thenReturn(Math.PI);
 
         when(context.hasBinaryOperator('&')).thenReturn(Boolean.TRUE,Boolean.FALSE);
-        when(context.getBinaryOperator('&')).thenReturn(null,null);
+        when(context.getBinaryOperator('&')).thenReturn(null);
+
+        when(context.hasFunction("plus")).thenReturn(false);
     }
 
     @Test
@@ -443,7 +444,7 @@ public class DefaultExpressionParserTest {
         String exp = "1*2+(";
 
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp,4,"Unexpected end of expression").getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp,4,"Unclosed parenthesis at index %s",4).getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -460,22 +461,32 @@ public class DefaultExpressionParserTest {
         parser.eval(exp, instructionLogger);
     }
 
-    @Test @Ignore
+    @Test
     public void testParenthesis1(){
         String exp = "((1*2)";
 
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp,0,"Unexpected end of expression").getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp,0,"Unclosed parenthesis at index %s",0).getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
-    @Test @Ignore
+    @Test
     public void testParenthesis2(){
         String exp = "((1*2)-1";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp,0,"Unexpected end of expression").getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp,0,"Unclosed parenthesis at index %s",0).getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+    @Test
+    public void testParenthesis3(){
+        String exp = "1*((2-1)";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp,2,"Unclosed parenthesis at index %s",2).getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -505,7 +516,7 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator(){
         String exp = "1&1";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 1, "Binary operator '%s' not found", "&", 1).getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 1, "Binary operator '%s' not found", "&").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -515,7 +526,7 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator2(){
         String exp = "*1";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 0, "Unary operator '%s' not found", "*", 0).getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 0, "Unary operator '%s' not found", "*").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -525,7 +536,7 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator3(){
         String exp = "(*1)";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 1, "Unary operator '%s' not found", "*", 1).getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 1, "Unary operator '%s' not found", "*").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -535,7 +546,7 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator4(){
         String exp = "sum(1,*1)";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 6, "Unary operator '%s' not found", "*", 6).getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 6, "Unary operator '%s' not found", "*").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -545,36 +556,97 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator5(){
         String exp = "1+*1";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 2, "Unary operator '%s' not found", "*", 2).getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 2, "Unary operator '%s' not found", "*").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
+    @Test
+    public void testFunctionNotFound(){
+        String exp = "plus(1,1)";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 0, "Function '%s' not found", "plus").getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+    @Test
+    public void testFunctionUnclosed(){
+        String exp = "sum(";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 3, "Unclosed parenthesis at index %s", 3).getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+    @Test
+    public void testFunctionInvalidParam(){
+        String exp = "sum(1,,3)";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 6, "invalid identifier '%s' at index %s", ',', 6).getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+    @Test
+    public void testFunctionInvalidParam2(){
+        String exp = "1+sum(1)";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 2, "Function requires %s parameters", 2).getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+    @Test
+    public void testFunctionInvalidParam3(){
+        String exp = "sum(1,3";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 6, "Function not closed properly").getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+    @Test
+    public void testFunctionInvalidParam4(){
+        String exp = "sum(1,3,4)";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 7, "Function not closed properly").getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        parser.eval(exp, instructionLogger);
+    }
+
+
     private static class StackLog{
         private StringBuilder log = new StringBuilder();
 
-        public DefaultExpressionParserTest.StackLog pushValue(double value) {
+        DefaultExpressionParserTest.StackLog pushValue(double value) {
             log.append("pv").append(value).append(';');
             return this;
         }
 
-        public DefaultExpressionParserTest.StackLog pushVar(String value) {
+        DefaultExpressionParserTest.StackLog pushVar(String value) {
             log.append("px").append(value).append(';');
             return this;
         }
 
-        public DefaultExpressionParserTest.StackLog pushConstant(String name) {
+        DefaultExpressionParserTest.StackLog pushConstant(String name) {
             log.append("pc").append(name).append(';');
             return this;
         }
 
-        public DefaultExpressionParserTest.StackLog pushOperator(String operator) {
+        DefaultExpressionParserTest.StackLog pushOperator(String operator) {
             log.append("po").append(operator).append(';');
             return this;
         }
 
-        public DefaultExpressionParserTest.StackLog callOperator(String operator) {
+        DefaultExpressionParserTest.StackLog callOperator(String operator) {
             log.append("co").append(operator).append(';');
             return this;
         }
@@ -642,7 +714,7 @@ public class DefaultExpressionParserTest {
 
     private static class BOperator extends BinaryOperator {
 
-        public BOperator(char symbol, Precedence precedence) {
+        BOperator(char symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
@@ -659,7 +731,7 @@ public class DefaultExpressionParserTest {
 
     private static class UOperator extends UnaryOperator {
 
-        public UOperator(char symbol, Precedence precedence) {
+        UOperator(char symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
@@ -677,7 +749,7 @@ public class DefaultExpressionParserTest {
     private static class Func extends FunctionOperator{
         private final String[] params;
 
-        public Func(String name, String...params) {
+        Func(String name, String...params) {
             super(new FunctionIdentifier(name, Arrays.asList(params)), ctx->0d);
             this.params = params;
         }
