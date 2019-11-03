@@ -10,8 +10,13 @@ import java.util.function.Consumer;
 
 public class InstructionListProcessor implements ExpressionParserProcessor {
 
-    private final List<Consumer<ExpressionParserProcessor>> instructions = new ArrayList<>();
-    private final Stack<Operator<?>> opStack = Stack.instance();
+    private final List<Consumer<ExpressionParserProcessor>> instructions;
+    private final Stack<Operator<?>> opStack;
+
+    private InstructionListProcessor(final Stack<Operator<?>> opStack) {
+        this.instructions = new ArrayList<>();
+        this.opStack = opStack;
+    }
 
     @Override
     public void addValue(double value) {
@@ -47,5 +52,9 @@ public class InstructionListProcessor implements ExpressionParserProcessor {
 
     List<Consumer<ExpressionParserProcessor>> getInstructions() {
         return instructions;
+    }
+
+    public static InstructionListProcessor create(Stack<Operator<?>> opStack){
+        return new InstructionListProcessor(opStack);
     }
 }

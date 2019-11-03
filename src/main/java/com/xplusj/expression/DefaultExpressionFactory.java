@@ -8,13 +8,19 @@ public class DefaultExpressionFactory implements ExpressionFactory {
     private static final DefaultExpressionFactory INSTANCE = new DefaultExpressionFactory();
 
     @Override
-    public Expression expression(String expression, Environment env) {
-        return DefaultExpression.create(expression,env);
+    public Expression expression(final String expression, final Environment env) {
+        return DefaultExpression.create(
+                expression,env.getParser(),
+                (varCtx)->TwoStackBasedProcessor.create(env,varCtx,Stack.instance(),Stack.instance())
+        );
     }
 
     @Override
-    public Expression formula(String expression, Environment env) {
-        return FormulaExpression.create(expression, env);
+    public Expression formula(final String expression, final Environment env) {
+        return FormulaExpression.create(expression, env.getParser(),
+                (varCtx)->TwoStackBasedProcessor.create(env,varCtx,Stack.instance(),Stack.instance()),
+                ()->InstructionListProcessor.create(Stack.instance())
+        );
     }
 
     public static DefaultExpressionFactory getInstance(){

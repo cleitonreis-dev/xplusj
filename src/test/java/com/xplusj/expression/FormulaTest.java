@@ -40,7 +40,10 @@ public class FormulaTest {
     }
 
     private static FormulaExpression eval(String expression){
-        return FormulaExpression.create(expression, InlineExpressionTest.ENV);
+        return FormulaExpression.create(expression, InlineExpressionTest.ENV.getParser(),
+                (ctx)->TwoStackBasedProcessor.create(InlineExpressionTest.ENV,ctx,Stack.instance(),Stack.instance()),
+                ()->InstructionListProcessor.create(Stack.instance())
+        );
     }
 
     private static VariableContext.Builder vars(){

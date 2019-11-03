@@ -1,21 +1,23 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.Expression;
 import com.xplusj.VariableContext;
 import com.xplusj.parser.ExpressionParser;
 
+import java.util.function.Function;
+
 public class DefaultExpression implements Expression {
 
     private final String expression;
-    private final Environment env;
     private final ExpressionParser parser;
+    private final Function<VariableContext,TwoStackBasedProcessor> processorFactory;
 
     private DefaultExpression(final String expression,
-                             final Environment env) {
+                              final ExpressionParser parser,
+                              final Function<VariableContext,TwoStackBasedProcessor> processorFactory) {
         this.expression = expression;
-        this.env = env;
-        this.parser = env.getParser();
+        this.processorFactory = processorFactory;
+        this.parser = parser;
     }
 
     @Override
@@ -28,19 +30,15 @@ public class DefaultExpression implements Expression {
         if(expression.trim().isEmpty())
             return 0;
 
-        TwoStackBasedProcessor interpreter = TwoStackBasedProcessor.create(
-            env,
-            variableContext,
-            Stack.instance(),
-            Stack.instance()
-        );
+        TwoStackBasedProcessor processor = processorFactory.apply(variableContext);
+        parser.eval(expression, processor);
 
-        parser.eval(expression, interpreter);
-
-        return interpreter.getCalculatedResult();
+        return processor.getCalculatedResult();
     }
 
-    public static DefaultExpression create(final String formula, final Environment env){
-        return new DefaultExpression(formula,env);
+    public static DefaultExpression create(final String formula,
+                                           final ExpressionParser parser,
+                                           final Function<VariableContext,TwoStackBasedProcessor> processorFactory){
+        return new DefaultExpression(formula,parser,processorFactory);
     }
 }

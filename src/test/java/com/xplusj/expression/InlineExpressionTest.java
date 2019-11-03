@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InlineExpressionTest {
-    static final GlobalContext CONTEXT =
+    private static final GlobalContext CONTEXT =
         DefaultGlobalContext.builder()
             .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
             .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
@@ -116,7 +116,8 @@ public class InlineExpressionTest {
     }
 
     private static DefaultExpression eval(String expression){
-        return DefaultExpression.create(expression, ENV);
+        return DefaultExpression.create(expression, ENV.getParser(),
+                (ctx)->TwoStackBasedProcessor.create(ENV,ctx,Stack.instance(), Stack.instance()));
     }
 
     /*private Environment env = defaultEnv().build();

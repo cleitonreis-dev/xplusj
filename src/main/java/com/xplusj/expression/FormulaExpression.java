@@ -1,25 +1,31 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.Expression;
 import com.xplusj.VariableContext;
-import com.xplusj.parser.ExpressionParserProcessor;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.parser.ExpressionParserProcessor;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FormulaExpression implements Expression {
     private final String formula;
-    private final Environment env;
     private final ExpressionParser parser;
+    private final Function<VariableContext,TwoStackBasedProcessor> processorFactory;
+    private final Supplier<InstructionListProcessor> instructionListProcessorFactory;
+
     private List<Consumer<ExpressionParserProcessor>> instructions;
 
     private FormulaExpression(final String formula,
-                             final Environment env) {
+                            final ExpressionParser parser,
+                            final Function<VariableContext,TwoStackBasedProcessor> processorFactory,
+                            final Supplier<InstructionListProcessor> instructionListProcessorFactory) {
         this.formula = formula;
-        this.env = env;
-        this.parser = env.getParser();
+        this.parser = parser;
+        this.processorFactory = processorFactory;
+        this.instructionListProcessorFactory = instructionListProcessorFactory;
     }
 
     @Override
@@ -35,12 +41,7 @@ public class FormulaExpression implements Expression {
         if(instructions == null)
             initialize();
 
-        TwoStackBasedProcessor interpreter = TwoStackBasedProcessor.create(
-            env,
-            variableContext,
-            Stack.instance(),
-            Stack.instance()
-        );
+        TwoStackBasedProcessor interpreter = this.processorFactory.apply(variableContext);
 
         instructions.forEach(instruction->instruction.accept(interpreter));
 
@@ -49,13 +50,16 @@ public class FormulaExpression implements Expression {
 
     private synchronized void initialize() {
         if(instructions == null) {
-            InstructionListProcessor interpreter = new InstructionListProcessor();
+            InstructionListProcessor interpreter = instructionListProcessorFactory.get();
             parser.eval(formula, interpreter);
             instructions = interpreter.getInstructions();
         }
     }
 
-    public static FormulaExpression create(final String formula, final Environment env){
-        return new FormulaExpression(formula,env);
+    public static FormulaExpression create(final String formula,
+                                           final ExpressionParser parser,
+                                           final Function<VariableContext,TwoStackBasedProcessor> processorFactory,
+                                           final Supplier<InstructionListProcessor> instructionListProcessorFactory){
+        return new FormulaExpression(formula, parser, processorFactory, instructionListProcessorFactory);
     }
 }
