@@ -26,19 +26,21 @@ public class DefaultExpression implements Expression {
     }
 
     @Override
-    public double eval(VariableContext variableContext) {
-        if(expression.trim().isEmpty())
-            return 0;
-
+    public double eval(final VariableContext variableContext) {
         TwoStackBasedProcessor processor = processorFactory.apply(variableContext);
         parser.eval(expression, processor);
-
         return processor.getCalculatedResult();
     }
 
-    public static DefaultExpression create(final String formula,
+    public static DefaultExpression create(final String expression,
                                            final ExpressionParser parser,
                                            final Function<VariableContext,TwoStackBasedProcessor> processorFactory){
-        return new DefaultExpression(formula,parser,processorFactory);
+        if(expression == null)
+            throw new ExpressionException("Invalid expression: expression null");
+
+        if(expression.trim().isEmpty())
+            throw new ExpressionException("Invalid expression: expression empty");
+
+        return new DefaultExpression(expression,parser,processorFactory);
     }
 }

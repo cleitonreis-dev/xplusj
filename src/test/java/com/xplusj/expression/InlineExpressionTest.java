@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static com.xplusj.operator.Precedence.*;
 import static org.junit.Assert.assertEquals;
 
+@Deprecated //TODO adapt this to integration test
 @RunWith(MockitoJUnitRunner.class)
 public class InlineExpressionTest {
     private static final GlobalContext CONTEXT =

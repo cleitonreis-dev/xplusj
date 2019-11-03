@@ -35,24 +35,19 @@ public class FormulaExpression implements Expression {
 
     @Override
     public double eval(VariableContext variableContext) {
-        if(formula.trim().isEmpty())
-            return 0;
-
         if(instructions == null)
             initialize();
 
-        TwoStackBasedProcessor interpreter = this.processorFactory.apply(variableContext);
-
-        instructions.forEach(instruction->instruction.accept(interpreter));
-
-        return interpreter.getCalculatedResult();
+        TwoStackBasedProcessor processor = this.processorFactory.apply(variableContext);
+        instructions.forEach(instruction->instruction.accept(processor));
+        return processor.getCalculatedResult();
     }
 
     private synchronized void initialize() {
         if(instructions == null) {
-            InstructionListProcessor interpreter = instructionListProcessorFactory.get();
-            parser.eval(formula, interpreter);
-            instructions = interpreter.getInstructions();
+            InstructionListProcessor processor = instructionListProcessorFactory.get();
+            parser.eval(formula, processor);
+            instructions = processor.getInstructions();
         }
     }
 
@@ -60,6 +55,12 @@ public class FormulaExpression implements Expression {
                                            final ExpressionParser parser,
                                            final Function<VariableContext,TwoStackBasedProcessor> processorFactory,
                                            final Supplier<InstructionListProcessor> instructionListProcessorFactory){
+        if(formula == null)
+            throw new ExpressionException("Invalid expression: expression null");
+
+        if(formula.trim().isEmpty())
+            throw new ExpressionException("Invalid expression: expression empty");
+
         return new FormulaExpression(formula, parser, processorFactory, instructionListProcessorFactory);
     }
 }
