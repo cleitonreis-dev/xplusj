@@ -51,7 +51,7 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
     @Override
     public void callLastOperatorAndAddResult() {
         Operator<? extends OperatorContext> operator = opStack.pull();
-        double value = operator.execute(getContext(operator));
+        double value = operator.execute(getParams(operator.getDefinition()));
         valueStack.push(value);
     }
 
@@ -64,7 +64,7 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
         return valueStack.pull();
     }
 
-    private <Context extends OperatorContext> Context getContext(Operator<?> operator){
+    /*private <Context extends OperatorContext> Context getContext(Operator<?> operator){
         OperatorContext context;
         if(operator.getType() == OperatorType.UNARY)
             context = new UnaryOperatorContext(env,getParams(operator)[0]);
@@ -76,9 +76,9 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
             throw new ExpressionException("Invalid operator type " + operator.getType());
 
         return (Context) context;
-    }
+    }*/
 
-    private double[] getParams(Operator<?> operator){
+    private double[] getParams(OperatorDefinition<?> operator){
         double[] values = new double[operator.getParamsLength()];
 
         for(int i = values.length - 1; i >= 0; i--)

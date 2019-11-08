@@ -1,9 +1,9 @@
 package com.xplusj.parser;
 
 import com.xplusj.GlobalContext;
-import com.xplusj.operator.FunctionOperator;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
+import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import com.xplusj.tokenizer.Token;
 import com.xplusj.tokenizer.TokenType;
@@ -119,7 +119,7 @@ public class DefaultExpressionParser implements ExpressionParser {
             throw new ExpressionParseException(expression, token.index, msg, token.value);
         }
 
-        if(currentStackCount == 0 || operator.precedes(instructionsProcessor.getLastOperator())) {
+        if(currentStackCount == 0 || operator.getDefinition().precedes(instructionsProcessor.getLastOperator())) {
             instructionsProcessor.addOperator(operator);
             currentStackCount++;
         }else {
@@ -141,7 +141,7 @@ public class DefaultExpressionParser implements ExpressionParser {
         if(!tokenizer.hasNext())
             throw unclosedParenthesis(tokenizer.getExpression(), tokenizer.getLastToken().index);
 
-        int paramsLength = function.getParamsLength();
+        int paramsLength = function.getDefinition().getParamsLength();
         for(int i = 0; i < paramsLength; i++) {
             eval(ExecContext.FUNC, tokenizer, instructionsProcessor);
 
@@ -149,7 +149,7 @@ public class DefaultExpressionParser implements ExpressionParser {
 
             if(i < (paramsLength - 1) && lastTokenType != TokenType.COMMA)
                 throw new ExpressionParseException(tokenizer.getExpression(),
-                    token.index,"Function requires %s parameters", function.getParamsLength());
+                    token.index,"Function requires %s parameters", function.getDefinition().getParamsLength());
 
             if(i == (paramsLength - 1) && lastTokenType != TokenType.PARENTHESIS_CLOSING)
                 throw new ExpressionParseException(tokenizer.getExpression(),

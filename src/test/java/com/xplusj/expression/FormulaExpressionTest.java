@@ -1,9 +1,11 @@
 package com.xplusj.expression;
 
 import com.xplusj.Environment;
+import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
-import com.xplusj.operator.BinaryOperator;
+import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.Precedence;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParser;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,6 +31,9 @@ public class FormulaExpressionTest {
 
     @Mock
     private Environment env;
+
+    @Mock
+    private GlobalContext globalContext;
 
     @Mock
     private ExpressionParser parser;
@@ -75,12 +80,13 @@ public class FormulaExpressionTest {
     @Test
     public void testExpressionWithoutVars(){
         String exp = "1+1";
-        BinaryOperator p = BinaryOperator.create('+', Precedence.low(), (ctx)->ctx.getFirstValue() + ctx.getSecondValue());
+        BinaryOperatorDefinition p = BinaryOperatorDefinition.create('+', Precedence.low(), (ctx)->ctx.getFirstValue() + ctx.getSecondValue());
+        BinaryOperator pp = BinaryOperator.create(globalContext,p);
 
         when(twoStackBasedProcessor.getCalculatedResult()).thenReturn(2D);
         when(instructionListProcessor.getInstructions()).thenReturn(Arrays.asList(
                 (processor)->processor.addValue(1D),
-                (processor)->processor.addOperator(p),
+                (processor)->processor.addOperator(pp),
                 (processor)->processor.addValue(1D)
         ));
 
@@ -93,7 +99,7 @@ public class FormulaExpressionTest {
         verify(instructionListProcessor).getInstructions();
 
         verify(twoStackBasedProcessor,times(2)).addValue(1D);
-        verify(twoStackBasedProcessor,times(1)).addOperator(p);
+        verify(twoStackBasedProcessor,times(1)).addOperator(pp);
 
         assertEquals(2D, value,0.0000000000000001);
     }
@@ -102,13 +108,14 @@ public class FormulaExpressionTest {
     public void testExpressionWitVars(){
         String exp = "1+b";
         VariableContext vctx = VariableContext.builder().add("b", 1).build();
-        BinaryOperator p = BinaryOperator.create('+', Precedence.low(), (ctx)->ctx.getFirstValue() + ctx.getSecondValue());
+        BinaryOperatorDefinition p = BinaryOperatorDefinition.create('+', Precedence.low(), (ctx)->ctx.getFirstValue() + ctx.getSecondValue());
+        BinaryOperator pp = BinaryOperator.create(globalContext,p);
 
         when(twoStackBasedProcessor.getCalculatedResult()).thenReturn(2D);
 
         when(instructionListProcessor.getInstructions()).thenReturn(Arrays.asList(
                 (processor)->processor.addValue(1D),
-                (processor)->processor.addOperator(p),
+                (processor)->processor.addOperator(pp),
                 (processor)->processor.addValue(1D)
         ));
 
@@ -121,7 +128,7 @@ public class FormulaExpressionTest {
         verify(instructionListProcessor).getInstructions();
 
         verify(twoStackBasedProcessor,times(2)).addValue(1D);
-        verify(twoStackBasedProcessor,times(1)).addOperator(p);
+        verify(twoStackBasedProcessor,times(1)).addOperator(pp);
 
         assertEquals(2D, value,0.0000000000000001);
     }

@@ -1,28 +1,28 @@
 package com.xplusj.operator;
 
-import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
+
+import static java.lang.String.format;
 
 public abstract class OperatorContext{
     private final GlobalContext context;
-    private final OperatorContextFunctionCaller functionCaller;
-    private final Environment environment;
 
-    public OperatorContext(Environment environment, OperatorContextFunctionCaller functionCaller) {
-        this.context = environment.getContext();
-        this.functionCaller = functionCaller;
-        this.environment = environment;
+    protected OperatorContext(GlobalContext context) {
+        this.context = context;
     }
 
     public double call(String name, double...values){
-        return functionCaller.call(this.environment,name,values);
+        if(!context.hasFunction(name))
+            throw new IllegalArgumentException(format("Function '%s' not found", name));
+
+
+        return context.getFunction(name).execute(values);
     }
 
     public double getConstant(String name){
-        return context.getConstant(name);
-    }
+        if(!context.hasConstant(name))
+            throw new IllegalArgumentException(format("Constant '%s' not found", name));
 
-    protected Environment getEnvironment() {
-        return environment;
+        return context.getConstant(name);
     }
 }

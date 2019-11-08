@@ -4,9 +4,9 @@ import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
 import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.operator.BinaryOperator;
-import com.xplusj.operator.FunctionOperator;
-import com.xplusj.operator.UnaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -19,13 +19,13 @@ import static org.junit.Assert.assertEquals;
 public class InlineExpressionTest {
     private static final GlobalContext CONTEXT =
         DefaultGlobalContext.builder()
-            .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
-            .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
-            .addBinaryOperator(BinaryOperator.create('*', high(), ctx->ctx.getFirstValue() * ctx.getSecondValue()))
-            .addBinaryOperator(BinaryOperator.create('/', high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
-            .addUnaryOperator(UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue()))
-            .addUnaryOperator(UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue()))
-            .addFunction(FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
+            .addBinaryOperator(BinaryOperatorDefinition.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
+            .addBinaryOperator(BinaryOperatorDefinition.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
+            .addBinaryOperator(BinaryOperatorDefinition.create('*', high(), ctx->ctx.getFirstValue() * ctx.getSecondValue()))
+            .addBinaryOperator(BinaryOperatorDefinition.create('/', high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
+            .addUnaryOperator(UnaryOperatorDefinition.create('+', higherThan(high()), ctx->+ctx.getValue()))
+            .addUnaryOperator(UnaryOperatorDefinition.create('-', higherThan(high()), ctx->-ctx.getValue()))
+            .addFunction(FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
         .build();
 
 

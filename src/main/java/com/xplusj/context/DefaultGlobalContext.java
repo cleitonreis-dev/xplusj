@@ -3,21 +3,26 @@ package com.xplusj.context;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
-import com.xplusj.operator.*;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultGlobalContext implements GlobalContext {
 
-    private final Map<String, FunctionOperator> functionsMap;
-    private final Map<Character, BinaryOperator> binaryOperatorsMap;
-    private final Map<Character, UnaryOperator> unaryOperatorsMap;
+    private final Map<String, FunctionOperatorDefinition> functionsMap;
+    private final Map<Character, BinaryOperatorDefinition> binaryOperatorsMap;
+    private final Map<Character, UnaryOperatorDefinition> unaryOperatorsMap;
     private final VariableContext constantsContext;
 
-    private DefaultGlobalContext(Map<String, FunctionOperator> functionsMap,
-                                Map<Character, BinaryOperator> binaryOperatorsMap,
-                                Map<Character, UnaryOperator> unaryOperatorsMap,
+    private DefaultGlobalContext(Map<String, FunctionOperatorDefinition> functionsMap,
+                                Map<Character, BinaryOperatorDefinition> binaryOperatorsMap,
+                                Map<Character, UnaryOperatorDefinition> unaryOperatorsMap,
                                 VariableContext constantsContext) {
         this.functionsMap = functionsMap;
         this.binaryOperatorsMap = binaryOperatorsMap;
@@ -47,17 +52,17 @@ public class DefaultGlobalContext implements GlobalContext {
 
     @Override
     public BinaryOperator getBinaryOperator(char symbol) {
-        return binaryOperatorsMap.get(symbol);
+        return BinaryOperator.create(this,binaryOperatorsMap.get(symbol));
     }
 
     @Override
     public UnaryOperator getUnaryOperator(char symbol) {
-        return unaryOperatorsMap.get(symbol);
+        return UnaryOperator.create(this, unaryOperatorsMap.get(symbol));
     }
 
     @Override
     public FunctionOperator getFunction(String name) {
-        return functionsMap.get(name);
+        return FunctionOperator.create(this, functionsMap.get(name));
     }
 
     @Override
@@ -71,30 +76,30 @@ public class DefaultGlobalContext implements GlobalContext {
 
     public static class Builder implements GlobalContext.Builder{
 
-        private Map<String, FunctionOperator> functionsMap = new HashMap<>();
-        private Map<Character, BinaryOperator> binaryOperatorsMap = new HashMap<>();
-        private Map<Character, UnaryOperator> unaryOperatorsMap = new HashMap<>();
+        private Map<String, FunctionOperatorDefinition> functionsMap = new HashMap<>();
+        private Map<Character, BinaryOperatorDefinition> binaryOperatorsMap = new HashMap<>();
+        private Map<Character, UnaryOperatorDefinition> unaryOperatorsMap = new HashMap<>();
         private VariableContext.Builder constantsContextBuilder = DefaultVariableContext.builder();
 
         @Override
-        public GlobalContext.Builder addUnaryOperator(UnaryOperator...operator) {
-            for(UnaryOperator op : operator)
+        public GlobalContext.Builder addUnaryOperator(UnaryOperatorDefinition...operator) {
+            for(UnaryOperatorDefinition op : operator)
                 unaryOperatorsMap.put(op.getSymbol(), op);
 
             return this;
         }
 
         @Override
-        public GlobalContext.Builder addBinaryOperator(BinaryOperator...operator) {
-            for(BinaryOperator op : operator)
+        public GlobalContext.Builder addBinaryOperator(BinaryOperatorDefinition...operator) {
+            for(BinaryOperatorDefinition op : operator)
                 binaryOperatorsMap.put(op.getSymbol(), op);
 
             return this;
         }
 
         @Override
-        public GlobalContext.Builder addFunction(FunctionOperator...function) {
-            for(FunctionOperator func : function)
+        public GlobalContext.Builder addFunction(FunctionOperatorDefinition...function) {
+            for(FunctionOperatorDefinition func : function)
                 functionsMap.put(func.getName(),func);
 
             return this;
