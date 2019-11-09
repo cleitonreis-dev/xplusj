@@ -2,7 +2,9 @@ package com.xplusj.context;
 
 import com.xplusj.ContextAppender;
 import com.xplusj.GlobalContext;
-import com.xplusj.operator.*;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;

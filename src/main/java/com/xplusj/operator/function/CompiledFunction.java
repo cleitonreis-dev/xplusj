@@ -1,9 +1,10 @@
-package com.xplusj.operator;
+package com.xplusj.operator.function;
 
 import com.xplusj.Environment;
 import com.xplusj.Expression;
 import com.xplusj.GlobalContext;
 import com.xplusj.VariableContext;
+import com.xplusj.operator.function.FunctionOperatorContext;
 
 import java.util.function.Function;
 
@@ -19,7 +20,7 @@ public class CompiledFunction implements Function<FunctionOperatorContext,Double
     @Override
     public Double apply(FunctionOperatorContext context) {
         if(this.expression == null){
-            this.expression = context.getEnvironment().formula(expressionStr);
+            //this.expression = context.getEnvironment().formula(expressionStr);
         }
 
         return this.expression.eval(new VariableContext() {
@@ -35,7 +36,7 @@ public class CompiledFunction implements Function<FunctionOperatorContext,Double
         });
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Environment env = Environment.env()
             .appendContext(GlobalContext.builder()
                 .addFunction(FunctionOperator.create("test(a,b)", "pow(max(a,b),2)"))
@@ -57,5 +58,5 @@ public class CompiledFunction implements Function<FunctionOperatorContext,Double
         System.out.println(v);
         System.out.printf("Time %s", (end - start));
 
-    }
+    }*/
 }

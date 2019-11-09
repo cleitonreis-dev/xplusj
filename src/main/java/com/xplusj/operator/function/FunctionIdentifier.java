@@ -7,16 +7,18 @@ import java.util.*;
 
 import static java.lang.String.format;
 
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode(of = {"name", "paramsLength"})
 @ToString(of = {"name", "paramNames"})
 public class FunctionIdentifier {
     private final String name;
+    private final int paramsLength;
     private final List<String> paramNames;
     private final Map<String,Integer> paramIndex;
 
     public FunctionIdentifier(String name, List<String> paramNames) {
         this.name = name;
         this.paramNames = paramNames;
+        this.paramsLength = paramNames.size();
         this.paramIndex = new HashMap<>();
 
         int i = 0;
@@ -25,12 +27,23 @@ public class FunctionIdentifier {
         }
     }
 
+    FunctionIdentifier(String name, int paramsLength){
+        this.name = name;
+        this.paramsLength = paramsLength;
+        paramNames = Collections.emptyList();
+        paramIndex = Collections.emptyMap();
+    }
+
     public String getName() {
         return name;
     }
 
     public List<String> getParamNames() {
         return paramNames;
+    }
+
+    public int getParamsLength() {
+        return paramsLength;
     }
 
     public int getParamIndex(String name){
@@ -74,5 +87,9 @@ public class FunctionIdentifier {
             name.substring(0, openParenthesisIndex),
             params
         );
+    }
+
+    public static FunctionIdentifier create(String name, double...params){
+        return new FunctionIdentifier(name,params.length);
     }
 }

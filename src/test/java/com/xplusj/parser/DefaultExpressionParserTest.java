@@ -2,8 +2,15 @@ package com.xplusj.parser;
 
 import com.xplusj.GlobalContext;
 import com.xplusj.expression.Stack;
-import com.xplusj.operator.*;
+import com.xplusj.operator.Operator;
+import com.xplusj.operator.Precedence;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionIdentifier;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import com.xplusj.tokenizer.DefaultExpressionTokenizer;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import org.junit.Before;
@@ -48,21 +55,21 @@ public class DefaultExpressionParserTest {
         tokenizer = DefaultExpressionTokenizer.create(context);
 
         when(context.hasBinaryOperator('+')).thenReturn(true);
-        when(context.getBinaryOperator('+')).thenReturn(PLUS);
+        when(context.getBinaryOperator('+')).thenReturn(BinaryOperator.create(context,PLUS));
         when(context.hasBinaryOperator('-')).thenReturn(true);
-        when(context.getBinaryOperator('-')).thenReturn(MINUS);
+        when(context.getBinaryOperator('-')).thenReturn(BinaryOperator.create(context,MINUS));
         when(context.hasBinaryOperator('*')).thenReturn(true);
-        when(context.getBinaryOperator('*')).thenReturn(MULT);
+        when(context.getBinaryOperator('*')).thenReturn(BinaryOperator.create(context,MULT));
         when(context.hasBinaryOperator('/')).thenReturn(true);
-        when(context.getBinaryOperator('/')).thenReturn(DIV);
+        when(context.getBinaryOperator('/')).thenReturn(BinaryOperator.create(context,DIV));
 
         when(context.hasUnaryOperator('+')).thenReturn(true);
-        when(context.getUnaryOperator('+')).thenReturn(UPLUS);
+        when(context.getUnaryOperator('+')).thenReturn(UnaryOperator.create(context,UPLUS));
         when(context.hasUnaryOperator('-')).thenReturn(true);
-        when(context.getUnaryOperator('-')).thenReturn(UMINUS);
+        when(context.getUnaryOperator('-')).thenReturn(UnaryOperator.create(context,UMINUS));
 
         when(context.hasFunction("sum")).thenReturn(true);
-        when(context.getFunction("sum")).thenReturn(new DefaultExpressionParserTest.Func("sum","a","b"));
+        when(context.getFunction("sum")).thenReturn(FunctionOperator.create(context, new DefaultExpressionParserTest.Func("sum","a","b")));
 
         when(context.hasConstant("PI")).thenReturn(Boolean.TRUE);
         when(context.getConstant("PI")).thenReturn(Math.PI);
@@ -712,16 +719,13 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class BOperator extends BinaryOperator {
+    private static class BOperator extends BinaryOperatorDefinition {
 
         BOperator(char symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
-        @Override
-        public double execute(BinaryOperatorContext context) {
-            return 0;
-        }
+
 
         @Override
         public String toString() {
@@ -729,16 +733,13 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class UOperator extends UnaryOperator {
+    private static class UOperator extends UnaryOperatorDefinition {
 
         UOperator(char symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
-        @Override
-        public double execute(UnaryOperatorContext context) {
-            return 0;
-        }
+
 
         @Override
         public String toString() {
@@ -746,7 +747,7 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class Func extends FunctionOperator{
+    private static class Func extends FunctionOperatorDefinition {
         private final String[] params;
 
         Func(String name, String...params) {

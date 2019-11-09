@@ -1,7 +1,12 @@
 package com.xplusj;
 
 import com.xplusj.context.DefaultGlobalContext;
-import com.xplusj.operator.*;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
 
 public interface GlobalContext {
 
@@ -22,11 +27,11 @@ public interface GlobalContext {
     double getConstant(String name);
 
     interface Builder{
-        Builder addUnaryOperator(UnaryOperator...operator);
+        Builder addUnaryOperator(UnaryOperatorDefinition...operator);
 
-        Builder addBinaryOperator(BinaryOperator...operator);
+        Builder addBinaryOperator(BinaryOperatorDefinition...operator);
 
-        Builder addFunction(FunctionOperator...function);
+        Builder addFunction(FunctionOperatorDefinition...function);
 
         Builder addConstant(String name, double value);
 

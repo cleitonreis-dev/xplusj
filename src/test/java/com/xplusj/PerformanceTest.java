@@ -2,9 +2,9 @@ package com.xplusj;
 
 import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.operator.BinaryOperator;
-import com.xplusj.operator.FunctionOperator;
-import com.xplusj.operator.UnaryOperator;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 
 import static com.xplusj.operator.Precedence.*;
 

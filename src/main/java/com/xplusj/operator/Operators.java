@@ -1,33 +1,37 @@
 package com.xplusj.operator;
 
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
+
 import static com.xplusj.operator.Precedence.*;
 
 public interface Operators {
 
     interface Unaries{
-        UnaryOperator PLUS = UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue());
-        UnaryOperator MIN = UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue());
+        UnaryOperatorDefinition PLUS = UnaryOperatorDefinition.create('+', higherThan(high()), ctx->+ctx.param());
+        UnaryOperatorDefinition MIN = UnaryOperatorDefinition.create('-', higherThan(high()), ctx->-ctx.param());
 
-        UnaryOperator[] OPERATORS = {PLUS,MIN};
+        UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN};
     }
 
     interface Binaries{
-        BinaryOperator ADD = BinaryOperator.create('+', low(), ctx->ctx.getFirstValue()+ctx.getSecondValue());
-        BinaryOperator SUB = BinaryOperator.create('-', low(), ctx->ctx.getFirstValue()-ctx.getSecondValue());
-        BinaryOperator MULT = BinaryOperator.create('*', high(), ctx->ctx.getFirstValue()*ctx.getSecondValue());
-        BinaryOperator DIV = BinaryOperator.create('/', high(), ctx->ctx.getFirstValue()/ctx.getSecondValue());
-        BinaryOperator POW = BinaryOperator.create('^', lowerThan(highest()), ctx->Math.pow(ctx.getFirstValue(),ctx.getSecondValue()));
+        BinaryOperatorDefinition ADD = BinaryOperatorDefinition.create('+', low(), ctx->ctx.param0()+ctx.param1());
+        BinaryOperatorDefinition SUB = BinaryOperatorDefinition.create('-', low(), ctx->ctx.param0()-ctx.param1());
+        BinaryOperatorDefinition MULT = BinaryOperatorDefinition.create('*', high(), ctx->ctx.param0()*ctx.param1());
+        BinaryOperatorDefinition DIV = BinaryOperatorDefinition.create('/', high(), ctx->ctx.param0()/ctx.param1());
+        BinaryOperatorDefinition POW = BinaryOperatorDefinition.create('^', lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
 
-        BinaryOperator[] OPERATORS = {ADD,SUB,MULT,DIV,POW};
+        BinaryOperatorDefinition[] OPERATORS = {ADD,SUB,MULT,DIV,POW};
     }
 
     interface Functions{
-        FunctionOperator POW = FunctionOperator.create("pow(a,b)", ctx->Math.pow(ctx.param(0),ctx.param(1)));
-        FunctionOperator SQRT = FunctionOperator.create("sqrt(a)", ctx->Math.sqrt(ctx.param(0)));
-        FunctionOperator MAX = FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param(0),ctx.param(1)));
-        FunctionOperator MIN = FunctionOperator.create("min(a,b)", ctx->Math.min(ctx.param(0),ctx.param(1)));
+        FunctionOperatorDefinition POW = FunctionOperatorDefinition.create("pow(a,b)", ctx->Math.pow(ctx.param(0),ctx.param(1)));
+        FunctionOperatorDefinition SQRT = FunctionOperatorDefinition.create("sqrt(a)", ctx->Math.sqrt(ctx.param(0)));
+        FunctionOperatorDefinition MAX = FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param(0),ctx.param(1)));
+        FunctionOperatorDefinition MIN = FunctionOperatorDefinition.create("min(a,b)", ctx->Math.min(ctx.param(0),ctx.param(1)));
 
-        FunctionOperator[] FUNCTIONS = {POW,SQRT,MAX,MIN};
+        FunctionOperatorDefinition[] FUNCTIONS = {POW,SQRT,MAX,MIN};
     }
 
     interface Constants{

@@ -1,28 +1,39 @@
 package com.xplusj.operator;
 
-import com.xplusj.Environment;
 import com.xplusj.GlobalContext;
+
+import static java.lang.String.format;
 
 public abstract class OperatorContext{
     private final GlobalContext context;
-    private final OperatorContextFunctionCaller functionCaller;
-    private final Environment environment;
+    private final double[] params;
 
-    public OperatorContext(Environment environment, OperatorContextFunctionCaller functionCaller) {
-        this.context = environment.getContext();
-        this.functionCaller = functionCaller;
-        this.environment = environment;
+    protected OperatorContext(final GlobalContext context, final double...params) {
+        this.context = context;
+        this.params = params;
     }
 
-    public double call(String name, double...values){
-        return functionCaller.call(this.environment,name,values);
+    public double call(final String name, final double...values){
+        if(!context.hasFunction(name))
+            throw new IllegalArgumentException(format("Function '%s' not found", name));
+
+
+        return context.getFunction(name).execute(values);
     }
 
     public double getConstant(String name){
+        if(!context.hasConstant(name))
+            throw new IllegalArgumentException(format("Constant '%s' not found", name));
+
         return context.getConstant(name);
     }
 
-    protected Environment getEnvironment() {
-        return environment;
+    public double param(int index){
+        if(index < 0 || index >= params.length)
+            throw new IllegalArgumentException(format(
+                    "Invalid param index '%s'. Valid indexes are from %s to %s",
+                    index, 0, params.length-1));
+
+        return params[index];
     }
 }
