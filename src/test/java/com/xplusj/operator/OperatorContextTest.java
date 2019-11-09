@@ -17,6 +17,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class OperatorContextTest {
 
+    private static final double DELTA = 0.00000000000000000001D;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -60,7 +62,7 @@ public class OperatorContextTest {
         when(context.getConstant(constName)).thenReturn(constValue);
 
         double value = new OperatorContextTestImpl(context).getConstant(constName);
-        assertEquals(constValue,value,0.00000000000001D);
+        assertEquals(constValue,value,DELTA);
     }
 
     @Test
@@ -75,10 +77,40 @@ public class OperatorContextTest {
         new OperatorContextTestImpl(context).getConstant(constName);
     }
 
+    @Test
+    public void testGetParamIndex(){
+        double[] params = {1D,2D};
+        OperatorContextTestImpl oContext = new OperatorContextTestImpl(context,params);
+        assertEquals(params[0], oContext.param(0), DELTA);
+        assertEquals(params[1], oContext.param(1), DELTA);
+    }
+
+    @Test
+    public void testGetParamInvalidIndex(){
+        double[] params = {1D,2D};
+        OperatorContextTestImpl oContext = new OperatorContextTestImpl(context,params);
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Invalid param index '-1'. Valid indexes are from 0 to 1");
+
+        oContext.param(-1);
+    }
+
+    @Test
+    public void testGetParamInvalidIndex2(){
+        double[] params = {1D,2D};
+        OperatorContextTestImpl oContext = new OperatorContextTestImpl(context,params);
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Invalid param index '2'. Valid indexes are from 0 to 1");
+
+        oContext.param(2);
+    }
+
     static class OperatorContextTestImpl extends OperatorContext{
 
-        OperatorContextTestImpl(GlobalContext context) {
-            super(context);
+        OperatorContextTestImpl(GlobalContext context, double...params) {
+            super(context,params);
         }
     }
 }

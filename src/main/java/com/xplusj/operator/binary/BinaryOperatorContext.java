@@ -5,19 +5,15 @@ import com.xplusj.operator.OperatorContext;
 
 public class BinaryOperatorContext extends OperatorContext {
 
-    private final double[] params;
-
     BinaryOperatorContext(final GlobalContext context, final double...params) {
-        super(context);
-        this.params = params;
+        super(context,params);
     }
 
-    public double getFirstValue(){
-        return params[0];
+    public double param0(){
+        return param(0);
     }
 
-
-    public double getSecondValue(){
-        return params[1];
+    public double param1(){
+        return param(1);
     }
 }

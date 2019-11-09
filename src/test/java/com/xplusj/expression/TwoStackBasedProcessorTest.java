@@ -176,7 +176,7 @@ public class TwoStackBasedProcessorTest {
         verify(unaryFunction).apply(opContextCap.capture());
 
         UnaryOperatorContext opContext = opContextCap.getValue();
-        assertEquals(2d,opContext.getValue(), 1);
+        assertEquals(2d,opContext.param(), 1);
 
         verify(valStack).push(3D);
     }
@@ -196,8 +196,8 @@ public class TwoStackBasedProcessorTest {
         verify(binaryFunction).apply(opContextCap.capture());
 
         BinaryOperatorContext opContext = opContextCap.getValue();
-        assertEquals(1d,opContext.getFirstValue(),1);
-        assertEquals(2d,opContext.getSecondValue(),1);
+        assertEquals(1d,opContext.param0(),1);
+        assertEquals(2d,opContext.param1(),1);
 
         verify(valStack).push(3D);
     }

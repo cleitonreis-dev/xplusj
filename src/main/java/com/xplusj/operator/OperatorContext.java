@@ -6,12 +6,14 @@ import static java.lang.String.format;
 
 public abstract class OperatorContext{
     private final GlobalContext context;
+    private final double[] params;
 
-    protected OperatorContext(GlobalContext context) {
+    protected OperatorContext(final GlobalContext context, final double...params) {
         this.context = context;
+        this.params = params;
     }
 
-    public double call(String name, double...values){
+    public double call(final String name, final double...values){
         if(!context.hasFunction(name))
             throw new IllegalArgumentException(format("Function '%s' not found", name));
 
@@ -24,5 +26,14 @@ public abstract class OperatorContext{
             throw new IllegalArgumentException(format("Constant '%s' not found", name));
 
         return context.getConstant(name);
+    }
+
+    public double param(int index){
+        if(index < 0 || index >= params.length)
+            throw new IllegalArgumentException(format(
+                    "Invalid param index '%s'. Valid indexes are from %s to %s",
+                    index, 0, params.length-1));
+
+        return params[index];
     }
 }

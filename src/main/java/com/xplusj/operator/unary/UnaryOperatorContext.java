@@ -5,14 +5,11 @@ import com.xplusj.operator.OperatorContext;
 
 public class UnaryOperatorContext extends OperatorContext {
 
-    private final double value;
-
     UnaryOperatorContext(final GlobalContext context, final double value) {
-        super(context);
-        this.value = value;
+        super(context,value);
     }
 
-    public double getValue(){
-        return value;
+    public double param(){
+        return param(0);
     }
 }

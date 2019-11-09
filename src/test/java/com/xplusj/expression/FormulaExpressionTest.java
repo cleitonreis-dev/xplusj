@@ -80,7 +80,7 @@ public class FormulaExpressionTest {
     @Test
     public void testExpressionWithoutVars(){
         String exp = "1+1";
-        BinaryOperatorDefinition p = BinaryOperatorDefinition.create('+', Precedence.low(), (ctx)->ctx.getFirstValue() + ctx.getSecondValue());
+        BinaryOperatorDefinition p = BinaryOperatorDefinition.create('+', Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
         BinaryOperator pp = BinaryOperator.create(globalContext,p);
 
         when(twoStackBasedProcessor.getCalculatedResult()).thenReturn(2D);
@@ -108,7 +108,7 @@ public class FormulaExpressionTest {
     public void testExpressionWitVars(){
         String exp = "1+b";
         VariableContext vctx = VariableContext.builder().add("b", 1).build();
-        BinaryOperatorDefinition p = BinaryOperatorDefinition.create('+', Precedence.low(), (ctx)->ctx.getFirstValue() + ctx.getSecondValue());
+        BinaryOperatorDefinition p = BinaryOperatorDefinition.create('+', Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
         BinaryOperator pp = BinaryOperator.create(globalContext,p);
 
         when(twoStackBasedProcessor.getCalculatedResult()).thenReturn(2D);

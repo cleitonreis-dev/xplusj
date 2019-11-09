@@ -49,7 +49,7 @@ public class UnaryOperatorTest {
         verify(function).apply(ctxCaptor.capture());
 
         UnaryOperatorContext operatorContext = ctxCaptor.getValue();
-        assertEquals(params[0], operatorContext.getValue(), DELTA);
+        assertEquals(params[0], operatorContext.param(), DELTA);
     }
 
     @Test

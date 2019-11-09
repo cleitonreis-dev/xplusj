@@ -49,8 +49,8 @@ public class BinaryOperatorTest {
         verify(function).apply(ctxCaptor.capture());
 
         BinaryOperatorContext operatorContext = ctxCaptor.getValue();
-        assertEquals(params[0], operatorContext.getFirstValue(), DELTA);
-        assertEquals(params[1], operatorContext.getSecondValue(), DELTA);
+        assertEquals(params[0], operatorContext.param0(), DELTA);
+        assertEquals(params[1], operatorContext.param1(), DELTA);
     }
 
     @Test
