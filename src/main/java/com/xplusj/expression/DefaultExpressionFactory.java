@@ -18,8 +18,8 @@ public class DefaultExpressionFactory implements ExpressionFactory {
     @Override
     public Expression formula(final String expression, final Environment env) {
         return FormulaExpression.create(expression, env.getParser(),
-                (varCtx)->TwoStackBasedProcessor.create(env,varCtx,Stack.instance(),Stack.instance()),
-                ()->InstructionListProcessor.create(Stack.instance())
+                (varCtx)->TwoStackBasedProcessor.create(env,varCtx),
+                InstructionListProcessor::create
         );
     }
 

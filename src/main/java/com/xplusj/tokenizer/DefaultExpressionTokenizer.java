@@ -4,11 +4,9 @@ import com.xplusj.GlobalContext;
 
 public class DefaultExpressionTokenizer implements ExpressionTokenizer{
 
-    private final GlobalContext context;
     private final com.xplusj.tokenizer.Tokenizer.OperatorChecker operatorChecker;
 
-    private DefaultExpressionTokenizer(GlobalContext context) {
-        this.context = context;
+    private DefaultExpressionTokenizer(final GlobalContext context) {
         this.operatorChecker = op->context.hasBinaryOperator(op) || context.hasUnaryOperator(op);
     }
 

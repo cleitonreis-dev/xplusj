@@ -20,11 +20,13 @@ public class DefaultExpressionParser implements ExpressionParser {
     }
 
     @Override
-    public void eval(final String expression, final ExpressionParserProcessor instructionHandler) {
-        eval(ExecContext.EXP, tokenizer.tokenize(expression),instructionHandler);
+    public<ParserResult> ParserResult eval(final String expression, final ExpressionParserProcessor<ParserResult> instructionProcessor) {
+        return eval(ExecContext.EXP, tokenizer.tokenize(expression),instructionProcessor);
     }
 
-    private void eval(final ExecContext execContext, final ExpressionTokenizer.Tokenizer tokenizer, final ExpressionParserProcessor instructionsProcessor) {
+    private <ParserResult> ParserResult eval(final ExecContext execContext,
+                                             final ExpressionTokenizer.Tokenizer tokenizer,
+                                             final ExpressionParserProcessor<ParserResult> instructionsProcessor) {
         int stackOperatorCount = 0;
         boolean parenthesisClosed = false;
         Token lastToken = null;
@@ -101,6 +103,8 @@ public class DefaultExpressionParser implements ExpressionParser {
             instructionsProcessor.callLastOperatorAndAddResult();
             stackOperatorCount--;
         }
+
+        return instructionsProcessor.getResult();
     }
 
     private int defineOperator(ExpressionParserProcessor instructionsProcessor, int currentStackCount, Token lastToken, String expression, Token token) {
@@ -130,7 +134,7 @@ public class DefaultExpressionParser implements ExpressionParser {
         return currentStackCount;
     }
 
-    private void evalFunc(Token token, final ExpressionTokenizer.Tokenizer tokenizer, ExpressionParserProcessor instructionsProcessor){
+    private void evalFunc(Token token, final ExpressionTokenizer.Tokenizer tokenizer, ExpressionParserProcessor<?> instructionsProcessor){
         if(!globalContext.hasFunction(token.value))
             throw new ExpressionParseException(tokenizer.getExpression(), token.index, "Function '%s' not found", token.value);
 

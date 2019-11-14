@@ -6,16 +6,14 @@ import com.xplusj.VariableContext;
 import com.xplusj.operator.*;
 import com.xplusj.parser.ExpressionParserProcessor;
 
-public class TwoStackBasedProcessor implements ExpressionParserProcessor {
+public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double> {
 
-    private final Environment env;
     private final GlobalContext globalContext;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
     private final Stack<Operator<? extends OperatorContext>> opStack;
 
-    TwoStackBasedProcessor(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
-        this.env = env;
+    private TwoStackBasedProcessor(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
         this.globalContext = env.getContext();
         this.variableContext = variableContext;
         this.valueStack = valueStack;
@@ -60,8 +58,9 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
         return opStack.peek();
     }
 
-    double getCalculatedResult(){
-        return valueStack.pull();
+    @Override
+    public Double getResult() {
+        return valueStack.peek();
     }
 
     private double[] getParams(OperatorDefinition<?> operator){
@@ -71,6 +70,10 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor {
             values[i] = valueStack.pull();
 
         return values;
+    }
+
+    static TwoStackBasedProcessor create(Environment env, VariableContext variableContext){
+        return new TwoStackBasedProcessor(env,variableContext,Stack.instance(),Stack.instance());
     }
 
     static TwoStackBasedProcessor create(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){

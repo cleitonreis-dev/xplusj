@@ -96,7 +96,7 @@ public class TwoStackBasedProcessorTest {
         when(functionOperatorDefinition.getParamsLength()).thenReturn(3);
         when(functionOperatorDefinition.getFunction()).thenReturn(functionFunction);
 
-        interpreter = new TwoStackBasedProcessor(environment, variableContext, valStack, opStack);
+        interpreter = TwoStackBasedProcessor.create(environment, variableContext, valStack, opStack);
 
         unaryOperator = UnaryOperator.create(globalContext,unaryOperatorDefinition);
         binaryOperator = BinaryOperator.create(globalContext,binaryOperatorDefinition);

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class InstructionListProcessor implements ExpressionParserProcessor {
+public class InstructionListProcessor
+        implements ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>> {
 
     private final List<Consumer<ExpressionParserProcessor>> instructions;
     private final Stack<Operator<?>> opStack;
@@ -50,11 +51,16 @@ public class InstructionListProcessor implements ExpressionParserProcessor {
         return opStack.peek();
     }
 
-    List<Consumer<ExpressionParserProcessor>> getInstructions() {
+    @Override
+    public List<Consumer<ExpressionParserProcessor>> getResult() {
         return instructions;
     }
 
-    public static InstructionListProcessor create(Stack<Operator<?>> opStack){
+    static InstructionListProcessor create(Stack<Operator<?>> opStack){
         return new InstructionListProcessor(opStack);
+    }
+
+    public static InstructionListProcessor create(){
+        return new InstructionListProcessor(Stack.instance());
     }
 }

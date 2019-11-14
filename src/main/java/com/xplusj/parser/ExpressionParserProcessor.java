@@ -3,7 +3,7 @@ package com.xplusj.parser;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
 
-public interface ExpressionParserProcessor {
+public interface ExpressionParserProcessor<Result> {
     void addValue(double value);
 
     void addVar(String value);
@@ -15,4 +15,6 @@ public interface ExpressionParserProcessor {
     void callLastOperatorAndAddResult();
 
     Operator<?> getLastOperator();
+
+    Result getResult();
 }

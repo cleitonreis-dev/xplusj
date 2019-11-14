@@ -677,7 +677,7 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class InstructionLogger implements ExpressionParserProcessor {
+    private static class InstructionLogger implements ExpressionParserProcessor<DefaultExpressionParserTest.StackLog> {
         private Stack<Operator<?>> opStack = Stack.instance();
         private DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog();
 
@@ -716,6 +716,11 @@ public class DefaultExpressionParserTest {
         public Operator<?> getLastOperator() {
             System.out.println(log);
             return opStack.peek();
+        }
+
+        @Override
+        public StackLog getResult() {
+            return log;
         }
     }
 
