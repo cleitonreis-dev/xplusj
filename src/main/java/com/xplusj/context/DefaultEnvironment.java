@@ -1,6 +1,9 @@
 package com.xplusj.context;
 
 import com.xplusj.*;
+import com.xplusj.ExpressionFactory;
+import com.xplusj.ExpressionParserFactory;
+import com.xplusj.ExpressionTokenizerFactory;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 

@@ -1,0 +1,5 @@
+TODO
+- remove lombok
+- factory methods should return the concrete class instance not superclass/interface, like DefaultExpressionFactory
+- Make constructors of extendable classes protected for external extension
+- Review all methods parameters and check for null parameter possibilities

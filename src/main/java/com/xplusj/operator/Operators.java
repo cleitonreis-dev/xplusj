@@ -35,6 +35,8 @@ public interface Operators {
     }
 
     interface Constants{
+        Constant PI = Constant.newConst("PI", Math.PI);
 
+        Constant[] CONSTANTS = {PI};
     }
 }

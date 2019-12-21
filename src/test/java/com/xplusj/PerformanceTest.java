@@ -26,6 +26,7 @@ public class PerformanceTest {
     static final Environment env = Environment.env();
 
     public static void main(String[] args) {
+        System.out.println(env.expression("8/2(2+2)").eval());
         String expression = "(a/(2+b)-max(a,b)*2)*(a/(2+b)-max(a,b)*2)*(a/(2+b)-max(a,b)*2)";
         double a = 1;
         double b = 2;
