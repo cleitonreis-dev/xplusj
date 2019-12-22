@@ -89,7 +89,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testCreateUnaryOperator(){
-        char op = '+';
+        String op = "+";
         UnaryOperatorDefinition opDef = UnaryOperatorDefinition.create(op, Precedence.low(),null);
         when(definitions.getUnaryOperator(op)).thenReturn(opDef);
 
@@ -102,7 +102,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testCreateBinaryOperator(){
-        char op = '+';
+        String op = "+";
         BinaryOperatorDefinition opDef = BinaryOperatorDefinition.create(op, Precedence.low(),null);
         when(definitions.getBinaryOperator(op)).thenReturn(opDef);
 
@@ -174,7 +174,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testAppendCreateUnaryOperator(){
-        char op = '+';
+        String op = "+";
         UnaryOperatorDefinition opDef = UnaryOperatorDefinition.create(op, Precedence.low(),null);
         when(newDefinitions.getUnaryOperator(op)).thenReturn(opDef);
 
@@ -187,7 +187,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testAppendCreateBinaryOperator(){
-        char op = '+';
+        String op = "+";
         BinaryOperatorDefinition opDef = BinaryOperatorDefinition.create(op, Precedence.low(),null);
         when(newDefinitions.getBinaryOperator(op)).thenReturn(opDef);
 

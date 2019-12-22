@@ -114,9 +114,9 @@ public class DefaultExpressionParser implements ExpressionParser {
                 || lastToken.type == TokenType.COMMA;
 
         if(isUnary)
-            operator = globalContext.getUnaryOperator(token.value.charAt(0));
+            operator = globalContext.getUnaryOperator(token.value);
         else
-            operator = globalContext.getBinaryOperator(token.value.charAt(0));
+            operator = globalContext.getBinaryOperator(token.value);
 
         if(operator == null){
             String msg = isUnary ? "Unary operator '%s' not found" : "Binary operator '%s' not found";

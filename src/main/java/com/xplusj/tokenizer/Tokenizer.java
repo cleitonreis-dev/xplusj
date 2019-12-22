@@ -58,7 +58,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
         if(isDigit(c))
             return readNumber();
 
-        if(operatorChecker.isOperator(c))
+        if(operatorChecker.isOperator(String.valueOf(c)))
             return readOperator();
 
         if(RESERVED_TOKENS.containsKey(c))
@@ -87,7 +87,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
             return lastToken;
         }
 
-        if((!hasNext() && Character.isSpaceChar(c)) || operatorChecker.isOperator(c) || c == ',' || c == ')') {
+        if((!hasNext() && Character.isSpaceChar(c)) || operatorChecker.isOperator(String.valueOf(c)) || c == ',' || c == ')') {
             lastToken = Token.var(identifier, identifierStartIndex);
             return lastToken;
         }
@@ -174,7 +174,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     }
 
     private boolean isDelimiter(char c) {
-        return c == ' ' || RESERVED_TOKENS.containsKey(c) || operatorChecker.isOperator(c);
+        return c == ' ' || RESERVED_TOKENS.containsKey(c) || operatorChecker.isOperator(String.valueOf(c));
     }
 
     private boolean isConstEligible(char c) {
@@ -199,6 +199,6 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     }
 
     public interface OperatorChecker {
-        boolean isOperator(char operator);
+        boolean isOperator(String operator);
     }
 }

@@ -105,8 +105,8 @@ public class TwoStackBasedProcessorTest {
         functionOperator = ExpressionFunctionOperatorFactory.defaultFactory().create(functionOperatorDefinition, environment);
 
         when(environment.getFunction(any(String.class))).thenReturn(functionOperator);
-        when(environment.getUnaryOperator(any(Character.class))).thenReturn(unaryOperator);
-        when(environment.getBinaryOperator(any(Character.class))).thenReturn(binaryOperator);
+        when(environment.getUnaryOperator(any(String.class))).thenReturn(unaryOperator);
+        when(environment.getBinaryOperator(any(String.class))).thenReturn(binaryOperator);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.xplusj.parser;
 
-import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.expression.Stack;
 import com.xplusj.factory.ExpressionTokenizerFactory;
@@ -30,12 +29,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultExpressionParserTest {
 
-    private static final DefaultExpressionParserTest.BOperator PLUS = new DefaultExpressionParserTest.BOperator('+', Precedence.low());
-    private static final DefaultExpressionParserTest.UOperator UPLUS = new DefaultExpressionParserTest.UOperator('+', Precedence.highest());
-    private static final DefaultExpressionParserTest.BOperator MINUS = new DefaultExpressionParserTest.BOperator('-', Precedence.low());
-    private static final DefaultExpressionParserTest.UOperator UMINUS = new DefaultExpressionParserTest.UOperator('-', Precedence.highest());
-    private static final DefaultExpressionParserTest.BOperator MULT = new DefaultExpressionParserTest.BOperator('*', Precedence.higherThan(Precedence.low()));
-    private static final DefaultExpressionParserTest.BOperator DIV = new DefaultExpressionParserTest.BOperator('/', Precedence.higherThan(Precedence.low()));
+    private static final DefaultExpressionParserTest.BOperator PLUS = new DefaultExpressionParserTest.BOperator("+", Precedence.low());
+    private static final DefaultExpressionParserTest.UOperator UPLUS = new DefaultExpressionParserTest.UOperator("+", Precedence.highest());
+    private static final DefaultExpressionParserTest.BOperator MINUS = new DefaultExpressionParserTest.BOperator("-", Precedence.low());
+    private static final DefaultExpressionParserTest.UOperator UMINUS = new DefaultExpressionParserTest.UOperator("-", Precedence.highest());
+    private static final DefaultExpressionParserTest.BOperator MULT = new DefaultExpressionParserTest.BOperator("*", Precedence.higherThan(Precedence.low()));
+    private static final DefaultExpressionParserTest.BOperator DIV = new DefaultExpressionParserTest.BOperator("/", Precedence.higherThan(Precedence.low()));
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -53,19 +52,19 @@ public class DefaultExpressionParserTest {
 
         tokenizer = ExpressionTokenizerFactory.defaultFactory().create(definitions);
 
-        when(definitions.hasBinaryOperator('+')).thenReturn(true);
-        when(definitions.getBinaryOperator('+')).thenReturn(PLUS);
-        when(definitions.hasBinaryOperator('-')).thenReturn(true);
-        when(definitions.getBinaryOperator('-')).thenReturn(MINUS);
-        when(definitions.hasBinaryOperator('*')).thenReturn(true);
-        when(definitions.getBinaryOperator('*')).thenReturn(MULT);
-        when(definitions.hasBinaryOperator('/')).thenReturn(true);
-        when(definitions.getBinaryOperator('/')).thenReturn(DIV);
+        when(definitions.hasBinaryOperator("+")).thenReturn(true);
+        when(definitions.getBinaryOperator("+")).thenReturn(PLUS);
+        when(definitions.hasBinaryOperator("-")).thenReturn(true);
+        when(definitions.getBinaryOperator("-")).thenReturn(MINUS);
+        when(definitions.hasBinaryOperator("*")).thenReturn(true);
+        when(definitions.getBinaryOperator("*")).thenReturn(MULT);
+        when(definitions.hasBinaryOperator("/")).thenReturn(true);
+        when(definitions.getBinaryOperator("/")).thenReturn(DIV);
 
-        when(definitions.hasUnaryOperator('+')).thenReturn(true);
-        when(definitions.getUnaryOperator('+')).thenReturn(UPLUS);
-        when(definitions.hasUnaryOperator('-')).thenReturn(true);
-        when(definitions.getUnaryOperator('-')).thenReturn(UMINUS);
+        when(definitions.hasUnaryOperator("+")).thenReturn(true);
+        when(definitions.getUnaryOperator("+")).thenReturn(UPLUS);
+        when(definitions.hasUnaryOperator("-")).thenReturn(true);
+        when(definitions.getUnaryOperator("-")).thenReturn(UMINUS);
 
         when(definitions.hasFunction("sum")).thenReturn(true);
         when(definitions.getFunction("sum")).thenReturn(new DefaultExpressionParserTest.Func("sum","a","b"));
@@ -73,8 +72,8 @@ public class DefaultExpressionParserTest {
         when(definitions.hasConstant("PI")).thenReturn(Boolean.TRUE);
         when(definitions.getConstant("PI")).thenReturn(Constant.newConst("PI", Math.PI));
 
-        when(definitions.hasBinaryOperator('&')).thenReturn(Boolean.TRUE,Boolean.FALSE);
-        when(definitions.getBinaryOperator('&')).thenReturn(null);
+        when(definitions.hasBinaryOperator("&")).thenReturn(Boolean.TRUE,Boolean.FALSE);
+        when(definitions.getBinaryOperator("&")).thenReturn(null);
 
         when(definitions.hasFunction("plus")).thenReturn(false);
     }
@@ -725,7 +724,7 @@ public class DefaultExpressionParserTest {
 
     private static class BOperator extends BinaryOperatorDefinition {
 
-        BOperator(char symbol, Precedence precedence) {
+        BOperator(String symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
@@ -733,13 +732,13 @@ public class DefaultExpressionParserTest {
 
         @Override
         public String toString() {
-            return ""+super.getSymbol();
+            return ""+super.getIdentifier();
         }
     }
 
     private static class UOperator extends UnaryOperatorDefinition {
 
-        UOperator(char symbol, Precedence precedence) {
+        UOperator(String symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
@@ -747,7 +746,7 @@ public class DefaultExpressionParserTest {
 
         @Override
         public String toString() {
-            return ""+super.getSymbol();
+            return ""+super.getIdentifier();
         }
     }
 

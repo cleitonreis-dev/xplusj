@@ -9,9 +9,9 @@ import com.xplusj.tokenizer.ExpressionTokenizer;
 public interface ExpressionContext {
     ExpressionOperatorDefinitions getDefinitions();
 
-    UnaryOperator getUnaryOperator(char symbol);
+    UnaryOperator getUnaryOperator(String symbol);
 
-    BinaryOperator getBinaryOperator(char symbol);
+    BinaryOperator getBinaryOperator(String symbol);
 
     FunctionOperator getFunction(String name);
 

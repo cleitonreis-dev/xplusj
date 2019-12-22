@@ -7,9 +7,6 @@ import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
 import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.OperatorType;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParserProcessor;
 
 public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double> {
@@ -87,13 +84,13 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         OperatorDefinition<? extends OperatorContext> operator = opStack.pull();
 
         if(operator.getType() == OperatorType.BINARY)
-            return expressionContext.getBinaryOperator(((BinaryOperatorDefinition)operator).getSymbol());
+            return expressionContext.getBinaryOperator(operator.getIdentifier());
 
         if(operator.getType() == OperatorType.FUNCTION)
-            return expressionContext.getFunction(((FunctionOperatorDefinition)operator).getName());
+            return expressionContext.getFunction(operator.getIdentifier());
 
         if(operator.getType() == OperatorType.UNARY)
-            return expressionContext.getUnaryOperator(((UnaryOperatorDefinition)operator).getSymbol());
+            return expressionContext.getUnaryOperator(operator.getIdentifier());
 
         throw new ExpressionException(String.format("Operator type %s not supported", operator.getType()));
     }

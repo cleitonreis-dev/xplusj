@@ -57,12 +57,12 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
     }
 
     @Override
-    public UnaryOperator getUnaryOperator(char symbol) {
+    public UnaryOperator getUnaryOperator(String symbol) {
         return unaryFactory.create(definitions.getUnaryOperator(symbol), this);
     }
 
     @Override
-    public BinaryOperator getBinaryOperator(char symbol) {
+    public BinaryOperator getBinaryOperator(String symbol) {
         return binaryFactory.create(definitions.getBinaryOperator(symbol), this);
     }
 

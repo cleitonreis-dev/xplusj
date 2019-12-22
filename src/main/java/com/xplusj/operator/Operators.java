@@ -9,18 +9,18 @@ import static com.xplusj.operator.Precedence.*;
 public interface Operators {
 
     interface Unaries{
-        UnaryOperatorDefinition PLUS = UnaryOperatorDefinition.create('+', higherThan(high()), ctx->+ctx.param());
-        UnaryOperatorDefinition MIN = UnaryOperatorDefinition.create('-', higherThan(high()), ctx->-ctx.param());
+        UnaryOperatorDefinition PLUS = UnaryOperatorDefinition.create("+", higherThan(high()), ctx->+ctx.param());
+        UnaryOperatorDefinition MIN = UnaryOperatorDefinition.create("-", higherThan(high()), ctx->-ctx.param());
 
         UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN};
     }
 
     interface Binaries{
-        BinaryOperatorDefinition ADD = BinaryOperatorDefinition.create('+', low(), ctx->ctx.param0()+ctx.param1());
-        BinaryOperatorDefinition SUB = BinaryOperatorDefinition.create('-', low(), ctx->ctx.param0()-ctx.param1());
-        BinaryOperatorDefinition MULT = BinaryOperatorDefinition.create('*', high(), ctx->ctx.param0()*ctx.param1());
-        BinaryOperatorDefinition DIV = BinaryOperatorDefinition.create('/', high(), ctx->ctx.param0()/ctx.param1());
-        BinaryOperatorDefinition POW = BinaryOperatorDefinition.create('^', lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
+        BinaryOperatorDefinition ADD = BinaryOperatorDefinition.create("+", low(), ctx->ctx.param0()+ctx.param1());
+        BinaryOperatorDefinition SUB = BinaryOperatorDefinition.create("-", low(), ctx->ctx.param0()-ctx.param1());
+        BinaryOperatorDefinition MULT = BinaryOperatorDefinition.create("*", high(), ctx->ctx.param0()*ctx.param1());
+        BinaryOperatorDefinition DIV = BinaryOperatorDefinition.create("/", high(), ctx->ctx.param0()/ctx.param1());
+        BinaryOperatorDefinition POW = BinaryOperatorDefinition.create("^", lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
 
         BinaryOperatorDefinition[] OPERATORS = {ADD,SUB,MULT,DIV,POW};
     }

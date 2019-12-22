@@ -16,8 +16,8 @@ public class TokenizerTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private static Set<Character> operators = new HashSet<>(Arrays.asList(
-            '+','-','*','/'
+    private static Set<String> operators = new HashSet<>(Arrays.asList(
+            "+","-","*","/"
     ));
 
     private static Tokenizer.OperatorChecker operatorChecker = c->operators.contains(c);

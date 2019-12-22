@@ -10,13 +10,13 @@ import java.util.*;
 
 public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorDefinitions {
 
-    private final Map<Character, UnaryOperatorDefinition> unaryOperators;
-    private final Map<Character, BinaryOperatorDefinition> binaryOperators;
+    private final Map<String, UnaryOperatorDefinition> unaryOperators;
+    private final Map<String, BinaryOperatorDefinition> binaryOperators;
     private final Map<String, FunctionOperatorDefinition> functionOperators;
     private final Map<String, Constant> constants;
 
-    private DefaultExpressionOperatorDefinitions(Map<Character, UnaryOperatorDefinition> unaryOperators,
-                                                 Map<Character, BinaryOperatorDefinition> binaryOperators,
+    private DefaultExpressionOperatorDefinitions(Map<String, UnaryOperatorDefinition> unaryOperators,
+                                                 Map<String, BinaryOperatorDefinition> binaryOperators,
                                                  Map<String, FunctionOperatorDefinition> functionOperators,
                                                  Map<String, Constant> constants) {
         this.unaryOperators = unaryOperators;
@@ -31,12 +31,12 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
     }
 
     @Override
-    public boolean hasBinaryOperator(char symbol) {
+    public boolean hasBinaryOperator(String symbol) {
         return binaryOperators.containsKey(symbol);
     }
 
     @Override
-    public boolean hasUnaryOperator(char symbol) {
+    public boolean hasUnaryOperator(String symbol) {
         return unaryOperators.containsKey(symbol);
     }
 
@@ -46,12 +46,12 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
     }
 
     @Override
-    public BinaryOperatorDefinition getBinaryOperator(char symbol) {
+    public BinaryOperatorDefinition getBinaryOperator(String symbol) {
         return binaryOperators.get(symbol);
     }
 
     @Override
-    public UnaryOperatorDefinition getUnaryOperator(char symbol) {
+    public UnaryOperatorDefinition getUnaryOperator(String symbol) {
         return unaryOperators.get(symbol);
     }
 
@@ -107,13 +107,13 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
 
         @Override
         public ExpressionOperatorDefinitions build() {
-            Map<Character, UnaryOperatorDefinition> unaryMap = new HashMap<>();
-            Map<Character, BinaryOperatorDefinition> binariesMap = new HashMap<>();
+            Map<String, UnaryOperatorDefinition> unaryMap = new HashMap<>();
+            Map<String, BinaryOperatorDefinition> binariesMap = new HashMap<>();
             Map<String, FunctionOperatorDefinition> functionsMap = new HashMap<>();
             Map<String, Constant> constantsMap = new HashMap<>();
 
-            unaries.forEach(operator->unaryMap.put(operator.getSymbol(), operator));
-            binaries.forEach(operator->binariesMap.put(operator.getSymbol(), operator));
+            unaries.forEach(operator->unaryMap.put(operator.getIdentifier(), operator));
+            binaries.forEach(operator->binariesMap.put(operator.getIdentifier(), operator));
             functions.forEach(operator->functionsMap.put(operator.getName(), operator));
             constants.forEach(constant->constantsMap.put(constant.getName(), constant));
 

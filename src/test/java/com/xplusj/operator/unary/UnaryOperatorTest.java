@@ -33,7 +33,7 @@ public class UnaryOperatorTest {
 
     @Test
     public void testOperatorCall(){
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition.create('+', low(), function);
+        UnaryOperatorDefinition definition = UnaryOperatorDefinition.create("+", low(), function);
         double[] params = {1D};
         double expectedValue = 3;
 
@@ -54,7 +54,7 @@ public class UnaryOperatorTest {
 
     @Test
     public void testOperatorParams(){
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition.create('+', low(), function);
+        UnaryOperatorDefinition definition = UnaryOperatorDefinition.create("+", low(), function);
         double[] params = {1D,2D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -66,7 +66,7 @@ public class UnaryOperatorTest {
 
     @Test
     public void testOperatorParams1(){
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition.create('+', low(), function);
+        UnaryOperatorDefinition definition = UnaryOperatorDefinition.create("+", low(), function);
         double[] params = {};
 
         thrown.expect(IllegalArgumentException.class);

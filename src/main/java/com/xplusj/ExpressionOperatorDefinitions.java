@@ -9,15 +9,15 @@ import com.xplusj.operator.unary.UnaryOperatorDefinition;
 public interface ExpressionOperatorDefinitions {
     boolean hasFunction(String name);
 
-    boolean hasBinaryOperator(char symbol);
+    boolean hasBinaryOperator(String symbol);
 
-    boolean hasUnaryOperator(char symbol);
+    boolean hasUnaryOperator(String symbol);
 
     boolean hasConstant(String name);
 
-    BinaryOperatorDefinition getBinaryOperator(char symbol);
+    BinaryOperatorDefinition getBinaryOperator(String symbol);
 
-    UnaryOperatorDefinition getUnaryOperator(char symbol);
+    UnaryOperatorDefinition getUnaryOperator(String symbol);
 
     FunctionOperatorDefinition getFunction(String name);
 

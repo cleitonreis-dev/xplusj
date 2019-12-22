@@ -24,7 +24,7 @@ public class UnaryOperator implements Operator<UnaryOperatorContext> {
         if(params.length != 1)
             throw new IllegalArgumentException(format(
                 "Unary operator %s expects one parameter, but received %s",
-                definition.getSymbol(), params.length));
+                definition.getIdentifier(), params.length));
 
         return definition.getFunction().apply(new UnaryOperatorContext(context,params[0]));
     }

@@ -14,7 +14,7 @@ public class FunctionOperatorDefinition extends OperatorDefinition<FunctionOpera
     private final FunctionIdentifier identifier;
 
     public FunctionOperatorDefinition(FunctionIdentifier identifier, Function<FunctionOperatorContext, Double> function) {
-        super(OperatorType.FUNCTION,PRECEDENCE,function,identifier.getParamsLength());
+        super(identifier.getName(), OperatorType.FUNCTION,PRECEDENCE,function,identifier.getParamsLength());
         this.identifier = identifier;
     }
 
