@@ -1,15 +1,15 @@
 package com.xplusj.operator.function;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.operator.Operator;
 
 import static java.lang.String.format;
 
 public class FunctionOperator implements Operator<FunctionOperatorContext> {
-    private final GlobalContext context;
+    private final ExpressionContext context;
     private final FunctionOperatorDefinition definition;
 
-    FunctionOperator(final GlobalContext context, final FunctionOperatorDefinition definition) {
+    FunctionOperator(final ExpressionContext context, final FunctionOperatorDefinition definition) {
         this.context = context;
         this.definition = definition;
     }
@@ -34,7 +34,7 @@ public class FunctionOperator implements Operator<FunctionOperatorContext> {
         return definition.toString();
     }
 
-    public static FunctionOperator create(final GlobalContext context, final FunctionOperatorDefinition definition){
+    public static FunctionOperator create(final ExpressionContext context, final FunctionOperatorDefinition definition){
         return new FunctionOperator(context, definition);
     }
 }

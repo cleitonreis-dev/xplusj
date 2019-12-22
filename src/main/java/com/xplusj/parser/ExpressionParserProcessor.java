@@ -2,6 +2,7 @@ package com.xplusj.parser;
 
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
+import com.xplusj.operator.OperatorDefinition;
 
 public interface ExpressionParserProcessor<Result> {
     void addValue(double value);
@@ -10,11 +11,11 @@ public interface ExpressionParserProcessor<Result> {
 
     void addConstant(String name);
 
-    void addOperator(Operator<? extends OperatorContext> operator);
+    void addOperator(OperatorDefinition<? extends OperatorContext> operator);
 
     void callLastOperatorAndAddResult();
 
-    Operator<?> getLastOperator();
+    OperatorDefinition<?> getLastOperator();
 
     Result getResult();
 }

@@ -1,15 +1,15 @@
 package com.xplusj.operator.unary;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.operator.Operator;
 
 import static java.lang.String.format;
 
 public class UnaryOperator implements Operator<UnaryOperatorContext> {
-    private final GlobalContext context;
+    private final ExpressionContext context;
     private final UnaryOperatorDefinition definition;
 
-    private UnaryOperator(final GlobalContext context, final UnaryOperatorDefinition definition) {
+    private UnaryOperator(final UnaryOperatorDefinition definition, final ExpressionContext context) {
         this.context = context;
         this.definition = definition;
     }
@@ -34,7 +34,7 @@ public class UnaryOperator implements Operator<UnaryOperatorContext> {
         return definition.toString();
     }
 
-    public static UnaryOperator create(final GlobalContext context, final UnaryOperatorDefinition definition) {
-        return new UnaryOperator(context,definition);
+    public static UnaryOperator create(final UnaryOperatorDefinition definition, final ExpressionContext context) {
+        return new UnaryOperator(definition, context);
     }
 }

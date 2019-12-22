@@ -1,20 +1,23 @@
 package com.xplusj.operator;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 
 import static java.lang.String.format;
 
 public abstract class OperatorContext{
-    private final GlobalContext context;
+    private final ExpressionContext context;
+    private final ExpressionOperatorDefinitions definitions;
     private final double[] params;
 
-    protected OperatorContext(final GlobalContext context, final double...params) {
+    protected OperatorContext(final ExpressionContext context, final double...params) {
         this.context = context;
+        this.definitions = context.getDefinitions();
         this.params = params;
     }
 
     public double call(final String name, final double...values){
-        if(!context.hasFunction(name))
+        if(!definitions.hasFunction(name))
             throw new IllegalArgumentException(format("Function '%s' not found", name));
 
 
@@ -22,10 +25,10 @@ public abstract class OperatorContext{
     }
 
     public double getConstant(String name){
-        if(!context.hasConstant(name))
+        if(!definitions.hasConstant(name))
             throw new IllegalArgumentException(format("Constant '%s' not found", name));
 
-        return context.getConstant(name);
+        return definitions.getConstant(name).getValue();
     }
 
     public double param(int index){

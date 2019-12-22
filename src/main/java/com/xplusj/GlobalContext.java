@@ -8,6 +8,7 @@ import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
 
+//TODO delete
 public interface GlobalContext {
 
     boolean hasFunction(String name);

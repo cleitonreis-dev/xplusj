@@ -1,20 +1,31 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
-import com.xplusj.operator.*;
+import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorContext;
+import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParserProcessor;
 
 public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double> {
 
-    private final GlobalContext globalContext;
+    private final ExpressionContext expressionContext;
+    private final ExpressionOperatorDefinitions operatorDefinitions;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
-    private final Stack<Operator<? extends OperatorContext>> opStack;
+    private final Stack<OperatorDefinition<? extends OperatorContext>> opStack;
 
-    private TwoStackBasedProcessor(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack) {
-        this.globalContext = env.getContext();
+    protected TwoStackBasedProcessor(ExpressionContext expressionContext,
+                                     VariableContext variableContext,
+                                     Stack<Double> valueStack,
+                                     Stack<OperatorDefinition<?>> opStack) {
+        this.expressionContext = expressionContext;
+        this.operatorDefinitions = expressionContext.getDefinitions();
         this.variableContext = variableContext;
         this.valueStack = valueStack;
         this.opStack = opStack;
@@ -35,26 +46,26 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
 
     @Override
     public void addConstant(String name) {
-        if(!globalContext.hasConstant(name))
+        if(!operatorDefinitions.hasConstant(name))
             throw new ExpressionException("Constant '"+ name +"' not found");
 
-        valueStack.push(globalContext.getConstant(name));
+        valueStack.push(operatorDefinitions.getConstant(name).getValue());
     }
 
     @Override
-    public void addOperator(Operator<? extends OperatorContext> operator) {
+    public void addOperator(OperatorDefinition<? extends OperatorContext> operator) {
         opStack.push(operator);
     }
 
     @Override
     public void callLastOperatorAndAddResult() {
-        Operator<? extends OperatorContext> operator = opStack.pull();
+        Operator<? extends OperatorContext> operator = getOperator();
         double value = operator.execute(getParams(operator.getDefinition()));
         valueStack.push(value);
     }
 
     @Override
-    public Operator<?> getLastOperator() {
+    public OperatorDefinition<?> getLastOperator() {
         return opStack.peek();
     }
 
@@ -72,11 +83,26 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         return values;
     }
 
-    static TwoStackBasedProcessor create(Environment env, VariableContext variableContext){
-        return new TwoStackBasedProcessor(env,variableContext,Stack.instance(),Stack.instance());
+    private Operator<? extends OperatorContext> getOperator(){
+        OperatorDefinition<? extends OperatorContext> operator = opStack.pull();
+
+        if(operator.getType() == OperatorType.BINARY)
+            return expressionContext.getBinaryOperator(((BinaryOperatorDefinition)operator).getSymbol());
+
+        if(operator.getType() == OperatorType.FUNCTION)
+            return expressionContext.getFunction(((FunctionOperatorDefinition)operator).getName());
+
+        if(operator.getType() == OperatorType.UNARY)
+            return expressionContext.getUnaryOperator(((UnaryOperatorDefinition)operator).getSymbol());
+
+        throw new ExpressionException(String.format("Operator type %s not supported", operator.getType()));
     }
 
-    static TwoStackBasedProcessor create(Environment env, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
-        return new TwoStackBasedProcessor(env,variableContext,valueStack,opStack);
+    public static TwoStackBasedProcessor create(ExpressionContext context, VariableContext variableContext, Stack<Double> valueStack, Stack<OperatorDefinition<?>> opStack){
+        return new TwoStackBasedProcessor(context,variableContext,valueStack,opStack);
+    }
+
+    public static TwoStackBasedProcessor create(ExpressionContext context, VariableContext variableContext){
+        return new TwoStackBasedProcessor(context,variableContext,Stack.instance(),Stack.instance());
     }
 }

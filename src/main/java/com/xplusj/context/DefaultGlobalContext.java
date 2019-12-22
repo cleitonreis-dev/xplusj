@@ -52,17 +52,17 @@ public class DefaultGlobalContext implements GlobalContext {
 
     @Override
     public BinaryOperator getBinaryOperator(char symbol) {
-        return BinaryOperator.create(this,binaryOperatorsMap.get(symbol));
+        return BinaryOperator.create(null,binaryOperatorsMap.get(symbol));
     }
 
     @Override
     public UnaryOperator getUnaryOperator(char symbol) {
-        return UnaryOperator.create(this, unaryOperatorsMap.get(symbol));
+        return UnaryOperator.create(null, null);
     }
 
     @Override
     public FunctionOperator getFunction(String name) {
-        return FunctionOperator.create(this, functionsMap.get(name));
+        return FunctionOperator.create(null, functionsMap.get(name));
     }
 
     @Override

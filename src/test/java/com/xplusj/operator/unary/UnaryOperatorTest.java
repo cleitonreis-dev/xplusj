@@ -1,6 +1,6 @@
 package com.xplusj.operator.unary;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,7 +26,7 @@ public class UnaryOperatorTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private GlobalContext context;
+    private ExpressionContext context;
 
     @Mock
     private Function<UnaryOperatorContext,Double> function;
@@ -40,7 +40,7 @@ public class UnaryOperatorTest {
         when(function.apply(any(UnaryOperatorContext.class))).thenReturn(expectedValue);
         ArgumentCaptor<UnaryOperatorContext> ctxCaptor = ArgumentCaptor.forClass(UnaryOperatorContext.class);
 
-        UnaryOperator operator = UnaryOperator.create(context,definition);
+        UnaryOperator operator = UnaryOperator.create(definition, context);
         double result = operator.execute(params);
 
         assertEquals(expectedValue, result, DELTA);
@@ -60,7 +60,7 @@ public class UnaryOperatorTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Unary operator + expects one parameter, but received 2");
 
-        UnaryOperator operator = UnaryOperator.create(context,definition);
+        UnaryOperator operator = UnaryOperator.create(definition,context);
         operator.execute(params);
     }
 
@@ -72,7 +72,7 @@ public class UnaryOperatorTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Unary operator + expects one parameter, but received 0");
 
-        UnaryOperator operator = UnaryOperator.create(context,definition);
+        UnaryOperator operator = UnaryOperator.create(definition, context);
         operator.execute(params);
     }
 }

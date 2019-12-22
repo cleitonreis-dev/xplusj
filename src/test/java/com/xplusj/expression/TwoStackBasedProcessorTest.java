@@ -1,9 +1,11 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
-import com.xplusj.operator.Operator;
+import com.xplusj.factory.*;
+import com.xplusj.operator.Constant;
+import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.OperatorType;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.binary.BinaryOperatorContext;
@@ -14,9 +16,7 @@ import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.operator.unary.UnaryOperatorContext;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
-import com.xplusj.parser.DefaultExpressionParser;
 import com.xplusj.parser.ExpressionParser;
-import com.xplusj.tokenizer.DefaultExpressionTokenizer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,10 +39,10 @@ public class TwoStackBasedProcessorTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private Environment environment;
+    private ExpressionContext environment;
 
     @Mock
-    private GlobalContext globalContext;
+    private ExpressionOperatorDefinitions globalContext;
 
     private FunctionOperator functionOperator;
 
@@ -63,7 +63,7 @@ public class TwoStackBasedProcessorTest {
     private Stack<Double> valStack;
 
     @Mock
-    private Stack<Operator<?>> opStack;
+    private Stack<OperatorDefinition<?>> opStack;
 
     @Mock
     private VariableContext variableContext;
@@ -81,14 +81,16 @@ public class TwoStackBasedProcessorTest {
 
     @Before
     public void setUp(){
-        when(environment.getContext()).thenReturn(globalContext);
+        when(environment.getDefinitions()).thenReturn(globalContext);
 
-        ExpressionParser parser = DefaultExpressionParser.create(globalContext, DefaultExpressionTokenizer.create(globalContext));
+        ExpressionParser parser = ExpressionParserFactory.defaultFactory()
+                .create(ExpressionTokenizerFactory.defaultFactory().create(globalContext), globalContext);
         when(environment.getParser()).thenReturn(parser);
 
         when(unaryOperatorDefinition.getType()).thenReturn(OperatorType.UNARY);
         when(unaryOperatorDefinition.getParamsLength()).thenReturn(1);
         when(unaryOperatorDefinition.getFunction()).thenReturn(unaryFunction);
+
         when(binaryOperatorDefinition.getType()).thenReturn(OperatorType.BINARY);
         when(binaryOperatorDefinition.getParamsLength()).thenReturn(2);
         when(binaryOperatorDefinition.getFunction()).thenReturn(binaryFunction);
@@ -98,9 +100,13 @@ public class TwoStackBasedProcessorTest {
 
         interpreter = TwoStackBasedProcessor.create(environment, variableContext, valStack, opStack);
 
-        unaryOperator = UnaryOperator.create(globalContext,unaryOperatorDefinition);
-        binaryOperator = BinaryOperator.create(globalContext,binaryOperatorDefinition);
-        functionOperator = FunctionOperator.create(globalContext,functionOperatorDefinition);
+        unaryOperator = ExpressionUnaryOperatorFactory.defaultFactory().create(unaryOperatorDefinition,environment);
+        binaryOperator = ExpressionBinaryOperatorFactory.defaultFactory().create(binaryOperatorDefinition,environment);
+        functionOperator = ExpressionFunctionOperatorFactory.defaultFactory().create(functionOperatorDefinition, environment);
+
+        when(environment.getFunction(any(String.class))).thenReturn(functionOperator);
+        when(environment.getUnaryOperator(any(Character.class))).thenReturn(unaryOperator);
+        when(environment.getBinaryOperator(any(Character.class))).thenReturn(binaryOperator);
     }
 
     @Test
@@ -132,7 +138,7 @@ public class TwoStackBasedProcessorTest {
     @Test
     public void pushConstant() {
         when(globalContext.hasConstant("AB")).thenReturn(true);
-        when(globalContext.getConstant("AB")).thenReturn(3D);
+        when(globalContext.getConstant("AB")).thenReturn(Constant.newConst("AB", 3D));
 
         interpreter.addConstant("AB");
 
@@ -151,8 +157,8 @@ public class TwoStackBasedProcessorTest {
 
     @Test
     public void pushOperator() {
-        interpreter.addOperator(unaryOperator);
-        verify(opStack).push(unaryOperator);
+        interpreter.addOperator(unaryOperator.getDefinition());
+        verify(opStack).push(unaryOperator.getDefinition());
     }
 
     @Test
@@ -165,7 +171,7 @@ public class TwoStackBasedProcessorTest {
     public void testCallUnaryOperator() {
         when(unaryFunction.apply(any(UnaryOperatorContext.class))).thenReturn(3D);
         when(valStack.pull()).thenReturn(2D);
-        doReturn(unaryOperator).when(opStack).pull();
+        doReturn(unaryOperatorDefinition).when(opStack).pull();
 
         ArgumentCaptor<UnaryOperatorContext> opContextCap = ArgumentCaptor.forClass(UnaryOperatorContext.class);
 
@@ -185,7 +191,7 @@ public class TwoStackBasedProcessorTest {
     public void testCallBinaryOperator() {
         when(binaryFunction.apply(any(BinaryOperatorContext.class))).thenReturn(3D);
         when(valStack.pull()).thenReturn(2D,1D);
-        doReturn(binaryOperator).when(opStack).pull();
+        doReturn(binaryOperatorDefinition).when(opStack).pull();
 
         ArgumentCaptor<BinaryOperatorContext> opContextCap = ArgumentCaptor.forClass(BinaryOperatorContext.class);
 
@@ -206,7 +212,7 @@ public class TwoStackBasedProcessorTest {
     public void testCallFunction() {
         when(functionFunction.apply(any(FunctionOperatorContext.class))).thenReturn(5D);
         when(valStack.pull()).thenReturn(2D,1D, 4D);
-        doReturn(functionOperator).when(opStack).pull();
+        doReturn(functionOperatorDefinition).when(opStack).pull();
 
         ArgumentCaptor<FunctionOperatorContext> opContextCap = ArgumentCaptor
                 .forClass(FunctionOperatorContext.class);

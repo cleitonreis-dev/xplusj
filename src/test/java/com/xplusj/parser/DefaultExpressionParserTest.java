@@ -1,17 +1,16 @@
 package com.xplusj.parser;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.expression.Stack;
-import com.xplusj.operator.Operator;
+import com.xplusj.factory.ExpressionTokenizerFactory;
+import com.xplusj.operator.Constant;
+import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.Precedence;
-import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionIdentifier;
-import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
-import com.xplusj.tokenizer.DefaultExpressionTokenizer;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,7 +41,7 @@ public class DefaultExpressionParserTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private GlobalContext context;
+    private ExpressionOperatorDefinitions definitions;
 
     private DefaultExpressionParserTest.InstructionLogger instructionLogger;
 
@@ -52,37 +51,37 @@ public class DefaultExpressionParserTest {
     public void setUp(){
         instructionLogger = new DefaultExpressionParserTest.InstructionLogger();
 
-        tokenizer = DefaultExpressionTokenizer.create(context);
+        tokenizer = ExpressionTokenizerFactory.defaultFactory().create(definitions);
 
-        when(context.hasBinaryOperator('+')).thenReturn(true);
-        when(context.getBinaryOperator('+')).thenReturn(BinaryOperator.create(context,PLUS));
-        when(context.hasBinaryOperator('-')).thenReturn(true);
-        when(context.getBinaryOperator('-')).thenReturn(BinaryOperator.create(context,MINUS));
-        when(context.hasBinaryOperator('*')).thenReturn(true);
-        when(context.getBinaryOperator('*')).thenReturn(BinaryOperator.create(context,MULT));
-        when(context.hasBinaryOperator('/')).thenReturn(true);
-        when(context.getBinaryOperator('/')).thenReturn(BinaryOperator.create(context,DIV));
+        when(definitions.hasBinaryOperator('+')).thenReturn(true);
+        when(definitions.getBinaryOperator('+')).thenReturn(PLUS);
+        when(definitions.hasBinaryOperator('-')).thenReturn(true);
+        when(definitions.getBinaryOperator('-')).thenReturn(MINUS);
+        when(definitions.hasBinaryOperator('*')).thenReturn(true);
+        when(definitions.getBinaryOperator('*')).thenReturn(MULT);
+        when(definitions.hasBinaryOperator('/')).thenReturn(true);
+        when(definitions.getBinaryOperator('/')).thenReturn(DIV);
 
-        when(context.hasUnaryOperator('+')).thenReturn(true);
-        when(context.getUnaryOperator('+')).thenReturn(UnaryOperator.create(context,UPLUS));
-        when(context.hasUnaryOperator('-')).thenReturn(true);
-        when(context.getUnaryOperator('-')).thenReturn(UnaryOperator.create(context,UMINUS));
+        when(definitions.hasUnaryOperator('+')).thenReturn(true);
+        when(definitions.getUnaryOperator('+')).thenReturn(UPLUS);
+        when(definitions.hasUnaryOperator('-')).thenReturn(true);
+        when(definitions.getUnaryOperator('-')).thenReturn(UMINUS);
 
-        when(context.hasFunction("sum")).thenReturn(true);
-        when(context.getFunction("sum")).thenReturn(FunctionOperator.create(context, new DefaultExpressionParserTest.Func("sum","a","b")));
+        when(definitions.hasFunction("sum")).thenReturn(true);
+        when(definitions.getFunction("sum")).thenReturn(new DefaultExpressionParserTest.Func("sum","a","b"));
 
-        when(context.hasConstant("PI")).thenReturn(Boolean.TRUE);
-        when(context.getConstant("PI")).thenReturn(Math.PI);
+        when(definitions.hasConstant("PI")).thenReturn(Boolean.TRUE);
+        when(definitions.getConstant("PI")).thenReturn(Constant.newConst("PI", Math.PI));
 
-        when(context.hasBinaryOperator('&')).thenReturn(Boolean.TRUE,Boolean.FALSE);
-        when(context.getBinaryOperator('&')).thenReturn(null);
+        when(definitions.hasBinaryOperator('&')).thenReturn(Boolean.TRUE,Boolean.FALSE);
+        when(definitions.getBinaryOperator('&')).thenReturn(null);
 
-        when(context.hasFunction("plus")).thenReturn(false);
+        when(definitions.hasFunction("plus")).thenReturn(false);
     }
 
     @Test
     public void test_1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1";
 
         parser.eval(exp, instructionLogger);
@@ -92,7 +91,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test_2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "ab";
 
         parser.eval(exp, instructionLogger);
@@ -102,7 +101,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test_3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "sum(1,2)";
         DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog()
                 .pushOperator("sum(a,b)")
@@ -117,7 +116,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test_4(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "sum(x,y)";
         DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog()
                 .pushOperator("sum(a,b)")
@@ -132,7 +131,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test_5(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "(1)";
 
         parser.eval(exp, instructionLogger);
@@ -142,7 +141,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test_6(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "((1))";
 
         parser.eval(exp, instructionLogger);
@@ -152,7 +151,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1+1";
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
                 .pushValue(1)
@@ -167,7 +166,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void test2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1+1-25.678";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -186,7 +185,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testParentheses1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1+(1-25)";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -205,7 +204,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testParentheses2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1/(1*(25-1))-1";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -225,7 +224,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testParentheses3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1-(1*(25-1))/1";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -245,7 +244,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testParentheses4(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "sum(1-(1*(25-1))/1,((-1)))";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -270,7 +269,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testUnaryOperator1(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "+1";
 
         parser.eval(exp, instructionLogger);
@@ -280,7 +279,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testUnaryOperator2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1+(-1)";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -295,7 +294,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testUnaryOperator3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1+-1";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -310,7 +309,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testFunction(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1*sum(2,1+3)";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -327,7 +326,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testVar(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1*v";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -340,7 +339,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testVar2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "v/a";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -353,7 +352,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testVar3(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1*sum(2,1+ab)-var_1";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -373,7 +372,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testVar4(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1*sum(2,(1+ab))-var_1";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -393,7 +392,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testConst(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "PI*2";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -409,7 +408,7 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testConst2(){
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "PI*sum(2,(1+PI))-var_1+PI";
 
         DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
@@ -442,7 +441,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp,3,"Unexpected end of expression").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -453,7 +452,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp,4,"Unclosed parenthesis at index %s",4).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -464,7 +463,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 10, "invalid identifier '%s' at index %s", ")", 10).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -475,7 +474,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp,0,"Unclosed parenthesis at index %s",0).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -485,7 +484,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp,0,"Unclosed parenthesis at index %s",0).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -495,7 +494,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp,2,"Unclosed parenthesis at index %s",2).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -505,7 +504,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 1, "invalid identifier '%s' at index %s", ",", 1).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -515,7 +514,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 3, "invalid identifier '%s' at index %s", ")", 3).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -525,7 +524,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 1, "Binary operator '%s' not found", "&").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -535,7 +534,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 0, "Unary operator '%s' not found", "*").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -545,7 +544,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 1, "Unary operator '%s' not found", "*").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -555,7 +554,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 6, "Unary operator '%s' not found", "*").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -565,7 +564,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 2, "Unary operator '%s' not found", "*").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -575,7 +574,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 0, "Function '%s' not found", "plus").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -585,7 +584,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 3, "Unclosed parenthesis at index %s", 3).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -595,7 +594,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 6, "invalid identifier '%s' at index %s", ',', 6).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -605,7 +604,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 2, "Function requires %s parameters", 2).getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -615,7 +614,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 6, "Function not closed properly").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -625,7 +624,7 @@ public class DefaultExpressionParserTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(exp, 7, "Function not closed properly").getMessage());
 
-        DefaultExpressionParser parser = DefaultExpressionParser.create(context, tokenizer);
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
     }
 
@@ -678,7 +677,7 @@ public class DefaultExpressionParserTest {
     }
 
     private static class InstructionLogger implements ExpressionParserProcessor<DefaultExpressionParserTest.StackLog> {
-        private Stack<Operator<?>> opStack = Stack.instance();
+        private Stack<OperatorDefinition<?>> opStack = Stack.instance();
         private DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog();
 
         @Override
@@ -700,7 +699,7 @@ public class DefaultExpressionParserTest {
         }
 
         @Override
-        public void addOperator(Operator<?> operator) {
+        public void addOperator(OperatorDefinition<?> operator) {
             log.pushOperator(operator.toString());
             opStack.push(operator);
             System.out.println(log);
@@ -713,7 +712,7 @@ public class DefaultExpressionParserTest {
         }
 
         @Override
-        public Operator<?> getLastOperator() {
+        public OperatorDefinition<?> getLastOperator() {
             System.out.println(log);
             return opStack.peek();
         }

@@ -5,6 +5,7 @@ import com.xplusj.parser.ExpressionParser;
 import com.xplusj.operator.Operators;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 
+//TODO delete
 public interface Environment {
 
     Expression expression(String expression);
