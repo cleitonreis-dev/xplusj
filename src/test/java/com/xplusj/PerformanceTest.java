@@ -1,12 +1,6 @@
 package com.xplusj;
 
-import com.xplusj.context.DefaultGlobalContext;
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.operator.binary.BinaryOperator;
-import com.xplusj.operator.function.FunctionOperator;
-import com.xplusj.operator.unary.UnaryOperator;
-
-import static com.xplusj.operator.Precedence.*;
 
 public class PerformanceTest {
 
@@ -23,9 +17,10 @@ public class PerformanceTest {
 
     //static final ExpressionParser PARSER = new com.xplusj.interpreter.parser.ExpressionParser(CONTEXT);
 
-    static final Environment env = Environment.env();
+    static final ExpressionGlobalContext env = ExpressionGlobalContext.builder().build();
 
     public static void main(String[] args) {
+        System.out.println(env.expression("8/2*(2+2)").eval());
         String expression = "(a/(2+b)-max(a,b)*2)*(a/(2+b)-max(a,b)*2)*(a/(2+b)-max(a,b)*2)";
         double a = 1;
         double b = 2;

@@ -1,8 +1,8 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.VariableContext;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.parser.ExpressionParserProcessor;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,8 +24,8 @@ public class DefaultExpressionTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Mock
-    private Environment env;
+    /*@Mock
+    private Environment env;*/
 
     @Mock
     private ExpressionParser parser;
@@ -34,7 +34,7 @@ public class DefaultExpressionTest {
     private TwoStackBasedProcessor twoStackBasedProcessor;
 
     @Mock
-    private Function<VariableContext,TwoStackBasedProcessor> twoStackProcessorFactory;
+    private Function<VariableContext, ExpressionParserProcessor<Double>> twoStackProcessorFactory;
 
     @Before
     public void setUp(){
@@ -66,13 +66,12 @@ public class DefaultExpressionTest {
     public void testExpressionWithoutVars(){
         String exp = "1+1";
 
-        when(twoStackBasedProcessor.getCalculatedResult()).thenReturn(2D);
+        when(parser.eval(exp,twoStackBasedProcessor)).thenReturn(2D);
 
         double value = DefaultExpression.create(exp,parser,twoStackProcessorFactory).eval();
 
         verify(twoStackProcessorFactory).apply(VariableContext.EMPTY);
         verify(parser).eval(exp,twoStackBasedProcessor);
-        verify(twoStackBasedProcessor).getCalculatedResult();
 
         assertEquals(2D, value,0.0000000000000001);
     }
@@ -82,13 +81,12 @@ public class DefaultExpressionTest {
         String exp = "1+b";
         VariableContext vctx = VariableContext.builder().add("b", 1).build();
 
-        when(twoStackBasedProcessor.getCalculatedResult()).thenReturn(2D);
+        when(parser.eval(exp,twoStackBasedProcessor)).thenReturn(2D);
 
         double value = DefaultExpression.create(exp,parser,twoStackProcessorFactory).eval(vctx);
 
         verify(twoStackProcessorFactory).apply(vctx);
         verify(parser).eval(exp,twoStackBasedProcessor);
-        verify(twoStackBasedProcessor).getCalculatedResult();
 
         assertEquals(2D, value,0.0000000000000001);
     }

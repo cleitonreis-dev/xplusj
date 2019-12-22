@@ -1,8 +1,8 @@
 package com.xplusj.operator.function;
 
-import com.xplusj.Environment;
+import com.xplusj.ExpressionContext;
 import com.xplusj.Expression;
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.function.FunctionOperatorContext;
 

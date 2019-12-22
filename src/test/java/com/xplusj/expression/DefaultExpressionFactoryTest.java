@@ -1,6 +1,6 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
+import com.xplusj.ExpressionContext;
 import com.xplusj.parser.ExpressionParser;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class DefaultExpressionFactoryTest {
 
     @Mock
-    private Environment env;
+    private ExpressionContext env;
 
     @Mock
     ExpressionParser parser;

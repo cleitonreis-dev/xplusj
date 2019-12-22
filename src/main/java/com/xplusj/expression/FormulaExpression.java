@@ -13,15 +13,15 @@ import java.util.function.Supplier;
 public class FormulaExpression implements Expression {
     private final String formula;
     private final ExpressionParser parser;
-    private final Function<VariableContext,TwoStackBasedProcessor> processorFactory;
-    private final Supplier<InstructionListProcessor> instructionListProcessorFactory;
+    private final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory;
+    private final Supplier<ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>>> instructionListProcessorFactory;
 
     private List<Consumer<ExpressionParserProcessor>> instructions;
 
     private FormulaExpression(final String formula,
                             final ExpressionParser parser,
-                            final Function<VariableContext,TwoStackBasedProcessor> processorFactory,
-                            final Supplier<InstructionListProcessor> instructionListProcessorFactory) {
+                            final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory,
+                            final Supplier<ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>>> instructionListProcessorFactory) {
         this.formula = formula;
         this.parser = parser;
         this.processorFactory = processorFactory;
@@ -38,23 +38,22 @@ public class FormulaExpression implements Expression {
         if(instructions == null)
             initialize();
 
-        TwoStackBasedProcessor processor = this.processorFactory.apply(variableContext);
+        ExpressionParserProcessor<Double> processor = this.processorFactory.apply(variableContext);
         instructions.forEach(instruction->instruction.accept(processor));
-        return processor.getCalculatedResult();
+        return processor.getResult();
     }
 
     private synchronized void initialize() {
         if(instructions == null) {
-            InstructionListProcessor processor = instructionListProcessorFactory.get();
-            parser.eval(formula, processor);
-            instructions = processor.getInstructions();
+            ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>> processor = instructionListProcessorFactory.get();
+            instructions = parser.eval(formula, processor);
         }
     }
 
     public static FormulaExpression create(final String formula,
                                            final ExpressionParser parser,
-                                           final Function<VariableContext,TwoStackBasedProcessor> processorFactory,
-                                           final Supplier<InstructionListProcessor> instructionListProcessorFactory){
+                                           final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory,
+                                           final Supplier<ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>>> instructionListProcessorFactory){
         if(formula == null)
             throw new ExpressionException("Invalid expression: expression null");
 

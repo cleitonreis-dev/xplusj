@@ -1,7 +1,9 @@
 package com.xplusj.operator;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.function.FunctionOperator;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -23,7 +25,15 @@ public class OperatorContextTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private GlobalContext context;
+    private ExpressionContext context;
+
+    @Mock
+    private ExpressionOperatorDefinitions definitions;
+
+    @Before
+    public void setUp(){
+        when(context.getDefinitions()).thenReturn(definitions);
+    }
 
     @Test
     public void testFunctionCall(){
@@ -31,12 +41,12 @@ public class OperatorContextTest {
         FunctionOperator function = Mockito.mock(FunctionOperator.class);
         double[] params = {1D,2D};
 
-        when(context.hasFunction(funcName)).thenReturn(true);
+        when(definitions.hasFunction(funcName)).thenReturn(true);
         when(context.getFunction(funcName)).thenReturn(function);
 
         new OperatorContextTestImpl(context).call(funcName, params);
 
-        verify(context).hasFunction(funcName);
+        verify(definitions).hasFunction(funcName);
         verify(function).execute(params);
     }
 
@@ -45,7 +55,7 @@ public class OperatorContextTest {
         String funcName = "sum";
         double[] params = {1D,2D};
 
-        when(context.hasFunction(funcName)).thenReturn(false);
+        when(definitions.hasFunction(funcName)).thenReturn(false);
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function 'sum' not found");
@@ -58,8 +68,8 @@ public class OperatorContextTest {
         String constName = "CONST";
         double constValue = 10D;
 
-        when(context.hasConstant(constName)).thenReturn(true);
-        when(context.getConstant(constName)).thenReturn(constValue);
+        when(definitions.hasConstant(constName)).thenReturn(true);
+        when(definitions.getConstant(constName)).thenReturn(Constant.newConst(constName,constValue));
 
         double value = new OperatorContextTestImpl(context).getConstant(constName);
         assertEquals(constValue,value,DELTA);
@@ -69,7 +79,7 @@ public class OperatorContextTest {
     public void testGetConstantNotFound(){
         String constName = "CONST";
 
-        when(context.hasConstant(constName)).thenReturn(false);
+        when(definitions.hasConstant(constName)).thenReturn(false);
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Constant 'CONST' not found");
@@ -109,7 +119,7 @@ public class OperatorContextTest {
 
     static class OperatorContextTestImpl extends OperatorContext{
 
-        OperatorContextTestImpl(GlobalContext context, double...params) {
+        OperatorContextTestImpl(ExpressionContext context, double...params) {
             super(context,params);
         }
     }

@@ -1,15 +1,15 @@
 package com.xplusj.operator.binary;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.operator.Operator;
 
 import static java.lang.String.format;
 
 public class BinaryOperator implements Operator<BinaryOperatorContext> {
-    private final GlobalContext context;
+    private final ExpressionContext context;
     private final BinaryOperatorDefinition definition;
 
-    private BinaryOperator(final GlobalContext context, final BinaryOperatorDefinition definition) {
+    private BinaryOperator(final ExpressionContext context, final BinaryOperatorDefinition definition) {
         this.context = context;
         this.definition = definition;
     }
@@ -34,7 +34,7 @@ public class BinaryOperator implements Operator<BinaryOperatorContext> {
         return definition.toString();
     }
 
-    public static BinaryOperator create(final GlobalContext context, final BinaryOperatorDefinition definition) {
+    public static BinaryOperator create(final ExpressionContext context, final BinaryOperatorDefinition definition) {
         return new BinaryOperator(context,definition);
     }
 }

@@ -1,9 +1,9 @@
 package com.xplusj.parser;
 
-import com.xplusj.GlobalContext;
-import com.xplusj.operator.Operator;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.OperatorContext;
-import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import com.xplusj.tokenizer.Token;
 import com.xplusj.tokenizer.TokenType;
@@ -11,20 +11,22 @@ import com.xplusj.tokenizer.TokenType;
 public class DefaultExpressionParser implements ExpressionParser {
     private enum ExecContext{PARENTHESIS,FUNC,EXP}
 
-    private final GlobalContext globalContext;
+    private final ExpressionOperatorDefinitions globalContext;
     private final ExpressionTokenizer tokenizer;
 
-    private DefaultExpressionParser(GlobalContext globalContext, ExpressionTokenizer tokenizer) {
+    private DefaultExpressionParser(ExpressionOperatorDefinitions globalContext, ExpressionTokenizer tokenizer) {
         this.globalContext= globalContext;
         this.tokenizer = tokenizer;
     }
 
     @Override
-    public void eval(final String expression, final ExpressionParserProcessor instructionHandler) {
-        eval(ExecContext.EXP, tokenizer.tokenize(expression),instructionHandler);
+    public<ParserResult> ParserResult eval(final String expression, final ExpressionParserProcessor<ParserResult> instructionProcessor) {
+        return eval(ExecContext.EXP, tokenizer.tokenize(expression),instructionProcessor);
     }
 
-    private void eval(final ExecContext execContext, final ExpressionTokenizer.Tokenizer tokenizer, final ExpressionParserProcessor instructionsProcessor) {
+    private <ParserResult> ParserResult eval(final ExecContext execContext,
+                                             final ExpressionTokenizer.Tokenizer tokenizer,
+                                             final ExpressionParserProcessor<ParserResult> instructionsProcessor) {
         int stackOperatorCount = 0;
         boolean parenthesisClosed = false;
         Token lastToken = null;
@@ -101,10 +103,12 @@ public class DefaultExpressionParser implements ExpressionParser {
             instructionsProcessor.callLastOperatorAndAddResult();
             stackOperatorCount--;
         }
+
+        return instructionsProcessor.getResult();
     }
 
     private int defineOperator(ExpressionParserProcessor instructionsProcessor, int currentStackCount, Token lastToken, String expression, Token token) {
-        Operator<? extends OperatorContext> operator;
+        OperatorDefinition<? extends OperatorContext> operator;
         boolean isUnary = lastToken == null || lastToken.type == TokenType.OPERATOR
                 || lastToken.type == TokenType.PARENTHESIS_OPENING
                 || lastToken.type == TokenType.COMMA;
@@ -119,7 +123,7 @@ public class DefaultExpressionParser implements ExpressionParser {
             throw new ExpressionParseException(expression, token.index, msg, token.value);
         }
 
-        if(currentStackCount == 0 || operator.getDefinition().precedes(instructionsProcessor.getLastOperator())) {
+        if(currentStackCount == 0 || operator.precedes(instructionsProcessor.getLastOperator())) {
             instructionsProcessor.addOperator(operator);
             currentStackCount++;
         }else {
@@ -130,18 +134,18 @@ public class DefaultExpressionParser implements ExpressionParser {
         return currentStackCount;
     }
 
-    private void evalFunc(Token token, final ExpressionTokenizer.Tokenizer tokenizer, ExpressionParserProcessor instructionsProcessor){
+    private void evalFunc(Token token, final ExpressionTokenizer.Tokenizer tokenizer, ExpressionParserProcessor<?> instructionsProcessor){
         if(!globalContext.hasFunction(token.value))
             throw new ExpressionParseException(tokenizer.getExpression(), token.index, "Function '%s' not found", token.value);
 
-        FunctionOperator function = globalContext.getFunction(token.value);
+        FunctionOperatorDefinition function = globalContext.getFunction(token.value);
         instructionsProcessor.addOperator(function);
 
         tokenizer.next();//read next '('
         if(!tokenizer.hasNext())
             throw unclosedParenthesis(tokenizer.getExpression(), tokenizer.getLastToken().index);
 
-        int paramsLength = function.getDefinition().getParamsLength();
+        int paramsLength = function.getParamsLength();
         for(int i = 0; i < paramsLength; i++) {
             eval(ExecContext.FUNC, tokenizer, instructionsProcessor);
 
@@ -149,7 +153,7 @@ public class DefaultExpressionParser implements ExpressionParser {
 
             if(i < (paramsLength - 1) && lastTokenType != TokenType.COMMA)
                 throw new ExpressionParseException(tokenizer.getExpression(),
-                    token.index,"Function requires %s parameters", function.getDefinition().getParamsLength());
+                    token.index,"Function requires %s parameters", function.getParamsLength());
 
             if(i == (paramsLength - 1) && lastTokenType != TokenType.PARENTHESIS_CLOSING)
                 throw new ExpressionParseException(tokenizer.getExpression(),
@@ -172,7 +176,7 @@ public class DefaultExpressionParser implements ExpressionParser {
         return new ExpressionParseException(expression,index,"Unclosed parenthesis at index %s",index);
     }
 
-    public static DefaultExpressionParser create(GlobalContext context, ExpressionTokenizer tokenizer){
+    public static DefaultExpressionParser create(ExpressionOperatorDefinitions context, ExpressionTokenizer tokenizer){
         return new DefaultExpressionParser(context,tokenizer);
     }
 }

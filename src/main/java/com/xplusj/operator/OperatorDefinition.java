@@ -22,8 +22,8 @@ public abstract class OperatorDefinition <T extends OperatorContext>{
         return precedence;
     }
 
-    public boolean precedes(Operator<?> operator) {
-        return precedence.compareTo(operator.getDefinition().getPrecedence()) > 0;
+    public boolean precedes(OperatorDefinition<?> operator) {
+        return precedence.compareTo(operator.getPrecedence()) > 0;
     }
 
     public int getParamsLength(){

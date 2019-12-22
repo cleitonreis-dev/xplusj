@@ -1,11 +1,11 @@
 package com.xplusj.operator.binary;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.operator.OperatorContext;
 
 public class BinaryOperatorContext extends OperatorContext {
 
-    BinaryOperatorContext(final GlobalContext context, final double...params) {
+    BinaryOperatorContext(final ExpressionContext context, final double...params) {
         super(context,params);
     }
 

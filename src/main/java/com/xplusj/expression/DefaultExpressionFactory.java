@@ -1,25 +1,25 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.Expression;
-import com.xplusj.ExpressionFactory;
+import com.xplusj.ExpressionContext;
+import com.xplusj.factory.ExpressionFactory;
 
 public class DefaultExpressionFactory implements ExpressionFactory {
     private static final DefaultExpressionFactory INSTANCE = new DefaultExpressionFactory();
 
     @Override
-    public Expression expression(final String expression, final Environment env) {
+    public Expression expression(final String expression, final ExpressionContext context) {
         return DefaultExpression.create(
-                expression,env.getParser(),
-                (varCtx)->TwoStackBasedProcessor.create(env,varCtx,Stack.instance(),Stack.instance())
+                expression,context.getParser(),
+                (varCtx)->TwoStackBasedProcessor.create(context,varCtx,Stack.instance(),Stack.instance())
         );
     }
 
     @Override
-    public Expression formula(final String expression, final Environment env) {
-        return FormulaExpression.create(expression, env.getParser(),
-                (varCtx)->TwoStackBasedProcessor.create(env,varCtx,Stack.instance(),Stack.instance()),
-                ()->InstructionListProcessor.create(Stack.instance())
+    public Expression formula(final String expression, final ExpressionContext context) {
+        return FormulaExpression.create(expression, context.getParser(),
+                (varCtx)->TwoStackBasedProcessor.create(context,varCtx),
+                InstructionListProcessor::create
         );
     }
 

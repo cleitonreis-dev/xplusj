@@ -1,8 +1,7 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
-import com.xplusj.GlobalContext;
-import com.xplusj.context.DefaultGlobalContext;
+import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.context.DefaultVariableContext;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
@@ -17,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 @Deprecated //TODO adapt this to integration test
 @RunWith(MockitoJUnitRunner.class)
 public class InlineExpressionTest {
-    private static final GlobalContext CONTEXT =
-        DefaultGlobalContext.builder()
+    static final ExpressionOperatorDefinitions CONTEXT =
+            ExpressionOperatorDefinitions.builder()
             .addBinaryOperator(BinaryOperatorDefinition.create('+', low(), ctx->ctx.param0() + ctx.param1()))
             .addBinaryOperator(BinaryOperatorDefinition.create('-', low(), ctx->ctx.param0() - ctx.param1()))
             .addBinaryOperator(BinaryOperatorDefinition.create('*', high(), ctx->ctx.param0() * ctx.param1()))
@@ -29,7 +28,9 @@ public class InlineExpressionTest {
         .build();
 
 
-    static final Environment ENV = Environment.builder().setContext(CONTEXT).build();
+    static final ExpressionGlobalContext ENV = ExpressionGlobalContext.builder()
+            .setOperatorDefinitions(CONTEXT)
+            .build();
 
     @Test
     public void eval() {
@@ -118,7 +119,7 @@ public class InlineExpressionTest {
 
     private static DefaultExpression eval(String expression){
         return DefaultExpression.create(expression, ENV.getParser(),
-                (ctx)->TwoStackBasedProcessor.create(ENV,ctx,Stack.instance(), Stack.instance()));
+                (ctx)->TwoStackBasedProcessor.create(ENV,ctx));
     }
 
     /*private Environment env = defaultEnv().build();

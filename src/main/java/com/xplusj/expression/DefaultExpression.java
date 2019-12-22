@@ -3,6 +3,7 @@ package com.xplusj.expression;
 import com.xplusj.Expression;
 import com.xplusj.VariableContext;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.parser.ExpressionParserProcessor;
 
 import java.util.function.Function;
 
@@ -10,11 +11,11 @@ public class DefaultExpression implements Expression {
 
     private final String expression;
     private final ExpressionParser parser;
-    private final Function<VariableContext,TwoStackBasedProcessor> processorFactory;
+    private final Function<VariableContext, ExpressionParserProcessor<Double>> processorFactory;
 
     private DefaultExpression(final String expression,
                               final ExpressionParser parser,
-                              final Function<VariableContext,TwoStackBasedProcessor> processorFactory) {
+                              final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory) {
         this.expression = expression;
         this.processorFactory = processorFactory;
         this.parser = parser;
@@ -27,14 +28,13 @@ public class DefaultExpression implements Expression {
 
     @Override
     public double eval(final VariableContext variableContext) {
-        TwoStackBasedProcessor processor = processorFactory.apply(variableContext);
-        parser.eval(expression, processor);
-        return processor.getCalculatedResult();
+        ExpressionParserProcessor<Double> processor = processorFactory.apply(variableContext);
+        return parser.eval(expression, processor);
     }
 
     public static DefaultExpression create(final String expression,
                                            final ExpressionParser parser,
-                                           final Function<VariableContext,TwoStackBasedProcessor> processorFactory){
+                                           final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory){
         if(expression == null)
             throw new ExpressionException("Invalid expression: expression null");
 

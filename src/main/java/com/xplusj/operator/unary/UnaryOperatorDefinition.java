@@ -14,7 +14,7 @@ public class UnaryOperatorDefinition extends OperatorDefinition<UnaryOperatorCon
     private final char symbol;
 
     protected UnaryOperatorDefinition(char symbol, Precedence precedence, Function<UnaryOperatorContext, Double> function) {
-        super(OperatorType.BINARY, precedence, function, 1);
+        super(OperatorType.UNARY, precedence, function, 1);
         this.symbol = symbol;
     }
 

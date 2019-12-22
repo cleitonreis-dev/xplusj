@@ -1,6 +1,6 @@
 package com.xplusj.operator.binary;
 
-import com.xplusj.GlobalContext;
+import com.xplusj.ExpressionContext;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,7 +26,7 @@ public class BinaryOperatorTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private GlobalContext context;
+    private ExpressionContext context;
 
     @Mock
     private Function<BinaryOperatorContext,Double> function;
