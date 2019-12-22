@@ -4,3 +4,4 @@ TODO
 - Make constructors of extendable classes protected for external extension
 - Review all methods parameters and check for null parameter possibilities
 - make default factories singleton
+------
