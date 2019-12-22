@@ -1,25 +1,31 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
 import com.xplusj.Expression;
 import com.xplusj.VariableContext;
-import com.xplusj.parser.ExpressionParserProcessor;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.parser.ExpressionParserProcessor;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FormulaExpression implements Expression {
     private final String formula;
-    private final Environment env;
     private final ExpressionParser parser;
+    private final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory;
+    private final Supplier<ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>>> instructionListProcessorFactory;
+
     private List<Consumer<ExpressionParserProcessor>> instructions;
 
     private FormulaExpression(final String formula,
-                             final Environment env) {
+                            final ExpressionParser parser,
+                            final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory,
+                            final Supplier<ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>>> instructionListProcessorFactory) {
         this.formula = formula;
-        this.env = env;
-        this.parser = env.getParser();
+        this.parser = parser;
+        this.processorFactory = processorFactory;
+        this.instructionListProcessorFactory = instructionListProcessorFactory;
     }
 
     @Override
@@ -29,33 +35,31 @@ public class FormulaExpression implements Expression {
 
     @Override
     public double eval(VariableContext variableContext) {
-        if(formula.trim().isEmpty())
-            return 0;
-
         if(instructions == null)
             initialize();
 
-        TwoStackBasedInterpreter interpreter = TwoStackBasedInterpreter.create(
-            env,
-            variableContext,
-            Stack.instance(),
-            Stack.instance()
-        );
-
-        instructions.forEach(instruction->instruction.accept(interpreter));
-
-        return interpreter.getCalculatedResult();
+        ExpressionParserProcessor<Double> processor = this.processorFactory.apply(variableContext);
+        instructions.forEach(instruction->instruction.accept(processor));
+        return processor.getResult();
     }
 
     private synchronized void initialize() {
         if(instructions == null) {
-            InstructionListInterpreter interpreter = new InstructionListInterpreter();
-            parser.eval(formula, interpreter);
-            instructions = interpreter.getInstructions();
+            ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>> processor = instructionListProcessorFactory.get();
+            instructions = parser.eval(formula, processor);
         }
     }
 
-    public static FormulaExpression create(final String formula, final Environment env){
-        return new FormulaExpression(formula,env);
+    public static FormulaExpression create(final String formula,
+                                           final ExpressionParser parser,
+                                           final Function<VariableContext,ExpressionParserProcessor<Double>> processorFactory,
+                                           final Supplier<ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>>> instructionListProcessorFactory){
+        if(formula == null)
+            throw new ExpressionException("Invalid expression: expression null");
+
+        if(formula.trim().isEmpty())
+            throw new ExpressionException("Invalid expression: expression empty");
+
+        return new FormulaExpression(formula, parser, processorFactory, instructionListProcessorFactory);
     }
 }

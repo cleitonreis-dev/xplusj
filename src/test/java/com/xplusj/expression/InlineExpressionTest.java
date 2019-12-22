@@ -1,12 +1,11 @@
 package com.xplusj.expression;
 
-import com.xplusj.Environment;
-import com.xplusj.GlobalContext;
-import com.xplusj.context.DefaultGlobalContext;
+import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.operator.BinaryOperator;
-import com.xplusj.operator.FunctionOperator;
-import com.xplusj.operator.UnaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -14,21 +13,24 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static com.xplusj.operator.Precedence.*;
 import static org.junit.Assert.assertEquals;
 
+@Deprecated //TODO adapt this to integration test
 @RunWith(MockitoJUnitRunner.class)
 public class InlineExpressionTest {
-    static final GlobalContext CONTEXT =
-        DefaultGlobalContext.builder()
-            .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
-            .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
-            .addBinaryOperator(BinaryOperator.create('*', high(), ctx->ctx.getFirstValue() * ctx.getSecondValue()))
-            .addBinaryOperator(BinaryOperator.create('/', high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
-            .addUnaryOperator(UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue()))
-            .addUnaryOperator(UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue()))
-            .addFunction(FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
+    static final ExpressionOperatorDefinitions CONTEXT =
+            ExpressionOperatorDefinitions.builder()
+            .addBinaryOperator(BinaryOperatorDefinition.create('+', low(), ctx->ctx.param0() + ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.create('-', low(), ctx->ctx.param0() - ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.create('*', high(), ctx->ctx.param0() * ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.create('/', high(), ctx->ctx.param0() / ctx.param1()))
+            .addUnaryOperator(UnaryOperatorDefinition.create('+', higherThan(high()), ctx->+ctx.param()))
+            .addUnaryOperator(UnaryOperatorDefinition.create('-', higherThan(high()), ctx->-ctx.param()))
+            .addFunction(FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
         .build();
 
 
-    static final Environment ENV = Environment.builder().setContext(CONTEXT).build();
+    static final ExpressionGlobalContext ENV = ExpressionGlobalContext.builder()
+            .setOperatorDefinitions(CONTEXT)
+            .build();
 
     @Test
     public void eval() {
@@ -116,7 +118,8 @@ public class InlineExpressionTest {
     }
 
     private static DefaultExpression eval(String expression){
-        return DefaultExpression.create(expression, ENV);
+        return DefaultExpression.create(expression, ENV.getParser(),
+                (ctx)->TwoStackBasedProcessor.create(ENV,ctx));
     }
 
     /*private Environment env = defaultEnv().build();

@@ -1,18 +1,19 @@
 package com.xplusj.parser;
 
-import com.xplusj.Environment;
-import com.xplusj.ExpressionParserFactory;
+import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.factory.ExpressionParserFactory;
+import com.xplusj.tokenizer.ExpressionTokenizer;
 
 public class DefaultExpressionParserFactory implements ExpressionParserFactory {
 
     private static final DefaultExpressionParserFactory INSTANCE = new DefaultExpressionParserFactory();
 
     @Override
-    public ExpressionParser create(Environment env) {
-        return DefaultExpressionParser.create(env.getContext(), env.getTokenizer());
+    public ExpressionParser create(ExpressionTokenizer tokenizer, ExpressionOperatorDefinitions operatorDefinitions) {
+        return DefaultExpressionParser.create(operatorDefinitions, tokenizer);
     }
 
-    public static ExpressionParserFactory instance() {
+    public static ExpressionParserFactory getInstance() {
         return INSTANCE;
     }
 }

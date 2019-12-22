@@ -191,11 +191,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     @Override
     public String toString() {
-        return new StringBuilder(this.getClass().getSimpleName())
-            .append('{')
-            .append("expression='").append(expression).append('\'')
-            .append('}')
-            .toString();
+        return getClass().getSimpleName() + "{expression='" + expression + "'}";
     }
 
     private static boolean isDigit(char c){

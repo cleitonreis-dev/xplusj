@@ -2,5 +2,5 @@ package com.xplusj.parser;
 
 public interface ExpressionParser {
 
-    void eval(final String expression, final ExpressionParserProcessor instructionHandler);
+    <ParserResult> ParserResult eval(final String expression, final ExpressionParserProcessor<ParserResult> instructionHandler);
 }

@@ -8,6 +8,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 
+@Deprecated //TODO adapt this to integration test
 @RunWith(MockitoJUnitRunner.class)
 public class FormulaTest {
 
@@ -40,7 +41,10 @@ public class FormulaTest {
     }
 
     private static FormulaExpression eval(String expression){
-        return FormulaExpression.create(expression, InlineExpressionTest.ENV);
+        return FormulaExpression.create(expression, InlineExpressionTest.ENV.getParser(),
+                (ctx)->TwoStackBasedProcessor.create(InlineExpressionTest.ENV,ctx),
+                ()->InstructionListProcessor.create(Stack.instance())
+        );
     }
 
     private static VariableContext.Builder vars(){
