@@ -1,37 +1,18 @@
 package com.xplusj.expression;
 
 import com.xplusj.ExpressionGlobalContext;
-import com.xplusj.VariableContext;
-import com.xplusj.parser.ExpressionParser;
-import com.xplusj.parser.ExpressionParserProcessor;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class DefaultExpressionBuiltinOperatorsIntegrationTest {
 
     private static final double DELTA = 0.0000000000000001;
     private static ExpressionGlobalContext context = ExpressionGlobalContext.builder().build();
 
-    @Before
-    public void setUp(){
-
-    }
-
     @Test
     public void testSimpleExpression(){
-        assertEquals(1D, context.expression("1").eval(), DELTA);
+        assertEquals(1.1D, context.expression("1.1").eval(), DELTA);
     }
 
     @Test
@@ -57,6 +38,16 @@ public class DefaultExpressionBuiltinOperatorsIntegrationTest {
     @Test
     public void testUnaryCube(){
         assertEquals(Math.pow(2,3), context.expression("***2").eval(), DELTA);
+    }
+
+    @Test
+    public void testUnaryNot(){
+        assertEquals(0D, context.expression("!1").eval(), DELTA);
+    }
+
+    @Test
+    public void testUnaryNot1(){
+        assertEquals(1D, context.expression("!0").eval(), DELTA);
     }
 
     @Test

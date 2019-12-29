@@ -174,18 +174,18 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     private Token readOperator() {
         String operatorIdentifier = expression.substring(startIndex,++currentIndex);
-        List<String> startingWithList = countOperatorsStartingWith(operatorIdentifier);
+        Set<String> startingWithList = countOperatorsStartingWith(operatorIdentifier);
         int startingWithCount = startingWithList.size();
 
         if(startingWithCount == 0)
             throw new ExpressionParseException(expression, currentIndex-1, "Invalid operator '%s'", operatorIdentifier);
 
         if(startingWithCount == 1) {
-            currentIndex += startingWithList.get(0).length() - 1;
+            currentIndex += startingWithList.iterator().next().length() - 1;
         }else{
             int index = currentIndex;
             currentIndex += startingWithList.stream().max(Comparator.comparingInt(String::length)).map(String::length).get() - 1;
-            while (!hasOperator(expression.substring(startIndex,currentIndex)) && currentIndex > index){
+            while (currentIndex > expressionLength || (!hasOperator(expression.substring(startIndex,currentIndex)) && currentIndex > index)){
                 currentIndex--;
             }
         }
@@ -216,10 +216,10 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
                 && !('a' <= c && c <= 'z') && !('A' <= c && c <= 'Z');
     }
 
-    private List<String> countOperatorsStartingWith(String prefix){
+    private Set<String> countOperatorsStartingWith(String prefix){
         return allUnaryBinary.stream().filter(def->def.getIdentifier().startsWith(prefix))
                 .map(OperatorDefinition::getIdentifier)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private boolean hasOperator(String identifier){

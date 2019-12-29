@@ -11,10 +11,13 @@ public interface Operators {
     interface Unaries{
         UnaryOperatorDefinition PLUS = UnaryOperatorDefinition.create("+", higherThan(high()), ctx->+ctx.param());
         UnaryOperatorDefinition MIN = UnaryOperatorDefinition.create("-", higherThan(high()), ctx->-ctx.param());
-        UnaryOperatorDefinition SQUARE = UnaryOperatorDefinition.create("**", higherThan(high()), ctx->ctx.param()*ctx.param());
-        UnaryOperatorDefinition CUBE = UnaryOperatorDefinition.create("***", higherThan(high()), ctx->Math.pow(ctx.param(), 3));
+        UnaryOperatorDefinition SQUARE = UnaryOperatorDefinition.create("**", higherThan(PLUS.getPrecedence()), ctx->ctx.param()*ctx.param());
+        UnaryOperatorDefinition CUBE = UnaryOperatorDefinition.create("***", sameAs(SQUARE.getPrecedence()), ctx->Math.pow(ctx.param(), 3));
 
-        UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN,SQUARE,CUBE};
+        //Conditional
+        UnaryOperatorDefinition NOT = UnaryOperatorDefinition.create("!", lowerThan(PLUS.getPrecedence()), ctx->ctx.param() == 0 ? 1D : 0D);
+
+        UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN,SQUARE,CUBE,NOT};
     }
 
     interface Binaries{
@@ -27,19 +30,20 @@ public interface Operators {
         BinaryOperatorDefinition POW = BinaryOperatorDefinition.create("^", lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
 
         //Conditional
-        BinaryOperatorDefinition EQ = BinaryOperatorDefinition.create("==", low(), ctx->ctx.param0() == ctx.param1() ? 1D : 0D);
-        BinaryOperatorDefinition GT = BinaryOperatorDefinition.create(">", low(), ctx->ctx.param0() > ctx.param1() ? 1D : 0D);
-        BinaryOperatorDefinition GE = BinaryOperatorDefinition.create(">=", low(), ctx->ctx.param0() >= ctx.param1() ? 1D : 0D);
-        BinaryOperatorDefinition LT = BinaryOperatorDefinition.create("<", low(), ctx->ctx.param0() < ctx.param1() ? 1D : 0D);
-        BinaryOperatorDefinition LE = BinaryOperatorDefinition.create("<=", low(), ctx->ctx.param0() <= ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition EQ = BinaryOperatorDefinition.create("==", lowerThan(ADD.getPrecedence()), ctx->ctx.param0() == ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition NE = BinaryOperatorDefinition.create("!=", sameAs(EQ.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition GT = BinaryOperatorDefinition.create(">", sameAs(EQ.getPrecedence()), ctx->ctx.param0() > ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition GE = BinaryOperatorDefinition.create(">=", sameAs(EQ.getPrecedence()), ctx->ctx.param0() >= ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition LT = BinaryOperatorDefinition.create("<", sameAs(EQ.getPrecedence()), ctx->ctx.param0() < ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition LE = BinaryOperatorDefinition.create("<=", sameAs(EQ.getPrecedence()), ctx->ctx.param0() <= ctx.param1() ? 1D : 0D);
 
         //Logical
-        BinaryOperatorDefinition AND = BinaryOperatorDefinition.create("&&", low(), ctx->ctx.param0() == 1 && ctx.param1() == 1 ? 1D : 0D);
-        BinaryOperatorDefinition OR = BinaryOperatorDefinition.create("||", low(), ctx->ctx.param0() == 1 || ctx.param1() == 1 ? 1D : 0D);
-        BinaryOperatorDefinition XOR = BinaryOperatorDefinition.create("|", low(), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
+        BinaryOperatorDefinition AND = BinaryOperatorDefinition.create("&&", lowerThan(EQ.getPrecedence()), ctx->ctx.param0() == 1 && ctx.param1() == 1 ? 1D : 0D);
+        BinaryOperatorDefinition OR = BinaryOperatorDefinition.create("||", sameAs(AND.getPrecedence()), ctx->ctx.param0() == 1 || ctx.param1() == 1 ? 1D : 0D);
+        BinaryOperatorDefinition XOR = BinaryOperatorDefinition.create("|", sameAs(AND.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
 
 
-        BinaryOperatorDefinition[] OPERATORS = {ADD,SUB,MULT,DIV,MOD,POW,EQ,GT,GE,LT,LE,AND,OR,XOR};
+        BinaryOperatorDefinition[] OPERATORS = {ADD,SUB,MULT,DIV,MOD,POW,EQ,NE,GT,GE,LT,LE,AND,OR,XOR};
     }
 
     interface Functions{
