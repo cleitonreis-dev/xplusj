@@ -119,7 +119,7 @@ public class DefaultExpressionParser implements ExpressionParser {
             operator = globalContext.getBinaryOperator(token.value);
 
         if(operator == null){
-            String msg = isUnary ? "Unary operator '%s' not found" : "Binary operator '%s' not found";
+            String msg = (isUnary ? "Unary" : "Binary") + " operator '%s' not found";
             throw new ExpressionParseException(expression, token.index, msg, token.value);
         }
 

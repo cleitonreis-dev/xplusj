@@ -1,30 +1,55 @@
 package com.xplusj.tokenizer;
 
+import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.Precedence;
+import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParseException;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TokenizerTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private static Set<String> operators = new HashSet<>(Arrays.asList(
-            "+","-","*","/"
+    private static Set<OperatorDefinition<?>> operators = new HashSet<>(Arrays.asList(
+            BinaryOperatorDefinition.create("+", Precedence.low(), null),
+            BinaryOperatorDefinition.create("-", Precedence.low(), null),
+            BinaryOperatorDefinition.create("*", Precedence.low(), null),
+            BinaryOperatorDefinition.create("/", Precedence.low(), null),
+            BinaryOperatorDefinition.create("==", Precedence.low(), null),
+            BinaryOperatorDefinition.create(">", Precedence.low(), null),
+            BinaryOperatorDefinition.create(">=", Precedence.low(), null)
     ));
 
-    private static Tokenizer.OperatorChecker operatorChecker = c->operators.contains(c);
+    @Mock
+    private ExpressionOperatorDefinitions operatorDefinitions;
+
+    @Before
+    public void setUp(){
+        when(operatorDefinitions.list(ExpressionOperatorDefinitions.ListOperatorFilter.UNARY_AND_BINARY)).thenReturn(operators);
+        when(operatorDefinitions.hasBinaryOperator("==")).thenReturn(true);
+        when(operatorDefinitions.hasBinaryOperator(">")).thenReturn(true);
+        when(operatorDefinitions.hasBinaryOperator(">=")).thenReturn(true);
+    }
 
     @Test
     public void shouldFindNumber(){
-        Tokenizer tokenizer = new Tokenizer("1", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("1", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.NUMBER, token.type);
@@ -34,7 +59,7 @@ public class TokenizerTest {
 
     @Test
     public void shouldFindDottedNumber(){
-        Tokenizer tokenizer = new Tokenizer("1", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("1", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.NUMBER, token.type);
@@ -44,7 +69,7 @@ public class TokenizerTest {
 
     @Test
     public void shouldFindSymbol1(){
-        Tokenizer tokenizer = new Tokenizer("+", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("+", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.OPERATOR, token.type);
@@ -54,7 +79,7 @@ public class TokenizerTest {
 
     @Test
     public void shouldFindSymbol2(){
-        Tokenizer tokenizer = new Tokenizer("func_name", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("func_name", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.VAR, token.type);
@@ -64,7 +89,7 @@ public class TokenizerTest {
 
     @Test
     public void shouldFindParenthesisOpening(){
-        Tokenizer tokenizer = new Tokenizer("(", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("(", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.PARENTHESIS_OPENING, token.type);
@@ -73,7 +98,7 @@ public class TokenizerTest {
 
     @Test
     public void shouldFindParenthesisClosing(){
-        Tokenizer tokenizer = new Tokenizer(")", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(")", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.PARENTHESIS_CLOSING, token.type);
@@ -82,7 +107,7 @@ public class TokenizerTest {
 
     @Test
     public void shouldFindComma(){
-        Tokenizer tokenizer = new Tokenizer(",", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(",", operatorDefinitions,operators);
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
         assertEquals(TokenType.COMMA, token.type);
@@ -109,7 +134,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -129,7 +154,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer("CON", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CON", operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -151,7 +176,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer("CON+AAA_B", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CON+AAA_B", operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -168,7 +193,7 @@ public class TokenizerTest {
     public void shouldParseConstantInvalidIdentifier3(){
         thrown.expect(ExpressionParseException.class);
 
-        Tokenizer tokenizer = new Tokenizer("CONa+AAA_B", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CONa+AAA_B", operatorDefinitions,operators);
 
         while (tokenizer.hasNext())
             tokenizer.next();
@@ -183,7 +208,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer("CON+aaa_b", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CON+aaa_b", operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -200,7 +225,7 @@ public class TokenizerTest {
     public void shouldParseVarInvalidIdentifier(){
         thrown.expect(ExpressionParseException.class);
 
-        Tokenizer tokenizer = new Tokenizer("CONa+aaa", operatorChecker);
+        Tokenizer tokenizer = new Tokenizer("CONa+aaa", operatorDefinitions,operators);
 
         while (tokenizer.hasNext())
             tokenizer.next();
@@ -214,7 +239,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -234,7 +259,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -257,7 +282,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -280,7 +305,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -311,7 +336,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -342,7 +367,7 @@ public class TokenizerTest {
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -357,7 +382,7 @@ public class TokenizerTest {
     @Test
     public void testToString(){
         String expression = "1+2-1";
-        Tokenizer tokenizer = new Tokenizer(expression, operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
 
         assertEquals(
             format("%s{expression='%s'}", Tokenizer.class.getSimpleName(), expression),
@@ -370,9 +395,9 @@ public class TokenizerTest {
         String expression = "1+abc|d";
 
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(expression,5,"Invalid identifier").getMessage());
+        thrown.expectMessage(new ExpressionParseException(expression,5,"Invalid operator '|'").getMessage());
 
-        Tokenizer tokenizer = new Tokenizer(expression,operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         while (tokenizer.hasNext())
             tokenizer.next();
     }
@@ -384,7 +409,7 @@ public class TokenizerTest {
         thrown.expect(ExpressionParseException.class);
         thrown.expectMessage(new ExpressionParseException(expression,6,"Invalid symbol at index %s", 7).getMessage());
 
-        Tokenizer tokenizer = new Tokenizer(expression,operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         while (tokenizer.hasNext())
             tokenizer.next();
     }
@@ -409,11 +434,74 @@ public class TokenizerTest {
             "Token(type=EOE, value=, index=16)"
         );
 
-        Tokenizer tokenizer = new Tokenizer(expression,operatorChecker);
+        Tokenizer tokenizer = new Tokenizer(expression, operatorDefinitions,operators);
         int i = 0;
         while (tokenizer.hasNext()) {
             Token token = tokenizer.next();
             assertEquals(expectedStrings.get(i++), token.toString());
         }
+    }
+
+    @Test
+    public void testOperatorLongIdentifier(){
+        List<Token> expectedTokens = Arrays.asList(
+                Token.number("1",0),
+                Token.operator("==",1),
+                Token.number("2",3),
+                Token.EOE()
+        );
+
+        Tokenizer tokenizer = new Tokenizer("1==2", operatorDefinitions,operators);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void testOperatorLongIdentifier2(){
+        List<Token> expectedTokens = Arrays.asList(
+                Token.number("1",0),
+                Token.operator(">",1),
+                Token.number("2",2),
+                Token.EOE()
+        );
+
+        Tokenizer tokenizer = new Tokenizer("1>2", operatorDefinitions,operators);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(expectedTokens.get(i), tokens.get(i));
+    }
+
+    @Test
+    public void testOperatorLongIdentifier3(){
+        List<Token> expectedTokens = Arrays.asList(
+                Token.number("1",0),
+                Token.operator(">=",1),
+                Token.number("2",3),
+                Token.EOE()
+        );
+
+        Tokenizer tokenizer = new Tokenizer("1>=2", operatorDefinitions,operators);
+        List<Token> tokens = new ArrayList<>();
+
+        while (tokenizer.hasNext())
+            tokens.add(tokenizer.next());
+
+        tokens.add(tokenizer.next());
+
+        for(int i = 0; i < expectedTokens.size(); i++)
+            assertEquals(expectedTokens.get(i), tokens.get(i));
     }
 }

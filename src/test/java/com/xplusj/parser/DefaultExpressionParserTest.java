@@ -20,7 +20,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -35,6 +37,11 @@ public class DefaultExpressionParserTest {
     private static final DefaultExpressionParserTest.UOperator UMINUS = new DefaultExpressionParserTest.UOperator("-", Precedence.highest());
     private static final DefaultExpressionParserTest.BOperator MULT = new DefaultExpressionParserTest.BOperator("*", Precedence.higherThan(Precedence.low()));
     private static final DefaultExpressionParserTest.BOperator DIV = new DefaultExpressionParserTest.BOperator("/", Precedence.higherThan(Precedence.low()));
+    private static final DefaultExpressionParserTest.BOperator EQ = new DefaultExpressionParserTest.BOperator("==", Precedence.higherThan(Precedence.low()));
+    private static final DefaultExpressionParserTest.BOperator GT = new DefaultExpressionParserTest.BOperator(">", Precedence.higherThan(Precedence.low()));
+    private static final DefaultExpressionParserTest.BOperator GE = new DefaultExpressionParserTest.BOperator(">=", Precedence.higherThan(Precedence.low()));
+
+    private static Set<OperatorDefinition<?>> operators = new HashSet<>(Arrays.asList(PLUS,UPLUS,MINUS,UMINUS,MULT,DIV,EQ,GT,GE));
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -48,6 +55,8 @@ public class DefaultExpressionParserTest {
 
     @Before
     public void setUp(){
+        when(definitions.list(ExpressionOperatorDefinitions.ListOperatorFilter.UNARY_AND_BINARY)).thenReturn(operators);
+
         instructionLogger = new DefaultExpressionParserTest.InstructionLogger();
 
         tokenizer = ExpressionTokenizerFactory.defaultFactory().create(definitions);
@@ -66,6 +75,13 @@ public class DefaultExpressionParserTest {
         when(definitions.hasUnaryOperator("-")).thenReturn(true);
         when(definitions.getUnaryOperator("-")).thenReturn(UMINUS);
 
+        when(definitions.hasBinaryOperator("==")).thenReturn(true);
+        when(definitions.getBinaryOperator("==")).thenReturn(EQ);
+        when(definitions.hasBinaryOperator(">")).thenReturn(true);
+        when(definitions.getBinaryOperator(">")).thenReturn(GT);
+        when(definitions.hasBinaryOperator(">=")).thenReturn(true);
+        when(definitions.getBinaryOperator(">=")).thenReturn(GE);
+
         when(definitions.hasFunction("sum")).thenReturn(true);
         when(definitions.getFunction("sum")).thenReturn(new DefaultExpressionParserTest.Func("sum","a","b"));
 
@@ -76,6 +92,8 @@ public class DefaultExpressionParserTest {
         when(definitions.getBinaryOperator("&")).thenReturn(null);
 
         when(definitions.hasFunction("plus")).thenReturn(false);
+
+
     }
 
     @Test
@@ -324,6 +342,23 @@ public class DefaultExpressionParserTest {
     }
 
     @Test
+    public void testUnaryOperator4(){
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        String exp = "+sum(2,3)";
+
+        DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
+                .pushOperator("+")
+                .pushOperator("sum(a,b)")
+                .pushValue(2).pushValue(3)
+                .callOperator("sum(a,b)")
+                .callOperator("+");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack,instructionLogger.log);
+    }
+
+    @Test
     public void testVar(){
         DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         String exp = "1*v";
@@ -521,7 +556,7 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator(){
         String exp = "1&1";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 1, "Binary operator '%s' not found", "&").getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 1, "Invalid operator '%s'", "&").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -627,6 +662,53 @@ public class DefaultExpressionParserTest {
         parser.eval(exp, instructionLogger);
     }
 
+    @Test
+    public void testOperatorLongIdentifier(){
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        String exp = "1==2";
+
+        DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
+                .pushValue(1)
+                .pushOperator("==")
+                .pushValue(2)
+                .callOperator("==");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testOperatorLongIdentifier2(){
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        String exp = "1>2";
+
+        DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
+                .pushValue(1)
+                .pushOperator(">")
+                .pushValue(2)
+                .callOperator(">");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testOperatorLongIdentifier3(){
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        String exp = "1>=2";
+
+        DefaultExpressionParserTest.StackLog expectedStack = new DefaultExpressionParserTest.StackLog()
+                .pushValue(1)
+                .pushOperator(">=")
+                .pushValue(2)
+                .callOperator(">=");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp,expectedStack, instructionLogger.log);
+    }
 
     private static class StackLog{
         private StringBuilder log = new StringBuilder();

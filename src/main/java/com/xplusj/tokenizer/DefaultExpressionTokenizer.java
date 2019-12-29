@@ -1,19 +1,24 @@
 package com.xplusj.tokenizer;
 
 import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.operator.OperatorDefinition;
+
+import java.util.Set;
 
 public class DefaultExpressionTokenizer implements ExpressionTokenizer{
 
-    private final com.xplusj.tokenizer.Tokenizer.OperatorChecker operatorChecker;
+    private final ExpressionOperatorDefinitions operatorDefinitions;
+    private final Set<OperatorDefinition<?>> allUnaryBinary;
 
     private DefaultExpressionTokenizer(final ExpressionOperatorDefinitions operatorDefinitions) {
-        this.operatorChecker = op->operatorDefinitions.hasBinaryOperator(op)
-                || operatorDefinitions.hasUnaryOperator(op);
+        this.operatorDefinitions = operatorDefinitions;
+        this.allUnaryBinary = operatorDefinitions.list(ExpressionOperatorDefinitions.ListOperatorFilter.UNARY_AND_BINARY);
+
     }
 
     @Override
     public Tokenizer tokenize(final String expression) {
-        return new com.xplusj.tokenizer.Tokenizer(expression, operatorChecker);
+        return new com.xplusj.tokenizer.Tokenizer(expression, operatorDefinitions, allUnaryBinary);
     }
 
     public static DefaultExpressionTokenizer create(ExpressionOperatorDefinitions operatorDefinitions){
