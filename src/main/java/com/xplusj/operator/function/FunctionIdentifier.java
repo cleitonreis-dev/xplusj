@@ -67,21 +67,21 @@ public class FunctionIdentifier {
         if (closeParenthesisIndex != name.length() - 1)
             throw new IllegalArgumentException("incorrect function name");
 
-        int paramDelimiterIndex = name.indexOf(',');
+        /*int paramDelimiterIndex = name.indexOf(',');
         if (paramDelimiterIndex == 0 || (paramDelimiterIndex > 0
                 && !(openParenthesisIndex < paramDelimiterIndex
                 && paramDelimiterIndex < closeParenthesisIndex)))
-            throw new IllegalArgumentException("incorrect function name");
+            throw new IllegalArgumentException("incorrect function name");*/
 
         List<String> params = Collections.emptyList();
 
-        if (paramDelimiterIndex > 0){
+        //if (paramDelimiterIndex > 0){
             String[] paramNames = name.substring(openParenthesisIndex + 1, closeParenthesisIndex).split(",");
             params = Arrays.asList(paramNames);
 
             if(paramNames.length != params.size())
                 throw new IllegalArgumentException("incorrect function name");
-        }
+        //}
 
         return new FunctionIdentifier(
             name.substring(0, openParenthesisIndex),
