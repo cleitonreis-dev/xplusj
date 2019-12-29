@@ -5,6 +5,7 @@ import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.factory.*;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
+import com.xplusj.operator.function.FunctionOperatorContext;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParser;
@@ -14,6 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -116,7 +119,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testCreateFunctionOperator(){
         String op = "sum";
-        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.create(op+"(a,b)",null);
+        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.create(op+"(a,b)",(Function<FunctionOperatorContext, Double>) null);
         when(definitions.getFunction(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build();
@@ -201,7 +204,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testAppendCreateFunctionOperator(){
         String op = "sum";
-        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.create(op+"(a,b)",null);
+        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.create(op+"(a,b)",(Function<FunctionOperatorContext, Double>)null);
         when(newDefinitions.getFunction(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build().append(newDefinitions);

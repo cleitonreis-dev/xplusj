@@ -34,7 +34,7 @@ public class FunctionOperatorDefinition extends OperatorDefinition<FunctionOpera
         return new FunctionOperatorDefinition(FunctionIdentifier.create(name),function);
     }
 
-    /*public static FunctionOperatorDefinition create(String name, String function) {
+    public static FunctionOperatorDefinition create(String name, String function) {
         return new FunctionOperatorDefinition(FunctionIdentifier.create(name),new CompiledFunction(function));
-    }*/
+    }
 }

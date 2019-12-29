@@ -1,10 +1,9 @@
 package com.xplusj.operator.function;
 
-import com.xplusj.ExpressionContext;
 import com.xplusj.Expression;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionContext;
 import com.xplusj.VariableContext;
-import com.xplusj.operator.function.FunctionOperatorContext;
+import com.xplusj.expression.DefaultExpressionFactory;
 
 import java.util.function.Function;
 
@@ -13,50 +12,38 @@ public class CompiledFunction implements Function<FunctionOperatorContext,Double
     private final String expressionStr;
     private Expression expression;
 
-    public CompiledFunction(String expression) {
+    CompiledFunction(String expression) {
         this.expressionStr = expression;
     }
 
     @Override
     public Double apply(FunctionOperatorContext context) {
-        if(this.expression == null){
-            //this.expression = context.getEnvironment().formula(expressionStr);
-        }
+        if(this.expression == null)
+            initExpression(context.getContext());
 
-        return this.expression.eval(new VariableContext() {
-            @Override
-            public double value(String name) {
-                return context.param(name);
-            }
-
-            @Override
-            public boolean contains(String name) {
-                return true;
-            }
-        });
+        return this.expression.eval(new FVariableContext(context));
     }
 
-    /*public static void main(String[] args) {
-        Environment env = Environment.env()
-            .appendContext(GlobalContext.builder()
-                .addFunction(FunctionOperator.create("test(a,b)", "pow(max(a,b),2)"))
-                .addFunction(FunctionOperator.create("test2(a,b)", (ctx)->ctx.call("pow", ctx.call("max", ctx.param(0), ctx.param(1)), 2)))
-                .addFunction(FunctionOperator.create("test3(a,b)", (ctx)->Math.pow(Math.max(ctx.param(0), ctx.param(1)), 2)))
-                .build()
-            );
+    private synchronized void initExpression(ExpressionContext context){
+        if(expression == null)
+            this.expression = DefaultExpressionFactory.getInstance().formula(expressionStr, context);
+    }
 
-        double v = -1d;
-        int loop = 500;
+    private static class FVariableContext implements VariableContext{
+        private final FunctionOperatorContext context;
 
-        long start = System.currentTimeMillis();
-        Expression expression = env.formula("2*test(2,3)");
-        for(int i = 0; i < loop; i++)
-            v = expression.eval();
+        FVariableContext(FunctionOperatorContext context) {
+            this.context = context;
+        }
 
-        long end = System.currentTimeMillis();
+        @Override
+        public double value(String name) {
+            return context.param(name);
+        }
 
-        System.out.println(v);
-        System.out.printf("Time %s", (end - start));
-
-    }*/
+        @Override
+        public boolean contains(String name) {
+            return true;
+        }
+    }
 }

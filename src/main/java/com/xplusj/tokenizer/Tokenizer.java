@@ -206,13 +206,11 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     private boolean isValidIdentifier(char c, int startIndex) {
         return ('a' <= c && c <= 'z')
-                || (startIndex < currentIndex && (c == '_' || Character.isDigit(c))
-        );
+                || (startIndex < currentIndex && (c == '_' || Character.isDigit(c)));
     }
 
     private boolean isOperatorEligible(char c) {
-        return c != ' ' && c != '_' && c != '.'
-                && !RESERVED_TOKENS.containsKey(c) && !Character.isDigit(c)
+        return c != ' ' && c != '_' && !RESERVED_TOKENS.containsKey(c) && !isDigit(c)
                 && !('a' <= c && c <= 'z') && !('A' <= c && c <= 'Z');
     }
 
@@ -223,16 +221,16 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     }
 
     private boolean hasOperator(String identifier){
-        return operatorDefinitions.hasUnaryOperator(identifier)
-                || operatorDefinitions.hasBinaryOperator(identifier);
+        return operatorDefinitions.hasBinaryOperator(identifier)
+                || operatorDefinitions.hasUnaryOperator(identifier);
+    }
+
+    private static boolean isDigit(char c){
+        return ('0' <= c && c <= '9') || c == '.';
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{expression='" + expression + "'}";
-    }
-
-    private static boolean isDigit(char c){
-        return Character.isDigit(c) || c == '.';
     }
 }

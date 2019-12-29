@@ -8,6 +8,9 @@ import static com.xplusj.operator.Precedence.*;
 
 public interface Operators {
 
+    /**
+     *
+     */
     interface Unaries{
         UnaryOperatorDefinition PLUS = UnaryOperatorDefinition.create("+", higherThan(high()), ctx->+ctx.param());
         UnaryOperatorDefinition MIN = UnaryOperatorDefinition.create("-", higherThan(high()), ctx->-ctx.param());
@@ -15,11 +18,14 @@ public interface Operators {
         UnaryOperatorDefinition CUBE = UnaryOperatorDefinition.create("***", sameAs(SQUARE.getPrecedence()), ctx->Math.pow(ctx.param(), 3));
 
         //Conditional
-        UnaryOperatorDefinition NOT = UnaryOperatorDefinition.create("!", lowerThan(PLUS.getPrecedence()), ctx->ctx.param() == 0 ? 1D : 0D);
+        UnaryOperatorDefinition NOT = UnaryOperatorDefinition.create("!", lowerThan(PLUS.getPrecedence()), ctx->ctx.param() == 1 ? 0D : 1D);
 
         UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN,SQUARE,CUBE,NOT};
     }
 
+    /**
+     *
+     */
     interface Binaries{
         //Math
         BinaryOperatorDefinition ADD = BinaryOperatorDefinition.create("+", low(), ctx->ctx.param0()+ctx.param1());
@@ -46,17 +52,24 @@ public interface Operators {
         BinaryOperatorDefinition[] OPERATORS = {ADD,SUB,MULT,DIV,MOD,POW,EQ,NE,GT,GE,LT,LE,AND,OR,XOR};
     }
 
+    /**
+     *
+     */
     interface Functions{
         FunctionOperatorDefinition POW = FunctionOperatorDefinition.create("pow(a,b)", ctx->Math.pow(ctx.param(0),ctx.param(1)));
         FunctionOperatorDefinition SQRT = FunctionOperatorDefinition.create("sqrt(a)", ctx->Math.sqrt(ctx.param(0)));
+        FunctionOperatorDefinition SUM = FunctionOperatorDefinition.create("sum(a,b)", ctx->ctx.param(0)+ctx.param(1));
         FunctionOperatorDefinition MAX = FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param(0),ctx.param(1)));
         FunctionOperatorDefinition MIN = FunctionOperatorDefinition.create("min(a,b)", ctx->Math.min(ctx.param(0),ctx.param(1)));
         FunctionOperatorDefinition IF = FunctionOperatorDefinition.create("if(condition,true,false)",
                 ctx->ctx.param(0) == 1 ? ctx.param(1) : ctx.param(2));
 
-        FunctionOperatorDefinition[] FUNCTIONS = {POW,SQRT,MAX,MIN,IF};
+        FunctionOperatorDefinition[] FUNCTIONS = {POW,SQRT,SUM,MAX,MIN,IF};
     }
 
+    /**
+     *
+     */
     interface Constants{
         Constant PI = Constant.newConst("PI", Math.PI);
 

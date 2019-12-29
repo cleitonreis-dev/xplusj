@@ -186,6 +186,11 @@ public class BuiltinOperatorsIntegrationTest {
     }
 
     @Test
+    public void testFuncSum(){
+        assertEquals(2+4, context.getFunction("sum").execute(2,4), DELTA);
+    }
+
+    @Test
     public void testFuncMax(){
         assertEquals(Math.max(2,4), context.getFunction("max").execute(2,4), DELTA);
     }
