@@ -24,7 +24,7 @@ public class BinaryOperator implements Operator<BinaryOperatorContext> {
         if(params.length != 2)
             throw new IllegalArgumentException(format(
                 "Binary operator %s expects two parameters, but received %s",
-                definition.getSymbol(), params.length));
+                definition.getIdentifier(), params.length));
 
         return definition.getFunction().apply(new BinaryOperatorContext(context,params));
     }

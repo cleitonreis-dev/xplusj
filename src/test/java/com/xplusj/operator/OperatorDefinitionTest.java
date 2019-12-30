@@ -33,7 +33,7 @@ public class OperatorDefinitionTest {
         int paramsLength = 2;
 
         OperatorDefinitionTestImpl definition = new OperatorDefinitionTestImpl(type,precedence,function,paramsLength);
-        assertEquals(Objects.hash(type, paramsLength), definition.hashCode());
+        assertEquals(Objects.hash(definition.getIdentifier(), type, paramsLength), definition.hashCode());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class OperatorDefinitionTest {
 
     static class OperatorDefinitionTestImpl extends OperatorDefinition<OperatorContextImplTest>{
         OperatorDefinitionTestImpl(OperatorType type, Precedence precedence, Function<OperatorContextImplTest, Double> function, int paramsLength) {
-            super(type, precedence, function, paramsLength);
+            super("", type, precedence, function, paramsLength);
         }
     }
 }

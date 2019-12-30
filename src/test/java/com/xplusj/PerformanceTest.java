@@ -6,12 +6,12 @@ public class PerformanceTest {
 
    /*static final GlobalContext CONTEXT =
             DefaultGlobalContext.builder()
-                .addBinaryOperator(BinaryOperator.create('+', low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
-                .addBinaryOperator(BinaryOperator.create('-', low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
-                .addBinaryOperator(BinaryOperator.create('*', high(), ctx->ctx.getFirstValue() * ctx.getSecondValue()))
-                .addBinaryOperator(BinaryOperator.create('/', high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
-                .addUnaryOperator(UnaryOperator.create('+', higherThan(high()), ctx->+ctx.getValue()))
-                .addUnaryOperator(UnaryOperator.create('-', higherThan(high()), ctx->-ctx.getValue()))
+                .addBinaryOperator(BinaryOperator.create("+", low(), ctx->ctx.getFirstValue() + ctx.getSecondValue()))
+                .addBinaryOperator(BinaryOperator.create("-", low(), ctx->ctx.getFirstValue() - ctx.getSecondValue()))
+                .addBinaryOperator(BinaryOperator.create("*", high(), ctx->ctx.getFirstValue() * ctx.getSecondValue()))
+                .addBinaryOperator(BinaryOperator.create("/", high(), ctx->ctx.getFirstValue() / ctx.getSecondValue()))
+                .addUnaryOperator(UnaryOperator.create("+", higherThan(high()), ctx->+ctx.getValue()))
+                .addUnaryOperator(UnaryOperator.create("-", higherThan(high()), ctx->-ctx.getValue()))
                 .addFunction(FunctionOperator.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
                 .build();*/
 
@@ -54,7 +54,14 @@ public class PerformanceTest {
 
         long totalFExp = System.currentTimeMillis() - start;
 
+        start = System.currentTimeMillis();
+        for(int i = 0; i < loops; i++)
+            result = (a/(2+b)-Math.max(a,b)*2)*(a/(2+b)-Math.max(a,b)*2)*(a/(2+b)-Math.max(a,b)*2);
+
+        long totalJava = System.currentTimeMillis() - start;
+
         System.out.println("Inline: " + totalIExp);
         System.out.println("Formula: " + totalFExp);
+        System.out.println("Java: " + totalJava);
     }
 }

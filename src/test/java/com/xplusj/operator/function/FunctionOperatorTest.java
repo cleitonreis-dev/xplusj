@@ -1,6 +1,7 @@
 package com.xplusj.operator.function;
 
-import com.xplusj.ExpressionContext;
+import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionOperatorDefinitions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,8 +25,8 @@ public class FunctionOperatorTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Mock
-    private ExpressionContext context;
+
+    private ExpressionGlobalContext context = ExpressionGlobalContext.builder().build();
 
     @Mock
     private Function<FunctionOperatorContext,Double> function;
@@ -122,5 +123,31 @@ public class FunctionOperatorTest {
 
         FunctionOperator operator = FunctionOperator.create(context,definition);
         operator.execute(params);
+    }
+
+    @Test
+    public void testOperatorParams4(){
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,...)", function);
+        double[] params = {1D};
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Function 'sum' expects at least 2 parameter(s), but received 1");
+
+        FunctionOperator operator = FunctionOperator.create(context,definition);
+        operator.execute(params);
+    }
+
+    @Test
+    public void testCompiledFunction(){
+        double a = 2;
+        double b = 3;
+
+        ExpressionGlobalContext ctx = context.append(ExpressionOperatorDefinitions.builder()
+            .addFunction(FunctionOperatorDefinition.create("test(a,b)", "pow(max(a,b),2)"))
+            .build()
+        );
+
+        double expected = ctx.getFunction("pow").execute(ctx.getFunction("max").execute(a,b), 2);
+        assertEquals(expected, ctx.getFunction("test").execute(a,b), DELTA);
     }
 }

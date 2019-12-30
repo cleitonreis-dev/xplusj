@@ -25,12 +25,12 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public boolean hasBinaryOperator(char symbol) {
+    public boolean hasBinaryOperator(String symbol) {
         return current.hasBinaryOperator(symbol) || parent.hasBinaryOperator(symbol);
     }
 
     @Override
-    public boolean hasUnaryOperator(char symbol) {
+    public boolean hasUnaryOperator(String symbol) {
         return current.hasUnaryOperator(symbol) || parent.hasUnaryOperator(symbol);
     }
 
@@ -40,7 +40,7 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public BinaryOperatorDefinition getBinaryOperator(char symbol) {
+    public BinaryOperatorDefinition getBinaryOperator(String symbol) {
         if(current.hasBinaryOperator(symbol))
             return current.getBinaryOperator(symbol);
 
@@ -48,7 +48,7 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public UnaryOperatorDefinition getUnaryOperator(char symbol) {
+    public UnaryOperatorDefinition getUnaryOperator(String symbol) {
         if(current.hasUnaryOperator(symbol))
             return current.getUnaryOperator(symbol);
 

@@ -28,27 +28,27 @@ public class DefaultExpressionOperatorDefinitionsTest {
     @Test
     public void hasBinaryOperator() {
         BinaryOperatorDefinition definition = BinaryOperatorDefinition
-                .create('+', Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+                .create("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
                 .addBinaryOperator(definition)
                 .build();
 
-        assertTrue(repository.hasBinaryOperator('+'));
-        assertEquals(definition, repository.getBinaryOperator('+'));
+        assertTrue(repository.hasBinaryOperator("+"));
+        assertEquals(definition, repository.getBinaryOperator("+"));
     }
 
     @Test
     public void hasUnaryOperator() {
         UnaryOperatorDefinition definition = UnaryOperatorDefinition
-                .create('-', Precedence.low(), (ctx)->-ctx.param());
+                .create("-", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
                 .addUnaryOperator(definition)
                 .build();
 
-        assertTrue(repository.hasUnaryOperator('-'));
-        assertEquals(definition, repository.getUnaryOperator('-'));
+        assertTrue(repository.hasUnaryOperator("-"));
+        assertEquals(definition, repository.getUnaryOperator("-"));
     }
 
     @Test

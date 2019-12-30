@@ -18,12 +18,12 @@ import static org.junit.Assert.assertEquals;
 public class InlineExpressionTest {
     static final ExpressionOperatorDefinitions CONTEXT =
             ExpressionOperatorDefinitions.builder()
-            .addBinaryOperator(BinaryOperatorDefinition.create('+', low(), ctx->ctx.param0() + ctx.param1()))
-            .addBinaryOperator(BinaryOperatorDefinition.create('-', low(), ctx->ctx.param0() - ctx.param1()))
-            .addBinaryOperator(BinaryOperatorDefinition.create('*', high(), ctx->ctx.param0() * ctx.param1()))
-            .addBinaryOperator(BinaryOperatorDefinition.create('/', high(), ctx->ctx.param0() / ctx.param1()))
-            .addUnaryOperator(UnaryOperatorDefinition.create('+', higherThan(high()), ctx->+ctx.param()))
-            .addUnaryOperator(UnaryOperatorDefinition.create('-', higherThan(high()), ctx->-ctx.param()))
+            .addBinaryOperator(BinaryOperatorDefinition.create("+", low(), ctx->ctx.param0() + ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.create("-", low(), ctx->ctx.param0() - ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.create("*", high(), ctx->ctx.param0() * ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.create("/", high(), ctx->ctx.param0() / ctx.param1()))
+            .addUnaryOperator(UnaryOperatorDefinition.create("+", higherThan(high()), ctx->+ctx.param()))
+            .addUnaryOperator(UnaryOperatorDefinition.create("-", higherThan(high()), ctx->-ctx.param()))
             .addFunction(FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
         .build();
 
@@ -278,7 +278,7 @@ public class InlineExpressionTest {
     @Test
     public void testBinaryOperatorCallingConstant(){
         ExpressionFactory factory = defaultFactory(defaultEnv().binaryOperators(asList(
-            Operator.binary('+', low(), c->(c.getFirstValue() + c.getSecondValue()) * c.getConstant("PI"))
+            Operator.binary("+", low(), c->(c.getFirstValue() + c.getSecondValue()) * c.getConstant("PI"))
         )).build());
 
         double result = factory.expression("2+2").eval();

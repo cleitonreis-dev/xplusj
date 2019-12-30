@@ -7,12 +7,17 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @AllArgsConstructor
-@ToString(of = {"type", "precedence", "paramsLength"})
+@ToString(of = {"identifier","type", "precedence", "paramsLength"})
 public abstract class OperatorDefinition <T extends OperatorContext>{
+    private final String identifier;
     private final OperatorType type;
     private final Precedence precedence;
     private final Function<T,Double> function;
     private final int paramsLength;
+
+    public String getIdentifier() {
+        return identifier;
+    }
 
     public OperatorType getType() {
         return type;
@@ -40,11 +45,12 @@ public abstract class OperatorDefinition <T extends OperatorContext>{
         if (o == null || getClass() != o.getClass()) return false;
         OperatorDefinition<?> that = (OperatorDefinition<?>) o;
         return paramsLength == that.paramsLength &&
+                Objects.equals(identifier, that.identifier) &&
                 type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, paramsLength);
+        return Objects.hash(identifier, type, paramsLength);
     }
 }

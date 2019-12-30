@@ -7,9 +7,6 @@ import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
 import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.OperatorType;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParserProcessor;
 
 public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double> {
@@ -60,7 +57,14 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
     @Override
     public void callLastOperatorAndAddResult() {
         Operator<? extends OperatorContext> operator = getOperator();
-        double value = operator.execute(getParams(operator.getDefinition()));
+        double value = operator.execute(getParams(operator.getDefinition().getParamsLength()));
+        valueStack.push(value);
+    }
+
+    @Override
+    public void callLastOperatorAndAddResult(int totalOfParamsToRead) {
+        Operator<? extends OperatorContext> operator = getOperator();
+        double value = operator.execute(getParams(totalOfParamsToRead));
         valueStack.push(value);
     }
 
@@ -74,8 +78,8 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         return valueStack.peek();
     }
 
-    private double[] getParams(OperatorDefinition<?> operator){
-        double[] values = new double[operator.getParamsLength()];
+    private double[] getParams(int totalOfParamsToRead){
+        double[] values = new double[totalOfParamsToRead];
 
         for(int i = values.length - 1; i >= 0; i--)
             values[i] = valueStack.pull();
@@ -87,13 +91,13 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         OperatorDefinition<? extends OperatorContext> operator = opStack.pull();
 
         if(operator.getType() == OperatorType.BINARY)
-            return expressionContext.getBinaryOperator(((BinaryOperatorDefinition)operator).getSymbol());
+            return expressionContext.getBinaryOperator(operator.getIdentifier());
 
         if(operator.getType() == OperatorType.FUNCTION)
-            return expressionContext.getFunction(((FunctionOperatorDefinition)operator).getName());
+            return expressionContext.getFunction(operator.getIdentifier());
 
         if(operator.getType() == OperatorType.UNARY)
-            return expressionContext.getUnaryOperator(((UnaryOperatorDefinition)operator).getSymbol());
+            return expressionContext.getUnaryOperator(operator.getIdentifier());
 
         throw new ExpressionException(String.format("Operator type %s not supported", operator.getType()));
     }
