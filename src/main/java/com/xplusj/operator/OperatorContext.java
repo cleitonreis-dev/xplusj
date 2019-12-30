@@ -43,7 +43,7 @@ public abstract class OperatorContext{
     }
 
     public double[] params(){
-        return Arrays.copyOf(params, params.length);
+        return params;
     }
 
     protected ExpressionContext getContext(){

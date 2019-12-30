@@ -4,6 +4,8 @@ import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
 
+import java.util.Arrays;
+
 import static com.xplusj.operator.Precedence.*;
 
 public interface Operators {
@@ -58,9 +60,9 @@ public interface Operators {
     interface Functions{
         FunctionOperatorDefinition POW = FunctionOperatorDefinition.create("pow(a,b)", ctx->Math.pow(ctx.param(0),ctx.param(1)));
         FunctionOperatorDefinition SQRT = FunctionOperatorDefinition.create("sqrt(a)", ctx->Math.sqrt(ctx.param(0)));
-        FunctionOperatorDefinition SUM = FunctionOperatorDefinition.create("sum(a,b)", ctx->ctx.param(0)+ctx.param(1));
-        FunctionOperatorDefinition MAX = FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param(0),ctx.param(1)));
-        FunctionOperatorDefinition MIN = FunctionOperatorDefinition.create("min(a,b)", ctx->Math.min(ctx.param(0),ctx.param(1)));
+        FunctionOperatorDefinition SUM = FunctionOperatorDefinition.create("sum(a,b,...)", ctx->Arrays.stream(ctx.params()).reduce(0D, Double::sum));
+        FunctionOperatorDefinition MAX = FunctionOperatorDefinition.create("max(a,b,...)", ctx->Arrays.stream(ctx.params()).max().orElse(0D));
+        FunctionOperatorDefinition MIN = FunctionOperatorDefinition.create("min(a,b,...)", ctx->Arrays.stream(ctx.params()).min().orElse(0D));
         FunctionOperatorDefinition IF = FunctionOperatorDefinition.create("if(condition,true,false)",
                 ctx->ctx.param(0) == 1 ? ctx.param(1) : ctx.param(2));
 

@@ -57,7 +57,14 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
     @Override
     public void callLastOperatorAndAddResult() {
         Operator<? extends OperatorContext> operator = getOperator();
-        double value = operator.execute(getParams(operator.getDefinition()));
+        double value = operator.execute(getParams(operator.getDefinition().getParamsLength()));
+        valueStack.push(value);
+    }
+
+    @Override
+    public void callLastOperatorAndAddResult(int totalOfParamsToRead) {
+        Operator<? extends OperatorContext> operator = getOperator();
+        double value = operator.execute(getParams(totalOfParamsToRead));
         valueStack.push(value);
     }
 
@@ -71,8 +78,8 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         return valueStack.peek();
     }
 
-    private double[] getParams(OperatorDefinition<?> operator){
-        double[] values = new double[operator.getParamsLength()];
+    private double[] getParams(int totalOfParamsToRead){
+        double[] values = new double[totalOfParamsToRead];
 
         for(int i = values.length - 1; i >= 0; i--)
             values[i] = valueStack.pull();

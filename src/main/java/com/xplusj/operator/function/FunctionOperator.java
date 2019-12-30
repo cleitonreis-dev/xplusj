@@ -21,10 +21,15 @@ public class FunctionOperator implements Operator<FunctionOperatorContext> {
 
     @Override
     public double execute(double... params) {
-        if(params.length != definition.getParamsLength())
+        if(!definition.isVarArgs() && params.length != definition.getParamsLength())
             throw new IllegalArgumentException(format(
                     "Function '%s' expects %s parameter(s), but received %s",
                     definition.getName(), definition.getParamsLength(), params.length));
+
+        if(definition.isVarArgs() && params.length < definition.getParamsLength() - 1)
+            throw new IllegalArgumentException(format(
+                    "Function '%s' expects at least %s parameter(s), but received %s",
+                    definition.getName(), definition.getParamsLength()-1, params.length));
 
         return definition.getFunction().apply(FunctionOperatorContext.create(definition,context,params));
     }

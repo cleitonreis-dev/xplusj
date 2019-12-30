@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -78,6 +77,9 @@ public class DefaultExpressionParserTest {
 
         when(definitions.hasFunction("sum")).thenReturn(true);
         when(definitions.getFunction("sum")).thenReturn(new DefaultExpressionParserTest.Func("sum","a","b"));
+
+        when(definitions.hasFunction("max")).thenReturn(true);
+        when(definitions.getFunction("max")).thenReturn(new DefaultExpressionParserTest.Func("max","a","b","..."));
 
         when(definitions.hasConstant("PI")).thenReturn(Boolean.TRUE);
         when(definitions.getConstant("PI")).thenReturn(Constant.newConst("PI", Math.PI));
@@ -648,9 +650,9 @@ public class DefaultExpressionParserTest {
 
     @Test
     public void testFunctionInvalidParam4(){
-        String exp = "sum(1,3,4)";
+        String exp = "sum(1)";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 7, "Function not closed properly").getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 0, "Function requires %s parameters", 2).getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);
@@ -702,6 +704,47 @@ public class DefaultExpressionParserTest {
         parser.eval(exp, instructionLogger);
 
         assertEquals(exp,expectedStack, instructionLogger.log);
+    }
+
+    @Test
+    public void testVarArgs(){
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        String exp = "max(1,2)";
+        DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog()
+                .pushOperator("max(a,b,...)")
+                .pushValue(1)
+                .pushValue(2)
+                .callOperator("max(a,b,...)");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp, log, instructionLogger.log);
+    }
+
+    @Test
+    public void testVarArgs2(){
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        String exp = "max(1,2,3)";
+        DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog()
+                .pushOperator("max(a,b,...)")
+                .pushValue(1)
+                .pushValue(2)
+                .pushValue(3)
+                .callOperator("max(a,b,...)");
+
+        parser.eval(exp, instructionLogger);
+
+        assertEquals(exp, log, instructionLogger.log);
+    }
+
+    @Test
+    public void testVarArgs3(){
+        String exp = "max(1)";
+        thrown.expect(ExpressionParseException.class);
+        thrown.expectMessage(new ExpressionParseException(exp, 0, "Function requires at least %s parameters", 2).getMessage());
+
+        DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
+        parser.eval(exp, instructionLogger);
     }
 
     private static class StackLog{
@@ -787,6 +830,12 @@ public class DefaultExpressionParserTest {
         }
 
         @Override
+        public void callLastOperatorAndAddResult(int totalOfParamsToRead) {
+            log.callOperator(opStack.pull().toString());
+            System.out.println(log);
+        }
+
+        @Override
         public OperatorDefinition<?> getLastOperator() {
             System.out.println(log);
             return opStack.peek();
@@ -830,7 +879,7 @@ public class DefaultExpressionParserTest {
         private final String[] params;
 
         Func(String name, String...params) {
-            super(new FunctionIdentifier(name, Arrays.asList(params)), ctx->0d);
+            super(FunctionIdentifier.create(String.format("%s(%s)",name, String.join(",",params))),ctx->0d);
             this.params = params;
         }
 

@@ -1,6 +1,5 @@
 package com.xplusj.parser;
 
-import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorContext;
 import com.xplusj.operator.OperatorDefinition;
 
@@ -14,6 +13,8 @@ public interface ExpressionParserProcessor<Result> {
     void addOperator(OperatorDefinition<? extends OperatorContext> operator);
 
     void callLastOperatorAndAddResult();
+
+    void callLastOperatorAndAddResult(int totalOfParamsToRead);
 
     OperatorDefinition<?> getLastOperator();
 
