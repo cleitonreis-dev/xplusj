@@ -2,15 +2,9 @@ package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,16 +12,11 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
 
     private final ExpressionOperatorDefinitions parent;
     private final ExpressionOperatorDefinitions current;
-    private final Set<OperatorDefinition<?>> allOperators;
 
     private DefaultExpressionOperatorDefinitionsAppender(ExpressionOperatorDefinitions parent,
                                                         ExpressionOperatorDefinitions current) {
         this.parent = parent;
         this.current = current;
-
-        Set<OperatorDefinition<?>> list = new HashSet<>(current.list(ListOperatorFilter.ALL));
-        list.addAll(parent.list(ListOperatorFilter.ALL).stream().filter(def->!list.contains(def)).collect(Collectors.toSet()));
-        allOperators = Collections.unmodifiableSet(list);
     }
 
     @Override
@@ -64,11 +53,6 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
             return current.getUnaryOperator(symbol);
 
         return parent.getUnaryOperator(symbol);
-    }
-
-    @Override
-    public Set<OperatorDefinition<?>> list(ListOperatorFilter listOperatorFilter) {
-        return DefaultExpressionOperatorDefinitions.filterList(listOperatorFilter, allOperators);
     }
 
     @Override

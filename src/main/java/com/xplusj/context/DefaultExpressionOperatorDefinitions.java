@@ -2,18 +2,14 @@ package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.OperatorDefinition;
-import com.xplusj.operator.OperatorType;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorDefinitions {
 
-    private final Set<OperatorDefinition<?>> allOperators;
     private final Map<String, UnaryOperatorDefinition> unaryOperators;
     private final Map<String, BinaryOperatorDefinition> binaryOperators;
     private final Map<String, FunctionOperatorDefinition> functionOperators;
@@ -27,12 +23,6 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
         this.binaryOperators = binaryOperators;
         this.functionOperators = functionOperators;
         this.constants = constants;
-
-        allOperators = Collections.unmodifiableSet(new HashSet<OperatorDefinition<?>>(){{
-            addAll(unaryOperators.values());
-            addAll(binaryOperators.values());
-            addAll(functionOperators.values());
-       }});
     }
 
     @Override
@@ -66,11 +56,6 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
     }
 
     @Override
-    public Set<OperatorDefinition<?>> list(ListOperatorFilter listOperatorFilter) {
-        return filterList(listOperatorFilter, allOperators);
-    }
-
-    @Override
     public FunctionOperatorDefinition getFunction(String name) {
         return functionOperators.get(name);
     }
@@ -87,23 +72,6 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
 
     public static ExpressionOperatorDefinitions.Builder builder(){
         return new Builder();
-    }
-
-    static Set<OperatorDefinition<?>> filterList(ListOperatorFilter listOperatorFilter, Set<OperatorDefinition<?>> allOperators){
-        if(listOperatorFilter == null || listOperatorFilter == ListOperatorFilter.ALL)
-            return allOperators;
-
-        if(listOperatorFilter == ListOperatorFilter.UNARY)
-            return allOperators.stream().filter(def->def.getType() == OperatorType.UNARY).collect(Collectors.toSet());
-
-        if(listOperatorFilter == ListOperatorFilter.BINARY)
-            return allOperators.stream().filter(def->def.getType() == OperatorType.BINARY).collect(Collectors.toSet());
-
-        if(listOperatorFilter == ListOperatorFilter.UNARY_AND_BINARY)
-            return allOperators.stream().filter(def->def.getType() == OperatorType.UNARY || def.getType() == OperatorType.BINARY)
-                    .collect(Collectors.toSet());
-
-        return allOperators.stream().filter(def->def.getType() == OperatorType.FUNCTION).collect(Collectors.toSet());
     }
 
     static class Builder implements ExpressionOperatorDefinitions.Builder{

@@ -1,12 +1,11 @@
 package com.xplusj.tokenizer;
 
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.parser.ExpressionParseException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     private static final Map<Character, Function<Integer, Token>> RESERVED_TOKENS =
@@ -19,16 +18,14 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     private final String expression;
     private final int expressionLength;
     private final ExpressionOperatorDefinitions operatorDefinitions;
-    private final Set<OperatorDefinition<?>> allUnaryBinary;
     private int currentIndex;
     private int startIndex;
     private Token lastToken;
 
-    Tokenizer(final String expression, final ExpressionOperatorDefinitions operatorDefinitions, final Set<OperatorDefinition<?>> allUnaryBinary) {
+    Tokenizer(final String expression, final ExpressionOperatorDefinitions operatorDefinitions) {
         this.expression = expression;
         this.expressionLength = expression.length();
         this.operatorDefinitions = operatorDefinitions;
-        this.allUnaryBinary = allUnaryBinary;
     }
 
     @Override
@@ -173,24 +170,24 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     }
 
     private Token readOperator() {
-        String operatorIdentifier = expression.substring(startIndex,++currentIndex);
-        Set<String> startingWithList = countOperatorsStartingWith(operatorIdentifier);
-        int startingWithCount = startingWithList.size();
+        while(true){
+            currentIndex++;
 
-        if(startingWithCount == 0)
-            throw new ExpressionParseException(expression, currentIndex-1, "Invalid operator '%s'", operatorIdentifier);
+            if(!hasNext())
+                break;
 
-        if(startingWithCount == 1) {
-            currentIndex += startingWithList.iterator().next().length() - 1;
-        }else{
-            int index = currentIndex;
-            currentIndex += startingWithList.stream().max(Comparator.comparingInt(String::length)).map(String::length).get() - 1;
-            while (currentIndex > expressionLength || (!hasOperator(expression.substring(startIndex,currentIndex)) && currentIndex > index)){
-                currentIndex--;
-            }
+            char c = expression.charAt(currentIndex);
+            if(!isOperatorEligible(c) || !hasNext())
+                break;
         }
 
-        lastToken = Token.operator(expression.substring(startIndex, currentIndex), startIndex);
+        String operatorIdentifier = expression.substring(startIndex,currentIndex);
+        if(operatorIdentifier.length() > 1) {
+            while (currentIndex > expressionLength || (!hasOperator(operatorIdentifier) && currentIndex > startIndex))
+                operatorIdentifier = expression.substring(startIndex,--currentIndex);
+        }
+
+        lastToken = Token.operator(operatorIdentifier, startIndex);
         return lastToken;
     }
 
@@ -212,12 +209,6 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     private boolean isOperatorEligible(char c) {
         return c != ' ' && c != '_' && !RESERVED_TOKENS.containsKey(c) && !isDigit(c)
                 && !('a' <= c && c <= 'z') && !('A' <= c && c <= 'Z');
-    }
-
-    private Set<String> countOperatorsStartingWith(String prefix){
-        return allUnaryBinary.stream().filter(def->def.getIdentifier().startsWith(prefix))
-                .map(OperatorDefinition::getIdentifier)
-                .collect(Collectors.toSet());
     }
 
     private boolean hasOperator(String identifier){

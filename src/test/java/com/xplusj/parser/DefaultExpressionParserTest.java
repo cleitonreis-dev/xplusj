@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -41,8 +39,6 @@ public class DefaultExpressionParserTest {
     private static final DefaultExpressionParserTest.BOperator GT = new DefaultExpressionParserTest.BOperator(">", Precedence.higherThan(Precedence.low()));
     private static final DefaultExpressionParserTest.BOperator GE = new DefaultExpressionParserTest.BOperator(">=", Precedence.higherThan(Precedence.low()));
 
-    private static Set<OperatorDefinition<?>> operators = new HashSet<>(Arrays.asList(PLUS,UPLUS,MINUS,UMINUS,MULT,DIV,EQ,GT,GE));
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -55,8 +51,6 @@ public class DefaultExpressionParserTest {
 
     @Before
     public void setUp(){
-        when(definitions.list(ExpressionOperatorDefinitions.ListOperatorFilter.UNARY_AND_BINARY)).thenReturn(operators);
-
         instructionLogger = new DefaultExpressionParserTest.InstructionLogger();
 
         tokenizer = ExpressionTokenizerFactory.defaultFactory().create(definitions);
@@ -556,7 +550,7 @@ public class DefaultExpressionParserTest {
     public void testInvalidOperator(){
         String exp = "1&1";
         thrown.expect(ExpressionParseException.class);
-        thrown.expectMessage(new ExpressionParseException(exp, 1, "Invalid operator '%s'", "&").getMessage());
+        thrown.expectMessage(new ExpressionParseException(exp, 1, "Binary operator '%s' not found", "&").getMessage());
 
         DefaultExpressionParser parser = DefaultExpressionParser.create(definitions, tokenizer);
         parser.eval(exp, instructionLogger);

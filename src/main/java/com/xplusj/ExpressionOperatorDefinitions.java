@@ -2,15 +2,11 @@ package com.xplusj;
 
 import com.xplusj.context.DefaultExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
 
-import java.util.Set;
-
 public interface ExpressionOperatorDefinitions {
-    enum ListOperatorFilter {ALL,UNARY,BINARY,UNARY_AND_BINARY,FUNCTION}
 
     boolean hasFunction(String name);
 
@@ -23,8 +19,6 @@ public interface ExpressionOperatorDefinitions {
     BinaryOperatorDefinition getBinaryOperator(String symbol);
 
     UnaryOperatorDefinition getUnaryOperator(String symbol);
-
-    Set<OperatorDefinition<?>> list(ListOperatorFilter listOperatorFilter);
 
     FunctionOperatorDefinition getFunction(String name);
 
