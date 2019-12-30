@@ -114,7 +114,7 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
 
             unaries.forEach(operator->unaryMap.put(operator.getIdentifier(), operator));
             binaries.forEach(operator->binariesMap.put(operator.getIdentifier(), operator));
-            functions.forEach(operator->functionsMap.put(operator.getName(), operator));
+            functions.forEach(operator->functionsMap.put(operator.getIdentifier(), operator));
             constants.forEach(constant->constantsMap.put(constant.getName(), constant));
 
             return new DefaultExpressionOperatorDefinitions(unaryMap,binariesMap,functionsMap,constantsMap);

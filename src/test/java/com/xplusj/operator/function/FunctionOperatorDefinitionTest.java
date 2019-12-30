@@ -24,77 +24,94 @@
 
 package com.xplusj.operator.function;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-@Ignore
-public class FunctionIdentifierTest {
-
+public class FunctionOperatorDefinitionTest {
+    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+    
+    @Test
+    public void testParamIndexByName(){
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a,...)", (ctx)->0D);
+
+        assertEquals(0, definition.paramIndex("ab"));
+        assertEquals(1, definition.paramIndex("a"));
+        assertEquals(2, definition.paramIndex("..."));
+    }
+
+    @Test
+    public void testParamIndexByName1(){
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Param c not found for function func. Valid params are: ab,a,...");
+
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a,...)", (ctx)->0D);
+
+        assertEquals(0, definition.paramIndex("c"));
+    }
 
     @Test
     public void testFunctionName(){
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(ab,a,...)");
-        assertEquals("func", identifier.name);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a,...)", (ctx)->0D);
+        assertEquals("func", definition.getIdentifier());
     }
 
     @Test
     public void testParamsLength(){
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(ab,a,...)");
-        assertEquals(3, identifier.params.size());
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a,...)", (ctx)->0D);
+        assertEquals(3, definition.getParamsLength());
     }
 
     @Test
     public void testParamNames(){
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(ab,a,...)");
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a,...)", (ctx)->0D);
 
-        assertEquals("ab", identifier.params.get(0));
-        assertEquals("a", identifier.params.get(1));
-        assertEquals("...", identifier.params.get(2));
+        assertEquals("ab", definition.getParams().get(0));
+        assertEquals("a", definition.getParams().get(1));
+        assertEquals("...", definition.getParams().get(2));
     }
 
     @Test
     public void testParamVarArgs(){
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(ab,a,...)");
-        assertTrue(identifier.isVarargs);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a,...)", (ctx)->0D);
+        assertTrue(definition.isVarArgs());
     }
 
     @Test
     public void testParamVarArgs1(){
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(ab,a)");
-        assertFalse(identifier.isVarargs);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(ab,a)", (ctx)->0D);
+        assertFalse(definition.isVarArgs());
     }
 
     @Test
     public void testValidationAtLeastOneParam(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func()' must have at least one parameter");
-        FunctionIdentifier identifier = FunctionIdentifier.create("func()");
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func()", (ctx)->0D);
     }
 
     @Test
     public void testValidationMissingOpeningParenthesis(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func' does not have '('");
-        FunctionIdentifier identifier = FunctionIdentifier.create("func");
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func", (ctx)->0D);
     }
 
     @Test
     public void testValidationMissingClosingParenthesis(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func(' does not have ')'");
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(");
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(", (ctx)->0D);
     }
 
     @Test
     public void testValidationVarArgs(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func(a,...,b)', 'varargs' must be the last parameter");
-        FunctionIdentifier identifier = FunctionIdentifier.create("func(a,...,b)");
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("func(a,...,b)", (ctx)->0D);
     }
 }

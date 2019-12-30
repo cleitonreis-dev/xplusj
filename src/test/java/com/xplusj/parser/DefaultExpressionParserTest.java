@@ -7,7 +7,6 @@ import com.xplusj.operator.Constant;
 import com.xplusj.operator.OperatorDefinition;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionIdentifier;
 import com.xplusj.operator.function.FunctionOperatorDefinition;
 import com.xplusj.operator.unary.UnaryOperatorDefinition;
 import com.xplusj.tokenizer.ExpressionTokenizer;
@@ -19,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -879,13 +879,13 @@ public class DefaultExpressionParserTest {
         private final String[] params;
 
         Func(String name, String...params) {
-            super(FunctionIdentifier.create(String.format("%s(%s)",name, String.join(",",params))),ctx->0d);
+            super(name,Arrays.asList(params), Arrays.asList(params).contains("..."), ctx->0d);
             this.params = params;
         }
 
         @Override
         public String toString() {
-            return format("%s(%s)",super.getName(),String.join(",",params));
+            return format("%s(%s)",super.getIdentifier(),String.join(",",params));
         }
     }
 }

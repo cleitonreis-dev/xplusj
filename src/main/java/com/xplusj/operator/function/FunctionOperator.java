@@ -24,12 +24,12 @@ public class FunctionOperator implements Operator<FunctionOperatorContext> {
         if(!definition.isVarArgs() && params.length != definition.getParamsLength())
             throw new IllegalArgumentException(format(
                     "Function '%s' expects %s parameter(s), but received %s",
-                    definition.getName(), definition.getParamsLength(), params.length));
+                    definition.getIdentifier(), definition.getParamsLength(), params.length));
 
         if(definition.isVarArgs() && params.length < definition.getParamsLength() - 1)
             throw new IllegalArgumentException(format(
                     "Function '%s' expects at least %s parameter(s), but received %s",
-                    definition.getName(), definition.getParamsLength()-1, params.length));
+                    definition.getIdentifier(), definition.getParamsLength()-1, params.length));
 
         return definition.getFunction().apply(FunctionOperatorContext.create(definition,context,params));
     }
