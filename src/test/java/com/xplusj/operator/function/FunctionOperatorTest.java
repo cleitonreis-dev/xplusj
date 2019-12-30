@@ -126,6 +126,18 @@ public class FunctionOperatorTest {
     }
 
     @Test
+    public void testOperatorParams4(){
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,...)", function);
+        double[] params = {1D};
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Function 'sum' expects at least 2 parameter(s), but received 1");
+
+        FunctionOperator operator = FunctionOperator.create(context,definition);
+        operator.execute(params);
+    }
+
+    @Test
     public void testCompiledFunction(){
         double a = 2;
         double b = 3;
