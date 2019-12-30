@@ -19,4 +19,9 @@ public class FunctionOperatorContext extends OperatorContext{
     public static FunctionOperatorContext create(FunctionOperatorDefinition function, ExpressionContext context, double...values){
         return new FunctionOperatorContext(function, context, values);
     }
+
+    @Override
+    protected ExpressionContext getContext() {
+        return super.getContext();
+    }
 }

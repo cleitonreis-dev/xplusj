@@ -3,6 +3,8 @@ package com.xplusj.operator;
 import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 
+import java.util.Arrays;
+
 import static java.lang.String.format;
 
 public abstract class OperatorContext{
@@ -38,5 +40,13 @@ public abstract class OperatorContext{
                     index, 0, params.length-1));
 
         return params[index];
+    }
+
+    public double[] params(){
+        return params;
+    }
+
+    protected ExpressionContext getContext(){
+        return context;
     }
 }

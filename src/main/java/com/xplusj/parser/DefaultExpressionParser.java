@@ -114,12 +114,12 @@ public class DefaultExpressionParser implements ExpressionParser {
                 || lastToken.type == TokenType.COMMA;
 
         if(isUnary)
-            operator = globalContext.getUnaryOperator(token.value.charAt(0));
+            operator = globalContext.getUnaryOperator(token.value);
         else
-            operator = globalContext.getBinaryOperator(token.value.charAt(0));
+            operator = globalContext.getBinaryOperator(token.value);
 
         if(operator == null){
-            String msg = isUnary ? "Unary operator '%s' not found" : "Binary operator '%s' not found";
+            String msg = (isUnary ? "Unary" : "Binary") + " operator '%s' not found";
             throw new ExpressionParseException(expression, token.index, msg, token.value);
         }
 
@@ -145,22 +145,32 @@ public class DefaultExpressionParser implements ExpressionParser {
         if(!tokenizer.hasNext())
             throw unclosedParenthesis(tokenizer.getExpression(), tokenizer.getLastToken().index);
 
-        int paramsLength = function.getParamsLength();
-        for(int i = 0; i < paramsLength; i++) {
+        int readParams = 0;
+        while (true){
             eval(ExecContext.FUNC, tokenizer, instructionsProcessor);
-
             TokenType lastTokenType = tokenizer.getLastToken().type;
+            readParams++;
 
-            if(i < (paramsLength - 1) && lastTokenType != TokenType.COMMA)
+            if(lastTokenType != TokenType.COMMA && lastTokenType != TokenType.PARENTHESIS_CLOSING)
                 throw new ExpressionParseException(tokenizer.getExpression(),
-                    token.index,"Function requires %s parameters", function.getParamsLength());
+                        tokenizer.getLastToken().index,"Function not closed properly");
 
-            if(i == (paramsLength - 1) && lastTokenType != TokenType.PARENTHESIS_CLOSING)
-                throw new ExpressionParseException(tokenizer.getExpression(),
-                    tokenizer.getLastToken().index,"Function not closed properly");
+            if(lastTokenType == TokenType.PARENTHESIS_CLOSING)
+                break;
         }
 
-        instructionsProcessor.callLastOperatorAndAddResult();
+        int totalFuncParams = function.getParamsLength();
+        boolean isVarArgs = function.isVarArgs();
+
+        if(readParams != totalFuncParams && !isVarArgs)
+            throw new ExpressionParseException(tokenizer.getExpression(),
+                    token.index,"Function requires %s parameters", totalFuncParams);
+
+        if(readParams < totalFuncParams - 1 && isVarArgs)
+            throw new ExpressionParseException(tokenizer.getExpression(),
+                    token.index,"Function requires at least %s parameters", totalFuncParams - 1);
+
+        instructionsProcessor.callLastOperatorAndAddResult(readParams);
     }
 
     private static ExpressionParseException invalidIdentifier(String expression, Token token){

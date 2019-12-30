@@ -22,10 +22,10 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
             .create("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
     private static BinaryOperatorDefinition plus = BinaryOperatorDefinition
-            .create('+', Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+            .create("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
     private static UnaryOperatorDefinition minus = UnaryOperatorDefinition
-            .create('-', Precedence.low(), (ctx)->-ctx.param());
+            .create("-", Precedence.low(), (ctx)->-ctx.param());
     
     private static ExpressionOperatorDefinitions parentDefinitions = DefaultExpressionOperatorDefinitions.builder()
             .addFunction(sum)
@@ -53,7 +53,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasBinaryOperator() {
         BinaryOperatorDefinition definition = BinaryOperatorDefinition
-                .create('+', Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+                .create("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
             .append(parentDefinitions,DefaultExpressionOperatorDefinitions.builder()
@@ -61,14 +61,14 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
                 .build()
             );
 
-        assertTrue(definitions.hasBinaryOperator('+'));
-        assertEquals(definition, definitions.getBinaryOperator('+'));
+        assertTrue(definitions.hasBinaryOperator("+"));
+        assertEquals(definition, definitions.getBinaryOperator("+"));
     }
 
     @Test
     public void hasUnaryOperator() {
         UnaryOperatorDefinition definition = UnaryOperatorDefinition
-                .create('-', Precedence.low(), (ctx)->-ctx.param());
+                .create("-", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
             .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
@@ -76,8 +76,8 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
                 .build()
             );
 
-        assertTrue(definitions.hasUnaryOperator('-'));
-        assertEquals(definition, definitions.getUnaryOperator('-'));
+        assertTrue(definitions.hasUnaryOperator("-"));
+        assertEquals(definition, definitions.getUnaryOperator("-"));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasBinaryOperatorFromParent() {
         BinaryOperatorDefinition definition = BinaryOperatorDefinition
-                .create('%', Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+                .create("%", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
                 .append(parentDefinitions,DefaultExpressionOperatorDefinitions.builder()
@@ -119,14 +119,14 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
                         .build()
                 );
 
-        assertTrue(definitions.hasBinaryOperator('+'));
-        assertEquals(plus, definitions.getBinaryOperator('+'));
+        assertTrue(definitions.hasBinaryOperator("+"));
+        assertEquals(plus, definitions.getBinaryOperator("+"));
     }
 
     @Test
     public void hasUnaryOperatorFromParent() {
         UnaryOperatorDefinition definition = UnaryOperatorDefinition
-                .create('%', Precedence.low(), (ctx)->-ctx.param());
+                .create("%", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
                 .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
@@ -134,8 +134,8 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
                         .build()
                 );
 
-        assertTrue(definitions.hasUnaryOperator('-'));
-        assertEquals(minus, definitions.getUnaryOperator('-'));
+        assertTrue(definitions.hasUnaryOperator("-"));
+        assertEquals(minus, definitions.getUnaryOperator("-"));
     }
 
     @Test

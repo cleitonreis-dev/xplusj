@@ -1,95 +1,53 @@
 package com.xplusj.operator.function;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.String.format;
 
-@EqualsAndHashCode(of = {"name", "paramsLength"})
-@ToString(of = {"name", "paramNames"})
-public class FunctionIdentifier {
-    private final String name;
-    private final int paramsLength;
-    private final List<String> paramNames;
-    private final Map<String,Integer> paramIndex;
 
-    public FunctionIdentifier(String name, List<String> paramNames) {
+class FunctionIdentifier {
+    private static final String VAR_ARGS_IDENTIFIER = "...";
+
+    final String name;
+    final List<String> params;
+    final boolean isVarargs;
+
+    private FunctionIdentifier(String name, List<String> params, boolean isVarargs) {
         this.name = name;
-        this.paramNames = paramNames;
-        this.paramsLength = paramNames.size();
-        this.paramIndex = new HashMap<>();
-
-        int i = 0;
-        for(String param : paramNames){
-            this.paramIndex.put(param,i++);
-        }
+        this.params = params;
+        this.isVarargs = isVarargs;
     }
 
-    FunctionIdentifier(String name, int paramsLength){
-        this.name = name;
-        this.paramsLength = paramsLength;
-        paramNames = Collections.emptyList();
-        paramIndex = Collections.emptyMap();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<String> getParamNames() {
-        return paramNames;
-    }
-
-    public int getParamsLength() {
-        return paramsLength;
-    }
-
-    public int getParamIndex(String name){
-        if(!this.paramIndex.containsKey(name))
-            throw new IllegalArgumentException(
-                format("Param %s not found for function %s. Valid params are: %s",
-                    name, this.name, this.paramNames
-                )
-            );
-
-        return this.paramIndex.get(name);
-    }
-
-    //TODO improve exception handling and improve name evaluation
     public static FunctionIdentifier create(String name){
         int openParenthesisIndex = name.indexOf('(');
         if (openParenthesisIndex <= 0)
-            throw new IllegalArgumentException("incorrect function name");
+            throw new IllegalArgumentException(format("Function identifier '%s' does not have '('", name));
 
         int closeParenthesisIndex = name.indexOf(')');
         if (closeParenthesisIndex != name.length() - 1)
-            throw new IllegalArgumentException("incorrect function name");
+            throw new IllegalArgumentException(format("Function identifier '%s' does not have ')'", name));
 
-        int paramDelimiterIndex = name.indexOf(',');
-        if (paramDelimiterIndex == 0 || (paramDelimiterIndex > 0
-                && !(openParenthesisIndex < paramDelimiterIndex
-                && paramDelimiterIndex < closeParenthesisIndex)))
-            throw new IllegalArgumentException("incorrect function name");
+        List<String> params = new ArrayList<>();
+        String paramsStr = name.substring(openParenthesisIndex + 1, closeParenthesisIndex).trim();
 
-        List<String> params = Collections.emptyList();
+        if(paramsStr.isEmpty())
+            throw new IllegalArgumentException(format("Function identifier '%s' must have at least one parameter", name));
 
-        if (paramDelimiterIndex > 0){
-            String[] paramNames = name.substring(openParenthesisIndex + 1, closeParenthesisIndex).split(",");
-            params = Arrays.asList(paramNames);
+        String[] paramNames = name.substring(openParenthesisIndex + 1, closeParenthesisIndex).split(",");
+        boolean varArgsFound = false;
 
-            if(paramNames.length != params.size())
-                throw new IllegalArgumentException("incorrect function name");
+        for (String paramName : paramNames) {
+            if (varArgsFound)
+                throw new IllegalArgumentException(format("Function identifier '%s', 'varargs' must be the last parameter", name));
+
+            boolean isVarArgs = paramName.equals(VAR_ARGS_IDENTIFIER);
+            if (isVarArgs)
+                varArgsFound = true;
+
+            params.add(paramName.trim());
         }
 
-        return new FunctionIdentifier(
-            name.substring(0, openParenthesisIndex),
-            params
-        );
-    }
-
-    public static FunctionIdentifier create(String name, double...params){
-        return new FunctionIdentifier(name,params.length);
+        return new FunctionIdentifier(name.substring(0, openParenthesisIndex), params, varArgsFound);
     }
 }

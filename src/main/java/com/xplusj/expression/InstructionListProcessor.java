@@ -47,6 +47,12 @@ public class InstructionListProcessor
     }
 
     @Override
+    public void callLastOperatorAndAddResult(int totalOfParamsToRead) {
+        opStack.pull();
+        instructions.add((parserProcessor)->parserProcessor.callLastOperatorAndAddResult(totalOfParamsToRead));
+    }
+
+    @Override
     public OperatorDefinition<?> getLastOperator() {
         return opStack.peek();
     }
