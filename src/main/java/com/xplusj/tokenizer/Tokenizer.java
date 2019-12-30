@@ -183,7 +183,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
         String operatorIdentifier = expression.substring(startIndex,currentIndex);
         if(operatorIdentifier.length() > 1) {
-            while (currentIndex > expressionLength || (!hasOperator(operatorIdentifier) && currentIndex > startIndex))
+            while (!hasOperator(operatorIdentifier) && currentIndex > startIndex)
                 operatorIdentifier = expression.substring(startIndex,--currentIndex);
         }
 
