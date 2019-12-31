@@ -17,12 +17,13 @@ public interface Operators {
         UnaryOperatorDefinition PLUS = UnaryOperatorDefinition.create("+", higherThan(high()), ctx->+ctx.param());
         UnaryOperatorDefinition MIN = UnaryOperatorDefinition.create("-", higherThan(high()), ctx->-ctx.param());
         UnaryOperatorDefinition SQUARE = UnaryOperatorDefinition.create("**", higherThan(PLUS.getPrecedence()), ctx->ctx.param()*ctx.param());
-        UnaryOperatorDefinition CUBE = UnaryOperatorDefinition.create("***", sameAs(SQUARE.getPrecedence()), ctx->Math.pow(ctx.param(), 3));
+        UnaryOperatorDefinition CUBE = UnaryOperatorDefinition.create("***", sameAs(SQUARE.getPrecedence()), ctx->Math.pow(ctx.param(),3));
+        UnaryOperatorDefinition SQRT = UnaryOperatorDefinition.create("#", sameAs(SQUARE.getPrecedence()), ctx->Math.sqrt(ctx.param()));
 
         //Conditional
         UnaryOperatorDefinition NOT = UnaryOperatorDefinition.create("!", lowerThan(PLUS.getPrecedence()), ctx->ctx.param() == 1 ? 0D : 1D);
 
-        UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN,SQUARE,CUBE,NOT};
+        UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN,SQUARE,CUBE,SQRT,NOT};
     }
 
     /**

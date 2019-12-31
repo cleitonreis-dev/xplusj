@@ -1,5 +1,7 @@
 package com.xplusj.expression;
 
+import com.xplusj.Expression;
+import com.xplusj.ExpressionGlobalContext;
 import com.xplusj.VariableContext;
 import com.xplusj.context.DefaultVariableContext;
 import org.junit.Test;
@@ -11,6 +13,8 @@ import static org.junit.Assert.assertEquals;
 @Deprecated //TODO adapt this to integration test
 @RunWith(MockitoJUnitRunner.class)
 public class FormulaTest {
+
+    private static ExpressionGlobalContext context = ExpressionGlobalContext.builder().build();
 
     @Test
     public void testPlus(){
@@ -40,11 +44,8 @@ public class FormulaTest {
         assertEquals(6D, result, 0);
     }
 
-    private static FormulaExpression eval(String expression){
-        return FormulaExpression.create(expression, InlineExpressionTest.ENV.getParser(),
-                (ctx)->TwoStackBasedProcessor.create(InlineExpressionTest.ENV,ctx),
-                ()->InstructionListProcessor.create(Stack.instance())
-        );
+    private static Expression eval(String expression){
+        return context.formula(expression);
     }
 
     private static VariableContext.Builder vars(){
