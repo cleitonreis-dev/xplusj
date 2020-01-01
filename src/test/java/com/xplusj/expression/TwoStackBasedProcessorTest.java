@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.VariableContext;
 import com.xplusj.factory.*;
 import com.xplusj.operator.Operator;
@@ -16,7 +16,7 @@ import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.operator.unary.UnaryOperatorContext;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class TwoStackBasedProcessorTest {
     private ExpressionContext environment;
 
     @Mock
-    private ExpressionOperatorDefinitions globalContext;
+    private ExpressionOperators globalContext;
 
     @Mock
     private FunctionOperator functionOperatorDefinition;

@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.xplusj.VariableContext.vars;
-import static com.xplusj.variable.Variable.var;
+import static com.xplusj.Variable.var;
 import static org.junit.Assert.assertEquals;
 
 @Deprecated //TODO adapt this to integration test

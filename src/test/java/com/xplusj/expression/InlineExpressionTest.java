@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
@@ -11,14 +11,14 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.xplusj.operator.Precedence.*;
-import static com.xplusj.variable.Variable.var;
+import static com.xplusj.Variable.var;
 import static org.junit.Assert.assertEquals;
 
 @Deprecated //TODO adapt this to integration test
 @RunWith(MockitoJUnitRunner.class)
 public class InlineExpressionTest {
-    private static final ExpressionOperatorDefinitions CONTEXT =
-            ExpressionOperatorDefinitions.builder()
+    private static final ExpressionOperators CONTEXT =
+            ExpressionOperators.builder()
             .addBinaryOperator(BinaryOperator.binary("+", low(), ctx->ctx.param0() + ctx.param1()))
             .addBinaryOperator(BinaryOperator.binary("-", low(), ctx->ctx.param0() - ctx.param1()))
             .addBinaryOperator(BinaryOperator.binary("*", high(), ctx->ctx.param0() * ctx.param1()))

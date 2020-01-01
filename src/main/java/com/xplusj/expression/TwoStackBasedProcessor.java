@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.OperatorExecutor;
 import com.xplusj.operator.OperatorContext;
@@ -12,7 +12,7 @@ import com.xplusj.parser.ExpressionParserProcessor;
 public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double> {
 
     private final ExpressionContext expressionContext;
-    private final ExpressionOperatorDefinitions operatorDefinitions;
+    private final ExpressionOperators operatorDefinitions;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
     private final Stack<Operator<? extends OperatorContext>> opStack;

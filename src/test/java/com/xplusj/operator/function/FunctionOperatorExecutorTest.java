@@ -1,7 +1,7 @@
 package com.xplusj.operator.function;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -142,7 +142,7 @@ public class FunctionOperatorExecutorTest {
         double a = 2;
         double b = 3;
 
-        ExpressionContext ctx = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext ctx = context.append(ExpressionOperators.builder()
             .addFunction(FunctionOperator.func("test(a,b)", "pow(max(a,b),2)"))
             .build()
         );

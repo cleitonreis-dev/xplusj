@@ -9,7 +9,7 @@ import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 
 public interface ExpressionContext {
-    ExpressionOperatorDefinitions getDefinitions();
+    ExpressionOperators getDefinitions();
 
     UnaryOperatorExecutor getUnaryOperator(String symbol);
 
@@ -25,10 +25,10 @@ public interface ExpressionContext {
 
     Expression formula(String formula);
 
-    ExpressionContext append(ExpressionOperatorDefinitions operatorDefinitions);
+    ExpressionContext append(ExpressionOperators operatorDefinitions);
 
     interface Builder{
-        Builder setOperatorDefinitions(ExpressionOperatorDefinitions definitions);
+        Builder setOperatorDefinitions(ExpressionOperators definitions);
 
         Builder setExpressionFactory(ExpressionFactory expressionFactory);
 

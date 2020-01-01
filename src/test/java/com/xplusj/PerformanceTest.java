@@ -1,7 +1,5 @@
 package com.xplusj;
 
-import com.xplusj.variable.Variable;
-
 public class PerformanceTest {
 
    /*static final GlobalContext CONTEXT =

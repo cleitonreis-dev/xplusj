@@ -1,6 +1,6 @@
 package com.xplusj.parser;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.OperatorContext;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.function.FunctionOperator;
@@ -11,10 +11,10 @@ import com.xplusj.tokenizer.TokenType;
 public class DefaultExpressionParser implements ExpressionParser {
     private enum ExecContext{PARENTHESIS,FUNC,EXP}
 
-    private final ExpressionOperatorDefinitions globalContext;
+    private final ExpressionOperators globalContext;
     private final ExpressionTokenizer tokenizer;
 
-    private DefaultExpressionParser(ExpressionOperatorDefinitions globalContext, ExpressionTokenizer tokenizer) {
+    private DefaultExpressionParser(ExpressionOperators globalContext, ExpressionTokenizer tokenizer) {
         this.globalContext= globalContext;
         this.tokenizer = tokenizer;
     }
@@ -186,7 +186,7 @@ public class DefaultExpressionParser implements ExpressionParser {
         return new ExpressionParseException(expression,index,"Unclosed parenthesis at index %s",index);
     }
 
-    public static DefaultExpressionParser create(ExpressionOperatorDefinitions context, ExpressionTokenizer tokenizer){
+    public static DefaultExpressionParser create(ExpressionOperators context, ExpressionTokenizer tokenizer){
         return new DefaultExpressionParser(context,tokenizer);
     }
 }

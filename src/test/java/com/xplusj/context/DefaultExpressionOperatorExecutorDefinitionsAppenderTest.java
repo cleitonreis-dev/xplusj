@@ -1,11 +1,11 @@
 package com.xplusj.context;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,7 +27,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
     private static UnaryOperator minus = UnaryOperator
             .unary("-", Precedence.low(), (ctx)->-ctx.param());
     
-    private static ExpressionOperatorDefinitions parentDefinitions = DefaultExpressionOperatorDefinitions.builder()
+    private static ExpressionOperators parentDefinitions = DefaultExpressionOperators.builder()
             .addFunction(sum)
             .addBinaryOperator(plus)
             .addUnaryOperator(minus)
@@ -39,9 +39,9 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         FunctionOperator definition = FunctionOperator
                 .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
             .append(parentDefinitions,
-                DefaultExpressionOperatorDefinitions.builder()
+                DefaultExpressionOperators.builder()
                     .addFunction(definition)
                     .build()
             );
@@ -55,8 +55,8 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         BinaryOperator definition = BinaryOperator
                 .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
-            .append(parentDefinitions,DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
+            .append(parentDefinitions, DefaultExpressionOperators.builder()
                 .addBinaryOperator(definition)
                 .build()
             );
@@ -70,8 +70,8 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         UnaryOperator definition = UnaryOperator
                 .unary("-", Precedence.low(), (ctx)->-ctx.param());
 
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
-            .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
+            .append(parentDefinitions, DefaultExpressionOperators.builder()
                 .addUnaryOperator(definition)
                 .build()
             );
@@ -82,8 +82,8 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
 
     @Test
     public void hasConstant() {
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
-            .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
+            .append(parentDefinitions, DefaultExpressionOperators.builder()
                 .addConstant(Variable.var("PI",Math.PI))
                 .build()
             );
@@ -97,9 +97,9 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         FunctionOperator definition = FunctionOperator
                 .func("sum2(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
                 .append(parentDefinitions,
-                        DefaultExpressionOperatorDefinitions.builder()
+                        DefaultExpressionOperators.builder()
                                 .addFunction(definition)
                                 .build()
                 );
@@ -113,8 +113,8 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         BinaryOperator definition = BinaryOperator
                 .binary("%", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
-                .append(parentDefinitions,DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
+                .append(parentDefinitions, DefaultExpressionOperators.builder()
                         .addBinaryOperator(definition)
                         .build()
                 );
@@ -128,8 +128,8 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         UnaryOperator definition = UnaryOperator
                 .unary("%", Precedence.low(), (ctx)->-ctx.param());
 
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
-                .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
+                .append(parentDefinitions, DefaultExpressionOperators.builder()
                         .addUnaryOperator(definition)
                         .build()
                 );
@@ -140,8 +140,8 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
 
     @Test
     public void hasConstantFromParent() {
-        ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
-                .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators definitions = DefaultExpressionOperatorsAppender
+                .append(parentDefinitions, DefaultExpressionOperators.builder()
                         .addConstant(Variable.var("AA",3D))
                         .build()
                 );
@@ -155,7 +155,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         thrown.expect(NullPointerException.class);
         thrown.expectMessage("Parent instance definition is required");
 
-        DefaultExpressionOperatorDefinitionsAppender.append(null, ExpressionOperatorDefinitions.builder().build());
+        DefaultExpressionOperatorsAppender.append(null, ExpressionOperators.builder().build());
     }
 
     @Test
@@ -163,6 +163,6 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
         thrown.expect(NullPointerException.class);
         thrown.expectMessage("Current instance definition is required");
 
-        DefaultExpressionOperatorDefinitionsAppender.append(parentDefinitions, null);
+        DefaultExpressionOperatorsAppender.append(parentDefinitions, null);
     }
 }

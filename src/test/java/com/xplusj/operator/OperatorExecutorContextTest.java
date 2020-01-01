@@ -1,9 +1,9 @@
 package com.xplusj.operator;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.function.FunctionOperatorExecutor;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class OperatorExecutorContextTest {
     private ExpressionContext context;
 
     @Mock
-    private ExpressionOperatorDefinitions definitions;
+    private ExpressionOperators definitions;
 
     @Before
     public void setUp(){

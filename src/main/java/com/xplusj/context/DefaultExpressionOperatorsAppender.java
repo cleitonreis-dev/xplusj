@@ -1,20 +1,20 @@
 package com.xplusj.context;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 
 import static java.util.Objects.requireNonNull;
 
-public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionOperatorDefinitions {
+public class DefaultExpressionOperatorsAppender implements ExpressionOperators {
 
-    private final ExpressionOperatorDefinitions parent;
-    private final ExpressionOperatorDefinitions current;
+    private final ExpressionOperators parent;
+    private final ExpressionOperators current;
 
-    private DefaultExpressionOperatorDefinitionsAppender(ExpressionOperatorDefinitions parent,
-                                                        ExpressionOperatorDefinitions current) {
+    private DefaultExpressionOperatorsAppender(ExpressionOperators parent,
+                                               ExpressionOperators current) {
         this.parent = parent;
         this.current = current;
     }
@@ -72,13 +72,13 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public ExpressionOperatorDefinitions append(ExpressionOperatorDefinitions newDefinitions) {
-        return DefaultExpressionOperatorDefinitionsAppender.append(this, newDefinitions);
+    public ExpressionOperators append(ExpressionOperators newDefinitions) {
+        return DefaultExpressionOperatorsAppender.append(this, newDefinitions);
     }
 
-    public static ExpressionOperatorDefinitions append(ExpressionOperatorDefinitions parent,
-                                                       ExpressionOperatorDefinitions current){
-        return new DefaultExpressionOperatorDefinitionsAppender(
+    public static ExpressionOperators append(ExpressionOperators parent,
+                                             ExpressionOperators current){
+        return new DefaultExpressionOperatorsAppender(
                 requireNonNull(parent, "Parent instance definition is required"),
                 requireNonNull(current, "Current instance definition is required")
         );

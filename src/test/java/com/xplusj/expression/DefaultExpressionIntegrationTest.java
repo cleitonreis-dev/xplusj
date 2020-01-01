@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.xplusj.VariableContext.vars;
-import static com.xplusj.variable.Variable.var;
+import static com.xplusj.Variable.var;
 import static org.junit.Assert.assertEquals;
 
 public class DefaultExpressionIntegrationTest {
@@ -155,7 +155,7 @@ public class DefaultExpressionIntegrationTest {
 
     @Test
     public void testMakeSureTheFunctionParamsAreGivenInCorrectOrder(){
-        ExpressionContext globalContext = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext globalContext = context.append(ExpressionOperators.builder()
                 .addFunction(FunctionOperator.func("minus(x,y)", c->c.param("x")-c.param("y")))
                 .build());
 
@@ -165,7 +165,7 @@ public class DefaultExpressionIntegrationTest {
 
     @Test
     public void testFunctionCallingAnotherFunction(){
-        ExpressionContext globalContext = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext globalContext = context.append(ExpressionOperators.builder()
                 .addFunction(FunctionOperator.func("foo(x)", c -> c.param("x") * 2))
                 .addFunction(FunctionOperator.func("bar(y)", c -> 3 * c.call("foo", c.param("y"))))
                 .build());
@@ -176,7 +176,7 @@ public class DefaultExpressionIntegrationTest {
 
     @Test
     public void testFunctionWithFunctionAsParam(){
-        ExpressionContext globalContext = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext globalContext = context.append(ExpressionOperators.builder()
                 .addFunction(FunctionOperator.func("foo(x,y)", c -> c.param("x") * c.param("y")))
                 .addFunction(FunctionOperator.func("bar(a,b)", c -> c.param("a") + c.param("b")))
                 .build());
@@ -205,7 +205,7 @@ public class DefaultExpressionIntegrationTest {
 
     @Test
     public void testFunctionCallingConstant(){
-        ExpressionContext globalContext = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext globalContext = context.append(ExpressionOperators.builder()
                 .addFunction(FunctionOperator.func("foo(x)", c -> c.param("x") * c.getConstant("PI")))
                 .build());
 
@@ -215,7 +215,7 @@ public class DefaultExpressionIntegrationTest {
 
     @Test
     public void testBinaryOperatorCallingConstant(){
-        ExpressionContext globalContext = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext globalContext = context.append(ExpressionOperators.builder()
                 .addBinaryOperator(BinaryOperator.binary("+", Precedence.low(), c->(c.param0() + c.param1()) * c.getConstant("PI")))
                 .build());
 

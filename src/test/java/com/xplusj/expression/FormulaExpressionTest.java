@@ -1,14 +1,14 @@
 package com.xplusj.expression;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.parser.ExpressionParserProcessor;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class FormulaExpressionTest {
     private ExpressionContext env;
 
     @Mock
-    private ExpressionOperatorDefinitions globalContext;
+    private ExpressionOperators globalContext;
 
     @Mock
     private ExpressionParser parser;

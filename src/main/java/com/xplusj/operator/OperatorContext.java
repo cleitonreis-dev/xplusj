@@ -1,15 +1,13 @@
 package com.xplusj.operator;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
-
-import java.util.Arrays;
+import com.xplusj.ExpressionOperators;
 
 import static java.lang.String.format;
 
 public abstract class OperatorContext{
     private final ExpressionContext context;
-    private final ExpressionOperatorDefinitions definitions;
+    private final ExpressionOperators definitions;
     private final double[] params;
 
     protected OperatorContext(final ExpressionContext context, final double...params) {

@@ -1,6 +1,6 @@
 package com.xplusj.parser;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.expression.Stack;
 import com.xplusj.factory.ExpressionTokenizerFactory;
 import com.xplusj.operator.Operator;
@@ -9,7 +9,7 @@ import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.tokenizer.ExpressionTokenizer;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class DefaultExpressionParserTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private ExpressionOperatorDefinitions definitions;
+    private ExpressionOperators definitions;
 
     private DefaultExpressionParserTest.InstructionLogger instructionLogger;
 

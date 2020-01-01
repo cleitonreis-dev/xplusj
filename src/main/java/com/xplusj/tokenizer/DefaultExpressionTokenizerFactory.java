@@ -1,6 +1,6 @@
 package com.xplusj.tokenizer;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.factory.ExpressionTokenizerFactory;
 
 public class DefaultExpressionTokenizerFactory implements ExpressionTokenizerFactory {
@@ -8,7 +8,7 @@ public class DefaultExpressionTokenizerFactory implements ExpressionTokenizerFac
             new DefaultExpressionTokenizerFactory();
 
     @Override
-    public ExpressionTokenizer create(final ExpressionOperatorDefinitions operatorDefinitions) {
+    public ExpressionTokenizer create(final ExpressionOperators operatorDefinitions) {
         return DefaultExpressionTokenizer.create(operatorDefinitions);
     }
 

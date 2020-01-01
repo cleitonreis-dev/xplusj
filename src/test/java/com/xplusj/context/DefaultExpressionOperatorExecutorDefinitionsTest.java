@@ -1,11 +1,11 @@
 package com.xplusj.context;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +18,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsTest {
         FunctionOperator definition = FunctionOperator
                 .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
-        ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators repository = DefaultExpressionOperators.builder()
             .addFunction(definition)
             .build();
 
@@ -31,7 +31,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsTest {
         BinaryOperator definition = BinaryOperator
                 .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
-        ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators repository = DefaultExpressionOperators.builder()
                 .addBinaryOperator(definition)
                 .build();
 
@@ -44,7 +44,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsTest {
         UnaryOperator definition = UnaryOperator
                 .unary("-", Precedence.low(), (ctx)->-ctx.param());
 
-        ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators repository = DefaultExpressionOperators.builder()
                 .addUnaryOperator(definition)
                 .build();
 
@@ -54,7 +54,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsTest {
 
     @Test
     public void hasConstant() {
-        ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
+        ExpressionOperators repository = DefaultExpressionOperators.builder()
                 .addConstant(Variable.var("PI",Math.PI))
                 .build();
 
@@ -64,7 +64,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsTest {
 
     @Test
     public void defaultBuilder() {
-        ExpressionOperatorDefinitions repository = ExpressionOperatorDefinitions.builder().build();
-        assertTrue(repository instanceof DefaultExpressionOperatorDefinitions);
+        ExpressionOperators repository = ExpressionOperators.builder().build();
+        assertTrue(repository instanceof DefaultExpressionOperators);
     }
 }

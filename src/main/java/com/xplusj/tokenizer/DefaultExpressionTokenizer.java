@@ -1,12 +1,12 @@
 package com.xplusj.tokenizer;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 
 public class DefaultExpressionTokenizer implements ExpressionTokenizer{
 
-    private final ExpressionOperatorDefinitions operatorDefinitions;
+    private final ExpressionOperators operatorDefinitions;
 
-    private DefaultExpressionTokenizer(final ExpressionOperatorDefinitions operatorDefinitions) {
+    private DefaultExpressionTokenizer(final ExpressionOperators operatorDefinitions) {
         this.operatorDefinitions = operatorDefinitions;
 
     }
@@ -16,7 +16,7 @@ public class DefaultExpressionTokenizer implements ExpressionTokenizer{
         return new com.xplusj.tokenizer.Tokenizer(expression, operatorDefinitions);
     }
 
-    public static DefaultExpressionTokenizer create(ExpressionOperatorDefinitions operatorDefinitions){
+    public static DefaultExpressionTokenizer create(ExpressionOperators operatorDefinitions){
         return new DefaultExpressionTokenizer(operatorDefinitions);
     }
 }

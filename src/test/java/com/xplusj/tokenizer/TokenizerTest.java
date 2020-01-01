@@ -1,6 +1,6 @@
 package com.xplusj.tokenizer;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.parser.ExpressionParseException;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -27,7 +27,7 @@ public class TokenizerTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    private ExpressionOperatorDefinitions operatorDefinitions;
+    private ExpressionOperators operatorDefinitions;
 
     @Before
     public void setUp(){

@@ -1,7 +1,6 @@
 package com.xplusj;
 
 import com.xplusj.context.DefaultVariableContext;
-import com.xplusj.variable.Variable;
 
 public interface VariableContext {
     VariableContext EMPTY = builder().build();

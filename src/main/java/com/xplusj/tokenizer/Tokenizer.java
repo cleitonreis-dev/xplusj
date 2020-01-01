@@ -1,6 +1,6 @@
 package com.xplusj.tokenizer;
 
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.parser.ExpressionParseException;
 
 import java.util.HashMap;
@@ -17,12 +17,12 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     private final String expression;
     private final int expressionLength;
-    private final ExpressionOperatorDefinitions operatorDefinitions;
+    private final ExpressionOperators operatorDefinitions;
     private int currentIndex;
     private int startIndex;
     private Token lastToken;
 
-    Tokenizer(final String expression, final ExpressionOperatorDefinitions operatorDefinitions) {
+    Tokenizer(final String expression, final ExpressionOperators operatorDefinitions) {
         this.expression = expression;
         this.expressionLength = expression.length();
         this.operatorDefinitions = operatorDefinitions;

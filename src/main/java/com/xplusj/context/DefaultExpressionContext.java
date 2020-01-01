@@ -2,7 +2,7 @@ package com.xplusj.context;
 
 import com.xplusj.Expression;
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.factory.*;
 import com.xplusj.operator.Functions;
 import com.xplusj.operator.Operators;
@@ -11,11 +11,11 @@ import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
-import com.xplusj.variable.Constants;
+import com.xplusj.Constants;
 
 public class DefaultExpressionContext implements ExpressionContext {
 
-    private final ExpressionOperatorDefinitions definitions;
+    private final ExpressionOperators definitions;
     private final ExpressionParser parser;
     private final ExpressionTokenizer tokenizer;
     private final ExpressionFactory expressionFactory;
@@ -25,7 +25,7 @@ public class DefaultExpressionContext implements ExpressionContext {
     private final ExpressionBinaryOperatorFactory binaryFactory;
     private final ExpressionFunctionOperatorFactory functionFactory;
 
-    private DefaultExpressionContext(ExpressionOperatorDefinitions definitions,
+    private DefaultExpressionContext(ExpressionOperators definitions,
                                      ExpressionFactory expressionFactory,
                                      ExpressionParserFactory parserFactory,
                                      ExpressionTokenizerFactory tokenizerFactory,
@@ -54,7 +54,7 @@ public class DefaultExpressionContext implements ExpressionContext {
     }
 
     @Override
-    public ExpressionOperatorDefinitions getDefinitions() {
+    public ExpressionOperators getDefinitions() {
         return definitions;
     }
 
@@ -84,7 +84,7 @@ public class DefaultExpressionContext implements ExpressionContext {
     }
 
     @Override
-    public ExpressionContext append(ExpressionOperatorDefinitions operatorDefinitions) {
+    public ExpressionContext append(ExpressionOperators operatorDefinitions) {
         return new DefaultExpressionContext(
                 definitions.append(operatorDefinitions), expressionFactory, parserFactory,
                 tokenizerFactory, unaryFactory, binaryFactory, functionFactory
@@ -97,7 +97,7 @@ public class DefaultExpressionContext implements ExpressionContext {
 
     static class Builder implements ExpressionContext.Builder{
 
-        private ExpressionOperatorDefinitions definitions;
+        private ExpressionOperators definitions;
         private ExpressionFactory expressionFactory;
         private ExpressionParserFactory parserFactory;
         private ExpressionTokenizerFactory tokenizerFactory;
@@ -143,7 +143,7 @@ public class DefaultExpressionContext implements ExpressionContext {
         }
 
         @Override
-        public Builder setOperatorDefinitions(ExpressionOperatorDefinitions definitions) {
+        public Builder setOperatorDefinitions(ExpressionOperators definitions) {
             this.definitions = definitions;
             return this;
         }
@@ -160,7 +160,7 @@ public class DefaultExpressionContext implements ExpressionContext {
 
         private void initDefaults(){
             if(definitions == null)
-                definitions = ExpressionOperatorDefinitions.builder()
+                definitions = ExpressionOperators.builder()
                         .addConstant(Constants.CONSTANTS)
                         .addUnaryOperator(Operators.Unary.OPERATORS)
                         .addBinaryOperator(Operators.Binary.OPERATORS)

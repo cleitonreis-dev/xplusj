@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.xplusj.variable;
+package com.xplusj;
 
 import java.util.Objects;
 

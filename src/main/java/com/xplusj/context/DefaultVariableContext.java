@@ -1,7 +1,7 @@
 package com.xplusj.context;
 
 import com.xplusj.VariableContext;
-import com.xplusj.variable.Variable;
+import com.xplusj.Variable;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package com.xplusj.context;
 
 import com.xplusj.ExpressionContext;
-import com.xplusj.ExpressionOperatorDefinitions;
+import com.xplusj.ExpressionOperators;
 import com.xplusj.factory.*;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class DefaultExpressionContextTest {
 
     @Mock
-    private ExpressionOperatorDefinitions definitions;
+    private ExpressionOperators definitions;
 
     @Mock
     private ExpressionFactory expressionFactory;
@@ -53,7 +53,7 @@ public class DefaultExpressionContextTest {
     private ExpressionTokenizer tokenizer;
 
     @Mock
-    private ExpressionOperatorDefinitions newDefinitions;
+    private ExpressionOperators newDefinitions;
 
     @Before
     public void setUp(){
