@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-package com.xplusj.operator;
-
-import com.xplusj.variable.Variable;
+package com.xplusj.variable;
 
 public interface Constants {
     Variable PI = Variable.var("PI", Math.PI);

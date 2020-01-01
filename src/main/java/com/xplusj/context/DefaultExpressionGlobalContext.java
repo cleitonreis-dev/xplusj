@@ -4,7 +4,7 @@ import com.xplusj.Expression;
 import com.xplusj.ExpressionGlobalContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.factory.*;
-import com.xplusj.operator.Constants;
+import com.xplusj.variable.Constants;
 import com.xplusj.operator.Functions;
 import com.xplusj.operator.Operators;
 import com.xplusj.operator.binary.BinaryOperatorExecutor;
