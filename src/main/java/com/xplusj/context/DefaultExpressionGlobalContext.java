@@ -4,6 +4,8 @@ import com.xplusj.Expression;
 import com.xplusj.ExpressionGlobalContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.factory.*;
+import com.xplusj.operator.Constants;
+import com.xplusj.operator.Functions;
 import com.xplusj.operator.Operators;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
@@ -159,10 +161,10 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
         private void initDefaults(){
             if(definitions == null)
                 definitions = ExpressionOperatorDefinitions.builder()
-                        .addConstant(Operators.Constants.CONSTANTS)
-                        .addUnaryOperator(Operators.Unaries.OPERATORS)
-                        .addBinaryOperator(Operators.Binaries.OPERATORS)
-                        .addFunction(Operators.Functions.FUNCTIONS)
+                        .addConstant(Constants.CONSTANTS)
+                        .addUnaryOperator(Operators.Unary.OPERATORS)
+                        .addBinaryOperator(Operators.Binary.OPERATORS)
+                        .addFunction(Functions.FUNCTIONS)
                         .build();
 
             if(expressionFactory == null)
