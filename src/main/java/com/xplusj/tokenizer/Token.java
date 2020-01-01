@@ -1,20 +1,55 @@
 package com.xplusj.tokenizer;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import java.util.Objects;
 
-@AllArgsConstructor
-@EqualsAndHashCode
-@Getter
-@ToString
 public class Token {
     private static final Token EOE = new Token(TokenType.EOE, null,-1);
 
     public final TokenType type;
     public final String value;
     public final int index;
+
+    protected Token(TokenType type, String value, int index) {
+        this.type = type;
+        this.value = value;
+        this.index = index;
+    }
+
+    public TokenType getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return index == token.index &&
+                type == token.type &&
+                Objects.equals(value, token.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, value, index);
+    }
+
+    @Override
+    public String toString() {
+        return "Token(" +
+                "type=" + type +
+                ", value=" + value +
+                ", index=" + index +
+                ')';
+    }
 
     public static Token number(String value, int index){
         return new Token(TokenType.NUMBER, value, index);

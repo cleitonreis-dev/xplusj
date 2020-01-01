@@ -1,7 +1,5 @@
 package com.xplusj.expression;
 
-import lombok.AllArgsConstructor;
-
 public class Stack<T>{
 
     private Node<T> head;
@@ -34,9 +32,13 @@ public class Stack<T>{
         return new Stack<>();
     }
 
-    @AllArgsConstructor
     private static class Node<T>{
         private final T value;
         private final Node<T> next;
+
+        private Node(T value, Node<T> next) {
+            this.value = value;
+            this.next = next;
+        }
     }
 }

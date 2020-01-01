@@ -3,8 +3,6 @@ package com.xplusj.operator.function;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorType;
 import com.xplusj.operator.Precedence;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +11,6 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class FunctionOperator extends Operator<FunctionOperatorContext> {
     private static final Precedence PRECEDENCE = Precedence.lowerThan(Precedence.highest());
 
@@ -48,6 +44,16 @@ public class FunctionOperator extends Operator<FunctionOperatorContext> {
 
     public boolean isVarArgs(){
         return this.varArgs;
+    }
+
+    @Override
+    public String toString() {
+        return "FunctionOperator{" +
+                "varArgs=" + varArgs +
+                ", params=" + params +
+                ", paramIndex=" + paramIndex +
+                ", super=" + super.toString() +
+                '}';
     }
 
     public static FunctionOperator func(String name, Function<FunctionOperatorContext, Double> function) {

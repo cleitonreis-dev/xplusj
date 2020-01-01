@@ -1,19 +1,23 @@
 package com.xplusj.operator;
 
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-
 import java.util.Objects;
 import java.util.function.Function;
 
-@AllArgsConstructor
-@ToString(of = {"identifier","type", "precedence", "paramsLength"})
 public abstract class Operator<T extends OperatorContext>{
     private final String identifier;
     private final OperatorType type;
     private final Precedence precedence;
     private final Function<T,Double> function;
     private final int paramsLength;
+
+    public Operator(String identifier, OperatorType type, Precedence precedence,
+                    Function<T, Double> function, int paramsLength) {
+        this.identifier = identifier;
+        this.type = type;
+        this.precedence = precedence;
+        this.function = function;
+        this.paramsLength = paramsLength;
+    }
 
     public String getIdentifier() {
         return identifier;
@@ -52,5 +56,15 @@ public abstract class Operator<T extends OperatorContext>{
     @Override
     public int hashCode() {
         return Objects.hash(identifier, type, paramsLength);
+    }
+
+    @Override
+    public String toString() {
+        return "Operator{" +
+                "identifier='" + identifier + '\'' +
+                ", type=" + type +
+                ", precedence=" + precedence +
+                ", paramsLength=" + paramsLength +
+                '}';
     }
 }

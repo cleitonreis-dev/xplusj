@@ -1,10 +1,5 @@
 package com.xplusj.operator;
 
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-
-@AllArgsConstructor
-@ToString
 public class Precedence implements Comparable<Precedence>{
     private static final Precedence LOWEST = new Precedence(Integer.MIN_VALUE);
     private static final Precedence LOW = new Precedence(0);
@@ -12,8 +7,11 @@ public class Precedence implements Comparable<Precedence>{
     private static final Precedence HIGH = new Precedence(MEDIUM.precedence + MEDIUM.precedence);
     private static final Precedence HIGHEST = new Precedence(Integer.MAX_VALUE);
 
-
     private final int precedence;
+
+    public Precedence(int precedence) {
+        this.precedence = precedence;
+    }
 
     @Override
     public int compareTo(Precedence o) {
@@ -21,6 +19,13 @@ public class Precedence implements Comparable<Precedence>{
             return 0;
 
         return precedence < o.precedence ? -1 : 1;
+    }
+
+    @Override
+    public String toString() {
+        return "Precedence{" +
+                "precedence=" + precedence +
+                '}';
     }
 
     public static Precedence lowest(){
