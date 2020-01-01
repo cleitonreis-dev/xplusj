@@ -8,7 +8,7 @@ import java.util.function.Function;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class OperatorDefinitionTest {
+public class OperatorExecutorDefinitionTest {
 
     @Test
     public void testDefinition(){
@@ -17,7 +17,7 @@ public class OperatorDefinitionTest {
         Function<OperatorContextImplTest,Double> function = (ctx)->0D;
         int paramsLength = 2;
 
-        OperatorDefinitionTestImpl definition = new OperatorDefinitionTestImpl(type,precedence,function,paramsLength);
+        OperatorTestImpl definition = new OperatorTestImpl(type,precedence,function,paramsLength);
 
         assertEquals(type, definition.getType());
         assertEquals(precedence, definition.getPrecedence());
@@ -32,7 +32,7 @@ public class OperatorDefinitionTest {
         Function<OperatorContextImplTest,Double> function = (ctx)->0D;
         int paramsLength = 2;
 
-        OperatorDefinitionTestImpl definition = new OperatorDefinitionTestImpl(type,precedence,function,paramsLength);
+        OperatorTestImpl definition = new OperatorTestImpl(type,precedence,function,paramsLength);
         assertEquals(Objects.hash(definition.getIdentifier(), type, paramsLength), definition.hashCode());
     }
 
@@ -43,8 +43,8 @@ public class OperatorDefinitionTest {
         Function<OperatorContextImplTest,Double> function = (ctx)->0D;
         int paramsLength = 2;
 
-        OperatorDefinitionTestImpl definition = new OperatorDefinitionTestImpl(type,precedence,function,paramsLength);
-        OperatorDefinitionTestImpl definition2 = new OperatorDefinitionTestImpl(type,null,null,paramsLength);
+        OperatorTestImpl definition = new OperatorTestImpl(type,precedence,function,paramsLength);
+        OperatorTestImpl definition2 = new OperatorTestImpl(type,null,null,paramsLength);
 
         assertEquals(definition, definition2);
     }
@@ -56,8 +56,8 @@ public class OperatorDefinitionTest {
         Function<OperatorContextImplTest,Double> function = (ctx)->0D;
         int paramsLength = 2;
 
-        OperatorDefinitionTestImpl definition = new OperatorDefinitionTestImpl(type,precedence,function,paramsLength);
-        OperatorDefinitionTestImpl definition2 = new OperatorDefinitionTestImpl(type,precedence,function,3);
+        OperatorTestImpl definition = new OperatorTestImpl(type,precedence,function,paramsLength);
+        OperatorTestImpl definition2 = new OperatorTestImpl(type,precedence,function,3);
 
         assertNotEquals(definition, definition2);
     }
@@ -69,8 +69,8 @@ public class OperatorDefinitionTest {
         Function<OperatorContextImplTest,Double> function = (ctx)->0D;
         int paramsLength = 2;
 
-        OperatorDefinitionTestImpl definition = new OperatorDefinitionTestImpl(type,precedence,function,paramsLength);
-        OperatorDefinitionTestImpl definition2 = new OperatorDefinitionTestImpl(OperatorType.UNARY,precedence,function,paramsLength);
+        OperatorTestImpl definition = new OperatorTestImpl(type,precedence,function,paramsLength);
+        OperatorTestImpl definition2 = new OperatorTestImpl(OperatorType.UNARY,precedence,function,paramsLength);
 
         assertNotEquals(definition, definition2);
     }
@@ -81,8 +81,8 @@ public class OperatorDefinitionTest {
         }
     }
 
-    static class OperatorDefinitionTestImpl extends OperatorDefinition<OperatorContextImplTest>{
-        OperatorDefinitionTestImpl(OperatorType type, Precedence precedence, Function<OperatorContextImplTest, Double> function, int paramsLength) {
+    static class OperatorTestImpl extends Operator<OperatorContextImplTest> {
+        OperatorTestImpl(OperatorType type, Precedence precedence, Function<OperatorContextImplTest, Double> function, int paramsLength) {
             super("", type, precedence, function, paramsLength);
         }
     }

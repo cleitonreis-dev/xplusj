@@ -5,9 +5,9 @@ import com.xplusj.operator.OperatorContext;
 
 public class FunctionOperatorContext extends OperatorContext{
 
-    private final FunctionOperatorDefinition function;
+    private final FunctionOperator function;
 
-    private FunctionOperatorContext(final FunctionOperatorDefinition function, final ExpressionContext context, final double...values) {
+    private FunctionOperatorContext(final FunctionOperator function, final ExpressionContext context, final double...values) {
         super(context,values);
         this.function = function;
     }
@@ -16,7 +16,7 @@ public class FunctionOperatorContext extends OperatorContext{
         return param(function.paramIndex(name));
     }
 
-    public static FunctionOperatorContext create(FunctionOperatorDefinition function, ExpressionContext context, double...values){
+    public static FunctionOperatorContext create(FunctionOperator function, ExpressionContext context, double...values){
         return new FunctionOperatorContext(function, context, values);
     }
 

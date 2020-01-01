@@ -7,8 +7,8 @@ public class DefaultExpressionBinaryOperatorFactory implements ExpressionBinaryO
     private static final DefaultExpressionBinaryOperatorFactory INSTANCE = new DefaultExpressionBinaryOperatorFactory();
 
     @Override
-    public BinaryOperator create(BinaryOperatorDefinition definition, ExpressionContext context) {
-        return BinaryOperator.create(context,definition);
+    public BinaryOperatorExecutor create(BinaryOperator definition, ExpressionContext context) {
+        return BinaryOperatorExecutor.create(context,definition);
     }
 
     public static DefaultExpressionBinaryOperatorFactory getInstance(){

@@ -4,11 +4,11 @@ import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.expression.Stack;
 import com.xplusj.factory.ExpressionTokenizerFactory;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.Operator;
 import com.xplusj.operator.Precedence;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,15 +28,15 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultExpressionParserTest {
 
-    private static final DefaultExpressionParserTest.BOperator PLUS = new DefaultExpressionParserTest.BOperator("+", Precedence.low());
-    private static final DefaultExpressionParserTest.UOperator UPLUS = new DefaultExpressionParserTest.UOperator("+", Precedence.highest());
-    private static final DefaultExpressionParserTest.BOperator MINUS = new DefaultExpressionParserTest.BOperator("-", Precedence.low());
-    private static final DefaultExpressionParserTest.UOperator UMINUS = new DefaultExpressionParserTest.UOperator("-", Precedence.highest());
-    private static final DefaultExpressionParserTest.BOperator MULT = new DefaultExpressionParserTest.BOperator("*", Precedence.higherThan(Precedence.low()));
-    private static final DefaultExpressionParserTest.BOperator DIV = new DefaultExpressionParserTest.BOperator("/", Precedence.higherThan(Precedence.low()));
-    private static final DefaultExpressionParserTest.BOperator EQ = new DefaultExpressionParserTest.BOperator("==", Precedence.higherThan(Precedence.low()));
-    private static final DefaultExpressionParserTest.BOperator GT = new DefaultExpressionParserTest.BOperator(">", Precedence.higherThan(Precedence.low()));
-    private static final DefaultExpressionParserTest.BOperator GE = new DefaultExpressionParserTest.BOperator(">=", Precedence.higherThan(Precedence.low()));
+    private static final BOperatorExecutor PLUS = new BOperatorExecutor("+", Precedence.low());
+    private static final UOperatorExecutor UPLUS = new UOperatorExecutor("+", Precedence.highest());
+    private static final BOperatorExecutor MINUS = new BOperatorExecutor("-", Precedence.low());
+    private static final UOperatorExecutor UMINUS = new UOperatorExecutor("-", Precedence.highest());
+    private static final BOperatorExecutor MULT = new BOperatorExecutor("*", Precedence.higherThan(Precedence.low()));
+    private static final BOperatorExecutor DIV = new BOperatorExecutor("/", Precedence.higherThan(Precedence.low()));
+    private static final BOperatorExecutor EQ = new BOperatorExecutor("==", Precedence.higherThan(Precedence.low()));
+    private static final BOperatorExecutor GT = new BOperatorExecutor(">", Precedence.higherThan(Precedence.low()));
+    private static final BOperatorExecutor GE = new BOperatorExecutor(">=", Precedence.higherThan(Precedence.low()));
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -795,7 +795,7 @@ public class DefaultExpressionParserTest {
     }
 
     private static class InstructionLogger implements ExpressionParserProcessor<DefaultExpressionParserTest.StackLog> {
-        private Stack<OperatorDefinition<?>> opStack = Stack.instance();
+        private Stack<Operator<?>> opStack = Stack.instance();
         private DefaultExpressionParserTest.StackLog log = new DefaultExpressionParserTest.StackLog();
 
         @Override
@@ -817,7 +817,7 @@ public class DefaultExpressionParserTest {
         }
 
         @Override
-        public void addOperator(OperatorDefinition<?> operator) {
+        public void addOperator(Operator<?> operator) {
             log.pushOperator(operator.toString());
             opStack.push(operator);
             System.out.println(log);
@@ -836,7 +836,7 @@ public class DefaultExpressionParserTest {
         }
 
         @Override
-        public OperatorDefinition<?> getLastOperator() {
+        public Operator<?> getLastOperator() {
             System.out.println(log);
             return opStack.peek();
         }
@@ -847,9 +847,9 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class BOperator extends BinaryOperatorDefinition {
+    private static class BOperatorExecutor extends BinaryOperator {
 
-        BOperator(String symbol, Precedence precedence) {
+        BOperatorExecutor(String symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
@@ -861,9 +861,9 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class UOperator extends UnaryOperatorDefinition {
+    private static class UOperatorExecutor extends UnaryOperator {
 
-        UOperator(String symbol, Precedence precedence) {
+        UOperatorExecutor(String symbol, Precedence precedence) {
             super(symbol, precedence, (ctx)->null);
         }
 
@@ -875,7 +875,7 @@ public class DefaultExpressionParserTest {
         }
     }
 
-    private static class Func extends FunctionOperatorDefinition {
+    private static class Func extends FunctionOperator {
         private final String[] params;
 
         Func(String name, String...params) {

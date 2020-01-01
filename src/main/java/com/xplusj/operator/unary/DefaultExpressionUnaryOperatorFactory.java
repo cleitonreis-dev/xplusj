@@ -7,8 +7,8 @@ public class DefaultExpressionUnaryOperatorFactory implements ExpressionUnaryOpe
     private static final DefaultExpressionUnaryOperatorFactory INSTANCE = new DefaultExpressionUnaryOperatorFactory();
 
     @Override
-    public UnaryOperator create(UnaryOperatorDefinition definition, ExpressionContext context) {
-        return UnaryOperator.create(definition, context);
+    public UnaryOperatorExecutor create(UnaryOperator definition, ExpressionContext context) {
+        return UnaryOperatorExecutor.create(definition, context);
     }
 
     public static DefaultExpressionUnaryOperatorFactory getInstance(){

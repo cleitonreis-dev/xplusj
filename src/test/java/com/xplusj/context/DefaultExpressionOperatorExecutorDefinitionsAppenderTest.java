@@ -3,9 +3,9 @@ package com.xplusj.context;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
 import com.xplusj.operator.Precedence;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,18 +13,18 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DefaultExpressionOperatorDefinitionsAppenderTest {
+public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private static FunctionOperatorDefinition sum = FunctionOperatorDefinition
+    private static FunctionOperator sum = FunctionOperator
             .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
-    private static BinaryOperatorDefinition plus = BinaryOperatorDefinition
+    private static BinaryOperator plus = BinaryOperator
             .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
-    private static UnaryOperatorDefinition minus = UnaryOperatorDefinition
+    private static UnaryOperator minus = UnaryOperator
             .unary("-", Precedence.low(), (ctx)->-ctx.param());
     
     private static ExpressionOperatorDefinitions parentDefinitions = DefaultExpressionOperatorDefinitions.builder()
@@ -36,7 +36,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
 
     @Test
     public void hasFunction() {
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition
+        FunctionOperator definition = FunctionOperator
                 .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
@@ -52,7 +52,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
 
     @Test
     public void hasBinaryOperator() {
-        BinaryOperatorDefinition definition = BinaryOperatorDefinition
+        BinaryOperator definition = BinaryOperator
                 .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
@@ -67,7 +67,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
 
     @Test
     public void hasUnaryOperator() {
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition
+        UnaryOperator definition = UnaryOperator
                 .unary("-", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
@@ -94,7 +94,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
 
     @Test
     public void hasFunctionFromParent() {
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition
+        FunctionOperator definition = FunctionOperator
                 .func("sum2(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
@@ -110,7 +110,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
 
     @Test
     public void hasBinaryOperatorFromParent() {
-        BinaryOperatorDefinition definition = BinaryOperatorDefinition
+        BinaryOperator definition = BinaryOperator
                 .binary("%", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
@@ -125,7 +125,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
 
     @Test
     public void hasUnaryOperatorFromParent() {
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition
+        UnaryOperator definition = UnaryOperator
                 .unary("%", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender

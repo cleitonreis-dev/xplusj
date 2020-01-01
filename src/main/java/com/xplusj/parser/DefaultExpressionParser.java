@@ -2,8 +2,8 @@ package com.xplusj.parser;
 
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.OperatorContext;
-import com.xplusj.operator.OperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
+import com.xplusj.operator.Operator;
+import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 import com.xplusj.tokenizer.Token;
 import com.xplusj.tokenizer.TokenType;
@@ -108,7 +108,7 @@ public class DefaultExpressionParser implements ExpressionParser {
     }
 
     private int defineOperator(ExpressionParserProcessor instructionsProcessor, int currentStackCount, Token lastToken, String expression, Token token) {
-        OperatorDefinition<? extends OperatorContext> operator;
+        Operator<? extends OperatorContext> operator;
         boolean isUnary = lastToken == null || lastToken.type == TokenType.OPERATOR
                 || lastToken.type == TokenType.PARENTHESIS_OPENING
                 || lastToken.type == TokenType.COMMA;
@@ -138,7 +138,7 @@ public class DefaultExpressionParser implements ExpressionParser {
         if(!globalContext.hasFunction(token.value))
             throw new ExpressionParseException(tokenizer.getExpression(), token.index, "Function '%s' not found", token.value);
 
-        FunctionOperatorDefinition function = globalContext.getFunction(token.value);
+        FunctionOperator function = globalContext.getFunction(token.value);
         instructionsProcessor.addOperator(function);
 
         tokenizer.next();//read next '('

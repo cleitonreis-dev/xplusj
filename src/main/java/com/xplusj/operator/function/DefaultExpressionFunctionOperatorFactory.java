@@ -7,8 +7,8 @@ public class DefaultExpressionFunctionOperatorFactory implements ExpressionFunct
     private static final DefaultExpressionFunctionOperatorFactory INSTANCE = new DefaultExpressionFunctionOperatorFactory();
 
     @Override
-    public FunctionOperator create(FunctionOperatorDefinition definition, ExpressionContext context) {
-        return FunctionOperator.create(context,definition);
+    public FunctionOperatorExecutor create(FunctionOperator definition, ExpressionContext context) {
+        return FunctionOperatorExecutor.create(context,definition);
     }
 
     public static DefaultExpressionFunctionOperatorFactory getInstance(){

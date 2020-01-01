@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
 import com.xplusj.operator.OperatorContext;
-import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.Operator;
 import com.xplusj.parser.ExpressionParserProcessor;
 
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ public class InstructionListProcessor
         implements ExpressionParserProcessor<List<Consumer<ExpressionParserProcessor>>> {
 
     private final List<Consumer<ExpressionParserProcessor>> instructions;
-    private final Stack<OperatorDefinition<?>> opStack;
+    private final Stack<Operator<?>> opStack;
 
-    private InstructionListProcessor(final Stack<OperatorDefinition<?>> opStack) {
+    private InstructionListProcessor(final Stack<Operator<?>> opStack) {
         this.instructions = new ArrayList<>();
         this.opStack = opStack;
     }
@@ -35,7 +35,7 @@ public class InstructionListProcessor
     }
 
     @Override
-    public void addOperator(OperatorDefinition<? extends OperatorContext> operator) {
+    public void addOperator(Operator<? extends OperatorContext> operator) {
         opStack.push(operator);
         instructions.add(p->p.addOperator(operator));
     }
@@ -53,7 +53,7 @@ public class InstructionListProcessor
     }
 
     @Override
-    public OperatorDefinition<?> getLastOperator() {
+    public Operator<?> getLastOperator() {
         return opStack.peek();
     }
 
@@ -62,7 +62,7 @@ public class InstructionListProcessor
         return instructions;
     }
 
-    static InstructionListProcessor create(Stack<OperatorDefinition<?>> opStack){
+    static InstructionListProcessor create(Stack<Operator<?>> opStack){
         return new InstructionListProcessor(opStack);
     }
 

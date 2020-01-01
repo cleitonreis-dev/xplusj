@@ -1,45 +1,62 @@
 package com.xplusj.operator.function;
 
-import com.xplusj.ExpressionContext;
 import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import static java.lang.String.format;
 
-public class FunctionOperator implements Operator<FunctionOperatorContext> {
-    private final ExpressionContext context;
-    private final FunctionOperatorDefinition definition;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class FunctionOperator extends Operator<FunctionOperatorContext> {
+    private static final Precedence PRECEDENCE = Precedence.lowerThan(Precedence.highest());
 
-    FunctionOperator(final ExpressionContext context, final FunctionOperatorDefinition definition) {
-        this.context = context;
-        this.definition = definition;
+    private final boolean varArgs;
+    private final List<String> params;
+    private final Map<String,Integer> paramIndex;
+
+    protected FunctionOperator(String name, List<String> params, boolean varArgs, Function<FunctionOperatorContext, Double> function) {
+        super(name, OperatorType.FUNCTION,PRECEDENCE,function,params.size());
+        this.varArgs = varArgs;
+        this.params = params;
+
+        this.paramIndex = new HashMap<>();
+        for(int i = 0; i < params.size(); i++)
+            this.paramIndex.put(params.get(i), i);
     }
 
-    @Override
-    public FunctionOperatorDefinition getDefinition() {
-        return definition;
+    public int paramIndex(String name) {
+        if(!this.paramIndex.containsKey(name))
+            throw new IllegalArgumentException(
+                    format("Param %s not found for function %s. Valid params are: %s",
+                            name, getIdentifier(), String.join(",",this.params))
+                    );
+
+        return paramIndex.get(name);
     }
 
-    @Override
-    public double execute(double... params) {
-        if(!definition.isVarArgs() && params.length != definition.getParamsLength())
-            throw new IllegalArgumentException(format(
-                    "Function '%s' expects %s parameter(s), but received %s",
-                    definition.getIdentifier(), definition.getParamsLength(), params.length));
-
-        if(definition.isVarArgs() && params.length < definition.getParamsLength() - 1)
-            throw new IllegalArgumentException(format(
-                    "Function '%s' expects at least %s parameter(s), but received %s",
-                    definition.getIdentifier(), definition.getParamsLength()-1, params.length));
-
-        return definition.getFunction().apply(FunctionOperatorContext.create(definition,context,params));
+    public List<String> getParams(){
+        return params;
     }
 
-    @Override
-    public String toString() {
-        return definition.toString();
+    public boolean isVarArgs(){
+        return this.varArgs;
     }
 
-    public static FunctionOperator create(final ExpressionContext context, final FunctionOperatorDefinition definition){
-        return new FunctionOperator(context, definition);
+    public static FunctionOperator func(String name, Function<FunctionOperatorContext, Double> function) {
+        FunctionIdentifier identifier = FunctionIdentifier.create(name);
+        return new FunctionOperator(identifier.name,identifier.params,identifier.isVarargs,function);
+    }
+
+    public static FunctionOperator func(String name, String function) {
+        FunctionIdentifier identifier = FunctionIdentifier.create(name);
+        return new FunctionOperator(identifier.name,identifier.params,identifier.isVarargs,new CompiledFunction(function));
     }
 }

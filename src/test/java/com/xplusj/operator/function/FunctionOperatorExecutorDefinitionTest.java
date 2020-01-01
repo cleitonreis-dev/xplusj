@@ -30,14 +30,14 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class FunctionOperatorDefinitionTest {
+public class FunctionOperatorExecutorDefinitionTest {
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     
     @Test
     public void testParamIndexByName(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a,...)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a,...)", (ctx)->0D);
 
         assertEquals(0, definition.paramIndex("ab"));
         assertEquals(1, definition.paramIndex("a"));
@@ -49,26 +49,26 @@ public class FunctionOperatorDefinitionTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Param c not found for function func. Valid params are: ab,a,...");
 
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a,...)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a,...)", (ctx)->0D);
 
         assertEquals(0, definition.paramIndex("c"));
     }
 
     @Test
     public void testFunctionName(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a,...)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a,...)", (ctx)->0D);
         assertEquals("func", definition.getIdentifier());
     }
 
     @Test
     public void testParamsLength(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a,...)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a,...)", (ctx)->0D);
         assertEquals(3, definition.getParamsLength());
     }
 
     @Test
     public void testParamNames(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a,...)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a,...)", (ctx)->0D);
 
         assertEquals("ab", definition.getParams().get(0));
         assertEquals("a", definition.getParams().get(1));
@@ -77,13 +77,13 @@ public class FunctionOperatorDefinitionTest {
 
     @Test
     public void testParamVarArgs(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a,...)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a,...)", (ctx)->0D);
         assertTrue(definition.isVarArgs());
     }
 
     @Test
     public void testParamVarArgs1(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(ab,a)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(ab,a)", (ctx)->0D);
         assertFalse(definition.isVarArgs());
     }
 
@@ -91,27 +91,27 @@ public class FunctionOperatorDefinitionTest {
     public void testValidationAtLeastOneParam(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func()' must have at least one parameter");
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func()", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func()", (ctx)->0D);
     }
 
     @Test
     public void testValidationMissingOpeningParenthesis(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func' does not have '('");
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func", (ctx)->0D);
     }
 
     @Test
     public void testValidationMissingClosingParenthesis(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func(' does not have ')'");
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(", (ctx)->0D);
     }
 
     @Test
     public void testValidationVarArgs(){
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function identifier 'func(a,...,b)', 'varargs' must be the last parameter");
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("func(a,...,b)", (ctx)->0D);
+        FunctionOperator definition = FunctionOperator.func("func(a,...,b)", (ctx)->0D);
     }
 }

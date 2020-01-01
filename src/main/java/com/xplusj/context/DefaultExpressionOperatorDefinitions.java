@@ -2,22 +2,22 @@ package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 
 import java.util.*;
 
 public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorDefinitions {
 
-    private final Map<String, UnaryOperatorDefinition> unaryOperators;
-    private final Map<String, BinaryOperatorDefinition> binaryOperators;
-    private final Map<String, FunctionOperatorDefinition> functionOperators;
+    private final Map<String, UnaryOperator> unaryOperators;
+    private final Map<String, BinaryOperator> binaryOperators;
+    private final Map<String, FunctionOperator> functionOperators;
     private final Map<String, Constant> constants;
 
-    private DefaultExpressionOperatorDefinitions(Map<String, UnaryOperatorDefinition> unaryOperators,
-                                                 Map<String, BinaryOperatorDefinition> binaryOperators,
-                                                 Map<String, FunctionOperatorDefinition> functionOperators,
+    private DefaultExpressionOperatorDefinitions(Map<String, UnaryOperator> unaryOperators,
+                                                 Map<String, BinaryOperator> binaryOperators,
+                                                 Map<String, FunctionOperator> functionOperators,
                                                  Map<String, Constant> constants) {
         this.unaryOperators = unaryOperators;
         this.binaryOperators = binaryOperators;
@@ -46,17 +46,17 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
     }
 
     @Override
-    public BinaryOperatorDefinition getBinaryOperator(String symbol) {
+    public BinaryOperator getBinaryOperator(String symbol) {
         return binaryOperators.get(symbol);
     }
 
     @Override
-    public UnaryOperatorDefinition getUnaryOperator(String symbol) {
+    public UnaryOperator getUnaryOperator(String symbol) {
         return unaryOperators.get(symbol);
     }
 
     @Override
-    public FunctionOperatorDefinition getFunction(String name) {
+    public FunctionOperator getFunction(String name) {
         return functionOperators.get(name);
     }
 
@@ -76,25 +76,25 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
 
     static class Builder implements ExpressionOperatorDefinitions.Builder{
 
-        private List<UnaryOperatorDefinition> unaries = new ArrayList<>();
-        private List<BinaryOperatorDefinition> binaries = new ArrayList<>();
-        private List<FunctionOperatorDefinition> functions = new ArrayList<>();
+        private List<UnaryOperator> unaries = new ArrayList<>();
+        private List<BinaryOperator> binaries = new ArrayList<>();
+        private List<FunctionOperator> functions = new ArrayList<>();
         private List<Constant> constants = new ArrayList<>();
 
         @Override
-        public ExpressionOperatorDefinitions.Builder addUnaryOperator(UnaryOperatorDefinition... operator) {
+        public ExpressionOperatorDefinitions.Builder addUnaryOperator(UnaryOperator... operator) {
             this.unaries.addAll(Arrays.asList(operator));
             return this;
         }
 
         @Override
-        public ExpressionOperatorDefinitions.Builder addBinaryOperator(BinaryOperatorDefinition... operator) {
+        public ExpressionOperatorDefinitions.Builder addBinaryOperator(BinaryOperator... operator) {
             this.binaries.addAll(Arrays.asList(operator));
             return this;
         }
 
         @Override
-        public ExpressionOperatorDefinitions.Builder addFunction(FunctionOperatorDefinition... function) {
+        public ExpressionOperatorDefinitions.Builder addFunction(FunctionOperator... function) {
             this.functions.addAll(Arrays.asList(function));
             return this;
         }
@@ -107,9 +107,9 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
 
         @Override
         public ExpressionOperatorDefinitions build() {
-            Map<String, UnaryOperatorDefinition> unaryMap = new HashMap<>();
-            Map<String, BinaryOperatorDefinition> binariesMap = new HashMap<>();
-            Map<String, FunctionOperatorDefinition> functionsMap = new HashMap<>();
+            Map<String, UnaryOperator> unaryMap = new HashMap<>();
+            Map<String, BinaryOperator> binariesMap = new HashMap<>();
+            Map<String, FunctionOperator> functionsMap = new HashMap<>();
             Map<String, Constant> constantsMap = new HashMap<>();
 
             unaries.forEach(operator->unaryMap.put(operator.getIdentifier(), operator));

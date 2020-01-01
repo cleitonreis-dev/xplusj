@@ -1,40 +1,18 @@
 package com.xplusj.operator.binary;
 
-import com.xplusj.ExpressionContext;
 import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
 
-import static java.lang.String.format;
+import java.util.function.Function;
 
-public class BinaryOperator implements Operator<BinaryOperatorContext> {
-    private final ExpressionContext context;
-    private final BinaryOperatorDefinition definition;
+public class BinaryOperator extends Operator<BinaryOperatorContext> {
 
-    private BinaryOperator(final ExpressionContext context, final BinaryOperatorDefinition definition) {
-        this.context = context;
-        this.definition = definition;
+    protected BinaryOperator(String symbol, Precedence precedence, Function<BinaryOperatorContext, Double> function) {
+        super(symbol, OperatorType.BINARY, precedence, function, 2);
     }
 
-    @Override
-    public BinaryOperatorDefinition getDefinition() {
-        return definition;
-    }
-
-    @Override
-    public double execute(double... params) {
-        if(params.length != 2)
-            throw new IllegalArgumentException(format(
-                "Binary operator %s expects two parameters, but received %s",
-                definition.getIdentifier(), params.length));
-
-        return definition.getFunction().apply(new BinaryOperatorContext(context,params));
-    }
-
-    @Override
-    public String toString() {
-        return definition.toString();
-    }
-
-    public static BinaryOperator create(final ExpressionContext context, final BinaryOperatorDefinition definition) {
-        return new BinaryOperator(context,definition);
+    public static BinaryOperator binary(String symbol, Precedence precedence, Function<BinaryOperatorContext, Double> function) {
+        return new BinaryOperator(symbol,precedence,function);
     }
 }

@@ -2,9 +2,9 @@ package com.xplusj;
 
 import com.xplusj.context.DefaultExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 
 public interface ExpressionOperatorDefinitions {
 
@@ -16,22 +16,22 @@ public interface ExpressionOperatorDefinitions {
 
     boolean hasConstant(String name);
 
-    BinaryOperatorDefinition getBinaryOperator(String symbol);
+    BinaryOperator getBinaryOperator(String symbol);
 
-    UnaryOperatorDefinition getUnaryOperator(String symbol);
+    UnaryOperator getUnaryOperator(String symbol);
 
-    FunctionOperatorDefinition getFunction(String name);
+    FunctionOperator getFunction(String name);
 
     Constant getConstant(String name);
 
     ExpressionOperatorDefinitions append(ExpressionOperatorDefinitions newDefinitions);
 
     interface Builder{
-        ExpressionOperatorDefinitions.Builder addUnaryOperator(UnaryOperatorDefinition...operator);
+        ExpressionOperatorDefinitions.Builder addUnaryOperator(UnaryOperator...operator);
 
-        ExpressionOperatorDefinitions.Builder addBinaryOperator(BinaryOperatorDefinition...operator);
+        ExpressionOperatorDefinitions.Builder addBinaryOperator(BinaryOperator...operator);
 
-        ExpressionOperatorDefinitions.Builder addFunction(FunctionOperatorDefinition...function);
+        ExpressionOperatorDefinitions.Builder addFunction(FunctionOperator...function);
 
         ExpressionOperatorDefinitions.Builder addConstant(Constant...constants);
 

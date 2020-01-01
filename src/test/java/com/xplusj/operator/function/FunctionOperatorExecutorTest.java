@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FunctionOperatorTest {
+public class FunctionOperatorExecutorTest {
 
     private static final double DELTA = 0.00000000000000000001D;
 
@@ -33,14 +33,14 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorCall(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,c)", function);
         double[] params = {1D,2D,3D};
         double expectedValue = 3;
 
         when(function.apply(any(FunctionOperatorContext.class))).thenReturn(expectedValue);
         ArgumentCaptor<FunctionOperatorContext> ctxCaptor = ArgumentCaptor.forClass(FunctionOperatorContext.class);
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         double result = operator.execute(params);
 
         assertEquals(expectedValue, result, DELTA);
@@ -56,14 +56,14 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorCall2(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,c)", function);
         double[] params = {1D,2D,3D};
         double expectedValue = 3;
 
         when(function.apply(any(FunctionOperatorContext.class))).thenReturn(expectedValue);
         ArgumentCaptor<FunctionOperatorContext> ctxCaptor = ArgumentCaptor.forClass(FunctionOperatorContext.class);
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         double result = operator.execute(params);
 
         assertEquals(expectedValue, result, DELTA);
@@ -79,61 +79,61 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorParams(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,c)", function);
         double[] params = {1D};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function 'sum' expects 3 parameter(s), but received 1");
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         operator.execute(params);
     }
 
     @Test
     public void testOperatorParams1(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,c)", function);
         double[] params = {1D,2D};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function 'sum' expects 3 parameter(s), but received 2");
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         operator.execute(params);
     }
 
     @Test
     public void testOperatorParams2(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,c)", function);
         double[] params = {};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function 'sum' expects 3 parameter(s), but received 0");
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         operator.execute(params);
     }
 
     @Test
     public void testOperatorParams3(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,c)", function);
         double[] params = {1D,2D,3D,4D};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function 'sum' expects 3 parameter(s), but received 4");
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         operator.execute(params);
     }
 
     @Test
     public void testOperatorParams4(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,...)", function);
+        FunctionOperator definition = FunctionOperator.func("sum(a,b,...)", function);
         double[] params = {1D};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Function 'sum' expects at least 2 parameter(s), but received 1");
 
-        FunctionOperator operator = FunctionOperator.create(context,definition);
+        FunctionOperatorExecutor operator = FunctionOperatorExecutor.create(context,definition);
         operator.execute(params);
     }
 
@@ -143,7 +143,7 @@ public class FunctionOperatorTest {
         double b = 3;
 
         ExpressionGlobalContext ctx = context.append(ExpressionOperatorDefinitions.builder()
-            .addFunction(FunctionOperatorDefinition.func("test(a,b)", "pow(max(a,b),2)"))
+            .addFunction(FunctionOperator.func("test(a,b)", "pow(max(a,b),2)"))
             .build()
         );
 

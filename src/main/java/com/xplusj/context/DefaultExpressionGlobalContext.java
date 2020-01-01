@@ -7,9 +7,9 @@ import com.xplusj.factory.*;
 import com.xplusj.operator.Constants;
 import com.xplusj.operator.Functions;
 import com.xplusj.operator.Operators;
-import com.xplusj.operator.binary.BinaryOperator;
-import com.xplusj.operator.function.FunctionOperator;
-import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorExecutor;
+import com.xplusj.operator.function.FunctionOperatorExecutor;
+import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 
@@ -59,17 +59,17 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
     }
 
     @Override
-    public UnaryOperator getUnaryOperator(String symbol) {
+    public UnaryOperatorExecutor getUnaryOperator(String symbol) {
         return unaryFactory.create(definitions.getUnaryOperator(symbol), this);
     }
 
     @Override
-    public BinaryOperator getBinaryOperator(String symbol) {
+    public BinaryOperatorExecutor getBinaryOperator(String symbol) {
         return binaryFactory.create(definitions.getBinaryOperator(symbol), this);
     }
 
     @Override
-    public FunctionOperator getFunction(String name) {
+    public FunctionOperatorExecutor getFunction(String name) {
         return functionFactory.create(definitions.getFunction(name),this);
     }
 

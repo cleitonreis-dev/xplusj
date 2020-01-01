@@ -1,40 +1,18 @@
 package com.xplusj.operator.unary;
 
-import com.xplusj.ExpressionContext;
 import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorType;
+import com.xplusj.operator.Precedence;
 
-import static java.lang.String.format;
+import java.util.function.Function;
 
-public class UnaryOperator implements Operator<UnaryOperatorContext> {
-    private final ExpressionContext context;
-    private final UnaryOperatorDefinition definition;
+public class UnaryOperator extends Operator<UnaryOperatorContext> {
 
-    private UnaryOperator(final UnaryOperatorDefinition definition, final ExpressionContext context) {
-        this.context = context;
-        this.definition = definition;
+    protected UnaryOperator(String symbol, Precedence precedence, Function<UnaryOperatorContext, Double> function) {
+        super(symbol, OperatorType.UNARY, precedence, function, 1);
     }
 
-    @Override
-    public UnaryOperatorDefinition getDefinition() {
-        return definition;
-    }
-
-    @Override
-    public double execute(double... params) {
-        if(params.length != 1)
-            throw new IllegalArgumentException(format(
-                "Unary operator %s expects one parameter, but received %s",
-                definition.getIdentifier(), params.length));
-
-        return definition.getFunction().apply(new UnaryOperatorContext(context,params[0]));
-    }
-
-    @Override
-    public String toString() {
-        return definition.toString();
-    }
-
-    public static UnaryOperator create(final UnaryOperatorDefinition definition, final ExpressionContext context) {
-        return new UnaryOperator(definition, context);
+    public static UnaryOperator unary(String symbol, Precedence precedence, Function<UnaryOperatorContext, Double> function) {
+        return new UnaryOperator(symbol,precedence,function);
     }
 }

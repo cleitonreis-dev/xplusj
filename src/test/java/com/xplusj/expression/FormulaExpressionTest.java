@@ -4,8 +4,8 @@ import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.Precedence;
+import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.binary.BinaryOperator;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.parser.ExpressionParserProcessor;
 import org.junit.Before;
@@ -83,8 +83,8 @@ public class FormulaExpressionTest {
     @Test
     public void testExpressionWithoutVars(){
         String exp = "1+1";
-        BinaryOperatorDefinition p = BinaryOperatorDefinition.binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
-        BinaryOperator pp = BinaryOperator.create(env,p);
+        BinaryOperator p = BinaryOperator.binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+        BinaryOperatorExecutor pp = BinaryOperatorExecutor.create(env,p);
 
         when(twoStackBasedProcessor.getResult()).thenReturn(2D);
         when(parser.eval(exp, instructionListProcessor)).thenReturn(Arrays.asList(
@@ -110,8 +110,8 @@ public class FormulaExpressionTest {
     public void testExpressionWitVars(){
         String exp = "1+b";
         VariableContext vctx = VariableContext.builder().add("b", 1).build();
-        BinaryOperatorDefinition p = BinaryOperatorDefinition.binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
-        BinaryOperator pp = BinaryOperator.create(env,p);
+        BinaryOperator p = BinaryOperator.binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+        BinaryOperatorExecutor pp = BinaryOperatorExecutor.create(env,p);
 
         when(twoStackBasedProcessor.getResult()).thenReturn(2D);
 

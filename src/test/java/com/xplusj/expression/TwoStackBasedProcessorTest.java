@@ -5,17 +5,17 @@ import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
 import com.xplusj.factory.*;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorType;
-import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.binary.BinaryOperatorContext;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.function.FunctionOperatorContext;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorContext;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.parser.ExpressionParser;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,26 +44,26 @@ public class TwoStackBasedProcessorTest {
     @Mock
     private ExpressionOperatorDefinitions globalContext;
 
-    private FunctionOperator functionOperator;
+    private FunctionOperatorExecutor functionOperator;
 
     @Mock
-    private FunctionOperatorDefinition functionOperatorDefinition;
+    private FunctionOperator functionOperatorDefinition;
 
-    private UnaryOperator unaryOperator;
-
-    @Mock
-    private UnaryOperatorDefinition unaryOperatorDefinition;
-
-    private BinaryOperator binaryOperator;
+    private UnaryOperatorExecutor unaryOperator;
 
     @Mock
-    private BinaryOperatorDefinition binaryOperatorDefinition;
+    private UnaryOperator unaryOperatorDefinition;
+
+    private BinaryOperatorExecutor binaryOperator;
+
+    @Mock
+    private BinaryOperator binaryOperatorDefinition;
 
     @Mock
     private Stack<Double> valStack;
 
     @Mock
-    private Stack<OperatorDefinition<?>> opStack;
+    private Stack<Operator<?>> opStack;
 
     @Mock
     private VariableContext variableContext;

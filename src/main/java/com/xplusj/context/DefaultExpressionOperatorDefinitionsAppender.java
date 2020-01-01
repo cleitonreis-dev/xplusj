@@ -2,9 +2,9 @@ package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.Constant;
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.function.FunctionOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.function.FunctionOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,7 +40,7 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public BinaryOperatorDefinition getBinaryOperator(String symbol) {
+    public BinaryOperator getBinaryOperator(String symbol) {
         if(current.hasBinaryOperator(symbol))
             return current.getBinaryOperator(symbol);
 
@@ -48,7 +48,7 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public UnaryOperatorDefinition getUnaryOperator(String symbol) {
+    public UnaryOperator getUnaryOperator(String symbol) {
         if(current.hasUnaryOperator(symbol))
             return current.getUnaryOperator(symbol);
 
@@ -56,7 +56,7 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public FunctionOperatorDefinition getFunction(String name) {
+    public FunctionOperator getFunction(String name) {
         if(current.hasFunction(name))
             return current.getFunction(name);
 

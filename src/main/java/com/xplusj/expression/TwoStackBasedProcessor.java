@@ -3,9 +3,9 @@ package com.xplusj.expression;
 import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
-import com.xplusj.operator.Operator;
+import com.xplusj.operator.OperatorExecutor;
 import com.xplusj.operator.OperatorContext;
-import com.xplusj.operator.OperatorDefinition;
+import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorType;
 import com.xplusj.parser.ExpressionParserProcessor;
 
@@ -15,12 +15,12 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
     private final ExpressionOperatorDefinitions operatorDefinitions;
     private final VariableContext variableContext;
     private final Stack<Double> valueStack;
-    private final Stack<OperatorDefinition<? extends OperatorContext>> opStack;
+    private final Stack<Operator<? extends OperatorContext>> opStack;
 
     protected TwoStackBasedProcessor(ExpressionContext expressionContext,
                                      VariableContext variableContext,
                                      Stack<Double> valueStack,
-                                     Stack<OperatorDefinition<?>> opStack) {
+                                     Stack<Operator<?>> opStack) {
         this.expressionContext = expressionContext;
         this.operatorDefinitions = expressionContext.getDefinitions();
         this.variableContext = variableContext;
@@ -50,26 +50,26 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
     }
 
     @Override
-    public void addOperator(OperatorDefinition<? extends OperatorContext> operator) {
+    public void addOperator(Operator<? extends OperatorContext> operator) {
         opStack.push(operator);
     }
 
     @Override
     public void callLastOperatorAndAddResult() {
-        Operator<? extends OperatorContext> operator = getOperator();
-        double value = operator.execute(getParams(operator.getDefinition().getParamsLength()));
+        OperatorExecutor<? extends OperatorContext> operatorExecutor = getOperator();
+        double value = operatorExecutor.execute(getParams(operatorExecutor.getDefinition().getParamsLength()));
         valueStack.push(value);
     }
 
     @Override
     public void callLastOperatorAndAddResult(int totalOfParamsToRead) {
-        Operator<? extends OperatorContext> operator = getOperator();
-        double value = operator.execute(getParams(totalOfParamsToRead));
+        OperatorExecutor<? extends OperatorContext> operatorExecutor = getOperator();
+        double value = operatorExecutor.execute(getParams(totalOfParamsToRead));
         valueStack.push(value);
     }
 
     @Override
-    public OperatorDefinition<?> getLastOperator() {
+    public Operator<?> getLastOperator() {
         return opStack.peek();
     }
 
@@ -87,8 +87,8 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         return values;
     }
 
-    private Operator<? extends OperatorContext> getOperator(){
-        OperatorDefinition<? extends OperatorContext> operator = opStack.pull();
+    private OperatorExecutor<? extends OperatorContext> getOperator(){
+        Operator<? extends OperatorContext> operator = opStack.pull();
 
         if(operator.getType() == OperatorType.BINARY)
             return expressionContext.getBinaryOperator(operator.getIdentifier());
@@ -102,7 +102,7 @@ public class TwoStackBasedProcessor implements ExpressionParserProcessor<Double>
         throw new ExpressionException(String.format("Operator type %s not supported", operator.getType()));
     }
 
-    public static TwoStackBasedProcessor create(ExpressionContext context, VariableContext variableContext, Stack<Double> valueStack, Stack<OperatorDefinition<?>> opStack){
+    public static TwoStackBasedProcessor create(ExpressionContext context, VariableContext variableContext, Stack<Double> valueStack, Stack<Operator<?>> opStack){
         return new TwoStackBasedProcessor(context,variableContext,valueStack,opStack);
     }
 

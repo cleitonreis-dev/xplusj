@@ -24,12 +24,12 @@
 
 package com.xplusj.operator;
 
-import com.xplusj.operator.binary.BinaryOperatorDefinition;
-import com.xplusj.operator.unary.UnaryOperatorDefinition;
+import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.unary.UnaryOperator;
 
 import static com.xplusj.operator.Precedence.*;
-import static com.xplusj.operator.binary.BinaryOperatorDefinition.binary;
-import static com.xplusj.operator.unary.UnaryOperatorDefinition.unary;
+import static com.xplusj.operator.binary.BinaryOperator.binary;
+import static com.xplusj.operator.unary.UnaryOperator.unary;
 
 public interface Operators {
 
@@ -37,16 +37,16 @@ public interface Operators {
      *
      */
     interface Unary {
-        UnaryOperatorDefinition PLUS = unary("+", higherThan(high()), ctx->+ctx.param());
-        UnaryOperatorDefinition MIN = unary("-", higherThan(high()), ctx->-ctx.param());
-        UnaryOperatorDefinition SQUARE = unary("**", higherThan(PLUS.getPrecedence()), ctx->ctx.param()*ctx.param());
-        UnaryOperatorDefinition CUBE = unary("***", sameAs(SQUARE.getPrecedence()), ctx->Math.pow(ctx.param(), 3));
-        UnaryOperatorDefinition SQRT = unary("#", sameAs(SQUARE.getPrecedence()), ctx->Math.sqrt(ctx.param()));
+        UnaryOperator PLUS = unary("+", higherThan(high()), ctx->+ctx.param());
+        UnaryOperator MIN = unary("-", higherThan(high()), ctx->-ctx.param());
+        UnaryOperator SQUARE = unary("**", higherThan(PLUS.getPrecedence()), ctx->ctx.param()*ctx.param());
+        UnaryOperator CUBE = unary("***", sameAs(SQUARE.getPrecedence()), ctx->Math.pow(ctx.param(), 3));
+        UnaryOperator SQRT = unary("#", sameAs(SQUARE.getPrecedence()), ctx->Math.sqrt(ctx.param()));
 
         //Conditional
-        UnaryOperatorDefinition NOT = unary("!", lowerThan(PLUS.getPrecedence()), ctx->ctx.param() == 1 ? 0D : 1D);
+        UnaryOperator NOT = unary("!", lowerThan(PLUS.getPrecedence()), ctx->ctx.param() == 1 ? 0D : 1D);
 
-        UnaryOperatorDefinition[] OPERATORS = {PLUS,MIN,SQUARE,CUBE,SQRT,NOT};
+        UnaryOperator[] OPERATORS = {PLUS,MIN,SQUARE,CUBE,SQRT,NOT};
     }
 
     /**
@@ -54,43 +54,43 @@ public interface Operators {
      */
     interface Binary {
         //Math
-        BinaryOperatorDefinition ADD = binary("+", low(), ctx->ctx.param0()+ctx.param1());
-        BinaryOperatorDefinition SUB = binary("-", low(), ctx->ctx.param0()-ctx.param1());
-        BinaryOperatorDefinition MULT = binary("*", high(), ctx->ctx.param0()*ctx.param1());
-        BinaryOperatorDefinition DIV = binary("/", high(), ctx->ctx.param0()/ctx.param1());
-        BinaryOperatorDefinition MOD = binary("%", high(), ctx->ctx.param0()%ctx.param1());
-        BinaryOperatorDefinition POW = binary("^", lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
+        BinaryOperator ADD = binary("+", low(), ctx->ctx.param0()+ctx.param1());
+        BinaryOperator SUB = binary("-", low(), ctx->ctx.param0()-ctx.param1());
+        BinaryOperator MULT = binary("*", high(), ctx->ctx.param0()*ctx.param1());
+        BinaryOperator DIV = binary("/", high(), ctx->ctx.param0()/ctx.param1());
+        BinaryOperator MOD = binary("%", high(), ctx->ctx.param0()%ctx.param1());
+        BinaryOperator POW = binary("^", lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
 
         //Conditional
-        BinaryOperatorDefinition EQ = binary("==",
+        BinaryOperator EQ = binary("==",
                 lowerThan(ADD.getPrecedence()), ctx->ctx.param0() == ctx.param1() ? 1D : 0D);
 
-        BinaryOperatorDefinition NE = binary("!=",
+        BinaryOperator NE = binary("!=",
                 sameAs(EQ.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
 
-        BinaryOperatorDefinition GT = binary(">",
+        BinaryOperator GT = binary(">",
                 sameAs(EQ.getPrecedence()), ctx->ctx.param0() > ctx.param1() ? 1D : 0D);
 
-        BinaryOperatorDefinition GE = binary(">=",
+        BinaryOperator GE = binary(">=",
                 sameAs(EQ.getPrecedence()), ctx->ctx.param0() >= ctx.param1() ? 1D : 0D);
 
-        BinaryOperatorDefinition LT = binary("<",
+        BinaryOperator LT = binary("<",
                 sameAs(EQ.getPrecedence()), ctx->ctx.param0() < ctx.param1() ? 1D : 0D);
 
-        BinaryOperatorDefinition LE = binary("<=",
+        BinaryOperator LE = binary("<=",
                 sameAs(EQ.getPrecedence()), ctx->ctx.param0() <= ctx.param1() ? 1D : 0D);
 
         //Logical
-        BinaryOperatorDefinition AND = binary("&&",
+        BinaryOperator AND = binary("&&",
                 lowerThan(EQ.getPrecedence()), ctx->ctx.param0() == 1 && ctx.param1() == 1 ? 1D : 0D);
 
-        BinaryOperatorDefinition OR = binary("||",
+        BinaryOperator OR = binary("||",
                 sameAs(AND.getPrecedence()), ctx->ctx.param0() == 1 || ctx.param1() == 1 ? 1D : 0D);
 
-        BinaryOperatorDefinition XOR = binary("|",
+        BinaryOperator XOR = binary("|",
                 sameAs(AND.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
 
 
-        BinaryOperatorDefinition[] OPERATORS = {ADD,SUB,MULT,DIV,MOD,POW,EQ,NE,GT,GE,LT,LE,AND,OR,XOR};
+        BinaryOperator[] OPERATORS = {ADD,SUB,MULT,DIV,MOD,POW,EQ,NE,GT,GE,LT,LE,AND,OR,XOR};
     }
 }

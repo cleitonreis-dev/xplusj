@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UnaryOperatorTest {
+public class UnaryOperatorExecutorTest {
 
     private static final double DELTA = 0.00000000000000000001D;
 
@@ -33,14 +33,14 @@ public class UnaryOperatorTest {
 
     @Test
     public void testOperatorCall(){
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition.unary("+", low(), function);
+        UnaryOperator definition = UnaryOperator.unary("+", low(), function);
         double[] params = {1D};
         double expectedValue = 3;
 
         when(function.apply(any(UnaryOperatorContext.class))).thenReturn(expectedValue);
         ArgumentCaptor<UnaryOperatorContext> ctxCaptor = ArgumentCaptor.forClass(UnaryOperatorContext.class);
 
-        UnaryOperator operator = UnaryOperator.create(definition, context);
+        UnaryOperatorExecutor operator = UnaryOperatorExecutor.create(definition, context);
         double result = operator.execute(params);
 
         assertEquals(expectedValue, result, DELTA);
@@ -54,25 +54,25 @@ public class UnaryOperatorTest {
 
     @Test
     public void testOperatorParams(){
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition.unary("+", low(), function);
+        UnaryOperator definition = UnaryOperator.unary("+", low(), function);
         double[] params = {1D,2D};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Unary operator + expects one parameter, but received 2");
 
-        UnaryOperator operator = UnaryOperator.create(definition,context);
+        UnaryOperatorExecutor operator = UnaryOperatorExecutor.create(definition,context);
         operator.execute(params);
     }
 
     @Test
     public void testOperatorParams1(){
-        UnaryOperatorDefinition definition = UnaryOperatorDefinition.unary("+", low(), function);
+        UnaryOperator definition = UnaryOperator.unary("+", low(), function);
         double[] params = {};
 
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Unary operator + expects one parameter, but received 0");
 
-        UnaryOperator operator = UnaryOperator.create(definition, context);
+        UnaryOperatorExecutor operator = UnaryOperatorExecutor.create(definition, context);
         operator.execute(params);
     }
 }

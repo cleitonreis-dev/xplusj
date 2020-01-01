@@ -1,19 +1,19 @@
 package com.xplusj;
 
-import com.xplusj.operator.binary.BinaryOperator;
-import com.xplusj.operator.function.FunctionOperator;
-import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorExecutor;
+import com.xplusj.operator.function.FunctionOperatorExecutor;
+import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
 
 public interface ExpressionContext {
     ExpressionOperatorDefinitions getDefinitions();
 
-    UnaryOperator getUnaryOperator(String symbol);
+    UnaryOperatorExecutor getUnaryOperator(String symbol);
 
-    BinaryOperator getBinaryOperator(String symbol);
+    BinaryOperatorExecutor getBinaryOperator(String symbol);
 
-    FunctionOperator getFunction(String name);
+    FunctionOperatorExecutor getFunction(String name);
 
     ExpressionTokenizer getTokenizer();
 
