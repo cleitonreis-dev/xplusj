@@ -2,7 +2,7 @@ package com.xplusj.expression;
 
 import com.xplusj.ExpressionGlobalContext;
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.context.DefaultVariableContext;
+import com.xplusj.VariableContext;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.xplusj.operator.Precedence.*;
+import static com.xplusj.variable.Variable.var;
 import static org.junit.Assert.assertEquals;
 
 @Deprecated //TODO adapt this to integration test
@@ -113,8 +114,8 @@ public class InlineExpressionTest {
     @Test
     public void eval13() {
         String expression = "4+a";
-        assertEquals(expression, 6D, eval(expression).eval(DefaultVariableContext
-                .builder().add("a", 2D).build()), 0D);
+        assertEquals(expression, 6D, eval(expression).eval(VariableContext
+                .vars(var("a", 2D))), 0D);
     }
 
     private static DefaultExpression eval(String expression){

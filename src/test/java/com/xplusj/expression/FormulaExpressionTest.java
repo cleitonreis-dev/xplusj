@@ -4,10 +4,11 @@ import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.Precedence;
-import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.binary.BinaryOperator;
+import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.parser.ExpressionParserProcessor;
+import com.xplusj.variable.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -109,7 +110,7 @@ public class FormulaExpressionTest {
     @Test
     public void testExpressionWitVars(){
         String exp = "1+b";
-        VariableContext vctx = VariableContext.builder().add("b", 1).build();
+        VariableContext vctx = VariableContext.vars(Variable.var("b", 1));
         BinaryOperator p = BinaryOperator.binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
         BinaryOperatorExecutor pp = BinaryOperatorExecutor.create(env,p);
 

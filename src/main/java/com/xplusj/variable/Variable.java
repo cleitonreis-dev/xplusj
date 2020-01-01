@@ -22,12 +22,49 @@
  * SOFTWARE.
  */
 
-package com.xplusj.operator;
+package com.xplusj.variable;
 
-import com.xplusj.variable.Variable;
+import java.util.Objects;
 
-public interface Constants {
-    Variable PI = Variable.var("PI", Math.PI);
+public class Variable {
+    private final String name;
+    private final double value;
 
-    Variable[] CONSTANTS = {PI};
+    public Variable(String name, double value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Variable variable = (Variable) o;
+        return Objects.equals(name, variable.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "name='" + name + '\'' +
+                ", value=" + value +
+                '}';
+    }
+
+    public static Variable var(String name, double value){
+        return new Variable(name,value);
+    }
 }

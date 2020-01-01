@@ -1,14 +1,15 @@
 package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.variable.Variable;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultExpressionOperatorExecutorDefinitionsTest {
 
@@ -54,7 +55,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsTest {
     @Test
     public void hasConstant() {
         ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
-                .addConstant(Constant.newConst("PI",Math.PI))
+                .addConstant(Variable.var("PI",Math.PI))
                 .build();
 
         assertTrue(repository.hasConstant("PI"));

@@ -2,13 +2,14 @@ package com.xplusj.expression;
 
 import com.xplusj.ExpressionGlobalContext;
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.VariableContext;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.xplusj.VariableContext.vars;
+import static com.xplusj.variable.Variable.var;
 import static org.junit.Assert.assertEquals;
 
 public class DefaultExpressionIntegrationTest {
@@ -43,17 +44,17 @@ public class DefaultExpressionIntegrationTest {
 
     @Test
     public void testConditionalIf(){
-        assertEquals(34, context.expression("if(2==2, a, PI)").eval(VariableContext.builder().add("a", 34D).build()), DELTA);
+        assertEquals(34, context.expression("if(2==2, a, PI)").eval(vars(var("a", 34D))), DELTA);
     }
 
     @Test
     public void testConditionalIf2(){
-        assertEquals(Math.PI, context.expression("if(2==a, a, PI)").eval(VariableContext.builder().add("a", 3D).build()), DELTA);
+        assertEquals(Math.PI, context.expression("if(2==a, a, PI)").eval(vars(var("a", 3D))), DELTA);
     }
 
     @Test
     public void testConditionalIf3(){
-        assertEquals(2D, context.expression("if(2>=a, a, PI)").eval(VariableContext.builder().add("a", 2D).build()), DELTA);
+        assertEquals(2D, context.expression("if(2>=a, a, PI)").eval(vars(var("a", 2D))), DELTA);
     }
 
     @Test

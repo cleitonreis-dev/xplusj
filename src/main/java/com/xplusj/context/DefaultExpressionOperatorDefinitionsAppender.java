@@ -1,10 +1,10 @@
 package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.variable.Variable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -64,7 +64,7 @@ public class DefaultExpressionOperatorDefinitionsAppender implements ExpressionO
     }
 
     @Override
-    public Constant getConstant(String name) {
+    public Variable getConstant(String name) {
         if(current.hasConstant(name))
             return current.getConstant(name);
 

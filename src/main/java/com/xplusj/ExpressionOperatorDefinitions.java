@@ -1,10 +1,10 @@
 package com.xplusj;
 
 import com.xplusj.context.DefaultExpressionOperatorDefinitions;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.variable.Variable;
 
 public interface ExpressionOperatorDefinitions {
 
@@ -22,7 +22,7 @@ public interface ExpressionOperatorDefinitions {
 
     FunctionOperator getFunction(String name);
 
-    Constant getConstant(String name);
+    Variable getConstant(String name);
 
     ExpressionOperatorDefinitions append(ExpressionOperatorDefinitions newDefinitions);
 
@@ -33,7 +33,7 @@ public interface ExpressionOperatorDefinitions {
 
         ExpressionOperatorDefinitions.Builder addFunction(FunctionOperator...function);
 
-        ExpressionOperatorDefinitions.Builder addConstant(Constant...constants);
+        ExpressionOperatorDefinitions.Builder addConstant(Variable...constants);
 
         ExpressionOperatorDefinitions build();
     }

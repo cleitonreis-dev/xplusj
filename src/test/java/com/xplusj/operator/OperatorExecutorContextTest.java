@@ -3,6 +3,7 @@ package com.xplusj.operator;
 import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.operator.function.FunctionOperatorExecutor;
+import com.xplusj.variable.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class OperatorExecutorContextTest {
         double constValue = 10D;
 
         when(definitions.hasConstant(constName)).thenReturn(true);
-        when(definitions.getConstant(constName)).thenReturn(Constant.newConst(constName,constValue));
+        when(definitions.getConstant(constName)).thenReturn(Variable.var(constName,constValue));
 
         double value = new OperatorExecutorContextTestImpl(context).getConstant(constName);
         assertEquals(constValue,value,DELTA);

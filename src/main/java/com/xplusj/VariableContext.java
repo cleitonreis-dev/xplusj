@@ -1,6 +1,7 @@
 package com.xplusj;
 
 import com.xplusj.context.DefaultVariableContext;
+import com.xplusj.variable.Variable;
 
 public interface VariableContext {
     VariableContext EMPTY = builder().build();
@@ -12,8 +13,12 @@ public interface VariableContext {
         return new DefaultVariableContext.Builder();
     }
 
+    static VariableContext vars(Variable...vars){
+        return builder().add(vars).build();
+    }
+
     interface Builder{
-        Builder add(String name, double value);
+        Builder add(Variable...vars);
         VariableContext build();
     }
 }

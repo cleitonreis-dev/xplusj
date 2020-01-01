@@ -1,6 +1,7 @@
 package com.xplusj.context;
 
 import com.xplusj.VariableContext;
+import com.xplusj.variable.Variable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +33,10 @@ public class DefaultVariableContext implements VariableContext {
         private Map<String,Double> vars = new HashMap<>();
 
         @Override
-        public VariableContext.Builder add(String name, double value) {
-            vars.put(name,value);
+        public VariableContext.Builder add(Variable...vars) {
+            for(Variable var : vars)
+                this.vars.put(var.getName(),var.getValue());
+
             return this;
         }
 

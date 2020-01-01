@@ -1,11 +1,11 @@
 package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.variable.Variable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -31,7 +31,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
             .addFunction(sum)
             .addBinaryOperator(plus)
             .addUnaryOperator(minus)
-            .addConstant(Constant.newConst("PI",Math.PI))
+            .addConstant(Variable.var("PI",Math.PI))
             .build();
 
     @Test
@@ -84,7 +84,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
     public void hasConstant() {
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
             .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
-                .addConstant(Constant.newConst("PI",Math.PI))
+                .addConstant(Variable.var("PI",Math.PI))
                 .build()
             );
 
@@ -142,7 +142,7 @@ public class DefaultExpressionOperatorExecutorDefinitionsAppenderTest {
     public void hasConstantFromParent() {
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
                 .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
-                        .addConstant(Constant.newConst("AA",3D))
+                        .addConstant(Variable.var("AA",3D))
                         .build()
                 );
 

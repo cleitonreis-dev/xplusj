@@ -4,19 +4,19 @@ import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
 import com.xplusj.factory.*;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.OperatorType;
-import com.xplusj.operator.binary.BinaryOperatorExecutor;
-import com.xplusj.operator.binary.BinaryOperatorContext;
 import com.xplusj.operator.binary.BinaryOperator;
-import com.xplusj.operator.function.FunctionOperatorExecutor;
-import com.xplusj.operator.function.FunctionOperatorContext;
+import com.xplusj.operator.binary.BinaryOperatorContext;
+import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.function.FunctionOperator;
-import com.xplusj.operator.unary.UnaryOperatorExecutor;
-import com.xplusj.operator.unary.UnaryOperatorContext;
+import com.xplusj.operator.function.FunctionOperatorContext;
+import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.operator.unary.UnaryOperatorContext;
+import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.variable.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,8 +44,6 @@ public class TwoStackBasedProcessorTest {
     @Mock
     private ExpressionOperatorDefinitions globalContext;
 
-    private FunctionOperatorExecutor functionOperator;
-
     @Mock
     private FunctionOperator functionOperatorDefinition;
 
@@ -53,8 +51,6 @@ public class TwoStackBasedProcessorTest {
 
     @Mock
     private UnaryOperator unaryOperatorDefinition;
-
-    private BinaryOperatorExecutor binaryOperator;
 
     @Mock
     private BinaryOperator binaryOperatorDefinition;
@@ -101,8 +97,8 @@ public class TwoStackBasedProcessorTest {
         interpreter = TwoStackBasedProcessor.create(environment, variableContext, valStack, opStack);
 
         unaryOperator = ExpressionUnaryOperatorFactory.defaultFactory().create(unaryOperatorDefinition,environment);
-        binaryOperator = ExpressionBinaryOperatorFactory.defaultFactory().create(binaryOperatorDefinition,environment);
-        functionOperator = ExpressionFunctionOperatorFactory.defaultFactory().create(functionOperatorDefinition, environment);
+        BinaryOperatorExecutor binaryOperator = ExpressionBinaryOperatorFactory.defaultFactory().create(binaryOperatorDefinition,environment);
+        FunctionOperatorExecutor functionOperator = ExpressionFunctionOperatorFactory.defaultFactory().create(functionOperatorDefinition, environment);
 
         when(environment.getFunction(any(String.class))).thenReturn(functionOperator);
         when(environment.getUnaryOperator(any(String.class))).thenReturn(unaryOperator);
@@ -138,7 +134,7 @@ public class TwoStackBasedProcessorTest {
     @Test
     public void pushConstant() {
         when(globalContext.hasConstant("AB")).thenReturn(true);
-        when(globalContext.getConstant("AB")).thenReturn(Constant.newConst("AB", 3D));
+        when(globalContext.getConstant("AB")).thenReturn(Variable.var("AB", 3D));
 
         interpreter.addConstant("AB");
 

@@ -1,10 +1,10 @@
 package com.xplusj.context;
 
 import com.xplusj.ExpressionOperatorDefinitions;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
+import com.xplusj.variable.Variable;
 
 import java.util.*;
 
@@ -13,12 +13,12 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
     private final Map<String, UnaryOperator> unaryOperators;
     private final Map<String, BinaryOperator> binaryOperators;
     private final Map<String, FunctionOperator> functionOperators;
-    private final Map<String, Constant> constants;
+    private final Map<String, Variable> constants;
 
     private DefaultExpressionOperatorDefinitions(Map<String, UnaryOperator> unaryOperators,
                                                  Map<String, BinaryOperator> binaryOperators,
                                                  Map<String, FunctionOperator> functionOperators,
-                                                 Map<String, Constant> constants) {
+                                                 Map<String, Variable> constants) {
         this.unaryOperators = unaryOperators;
         this.binaryOperators = binaryOperators;
         this.functionOperators = functionOperators;
@@ -61,7 +61,7 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
     }
 
     @Override
-    public Constant getConstant(String name) {
+    public Variable getConstant(String name) {
         return constants.get(name);
     }
 
@@ -79,7 +79,7 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
         private List<UnaryOperator> unaries = new ArrayList<>();
         private List<BinaryOperator> binaries = new ArrayList<>();
         private List<FunctionOperator> functions = new ArrayList<>();
-        private List<Constant> constants = new ArrayList<>();
+        private List<Variable> constants = new ArrayList<>();
 
         @Override
         public ExpressionOperatorDefinitions.Builder addUnaryOperator(UnaryOperator... operator) {
@@ -100,7 +100,7 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
         }
 
         @Override
-        public ExpressionOperatorDefinitions.Builder addConstant(Constant...constants) {
+        public ExpressionOperatorDefinitions.Builder addConstant(Variable...constants) {
             this.constants.addAll(Arrays.asList(constants));
             return this;
         }
@@ -110,7 +110,7 @@ public class DefaultExpressionOperatorDefinitions implements ExpressionOperatorD
             Map<String, UnaryOperator> unaryMap = new HashMap<>();
             Map<String, BinaryOperator> binariesMap = new HashMap<>();
             Map<String, FunctionOperator> functionsMap = new HashMap<>();
-            Map<String, Constant> constantsMap = new HashMap<>();
+            Map<String, Variable> constantsMap = new HashMap<>();
 
             unaries.forEach(operator->unaryMap.put(operator.getIdentifier(), operator));
             binaries.forEach(operator->binariesMap.put(operator.getIdentifier(), operator));

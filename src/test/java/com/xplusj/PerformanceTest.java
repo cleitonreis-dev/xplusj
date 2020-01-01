@@ -1,6 +1,6 @@
 package com.xplusj;
 
-import com.xplusj.context.DefaultVariableContext;
+import com.xplusj.variable.Variable;
 
 public class PerformanceTest {
 
@@ -26,10 +26,10 @@ public class PerformanceTest {
         double b = 2;
         double result = (a/(2+b)-Math.max(a,b)*2)*(a/(2+b)-Math.max(a,b)*2)*(a/(2+b)-Math.max(a,b)*2);
 
-        VariableContext vars = DefaultVariableContext.builder()
-                .add("a", a)
-                .add("b", b)
-                .build();
+        VariableContext vars = VariableContext.vars(
+                Variable.var("a", a),
+                Variable.var("b", b)
+            );
 
         Expression iExp = env.expression(expression);
         Expression fExp = env.formula(expression);

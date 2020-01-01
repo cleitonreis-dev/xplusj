@@ -13,6 +13,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.function.Function;
 
+import static com.xplusj.VariableContext.vars;
+import static com.xplusj.variable.Variable.var;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -45,7 +47,7 @@ public class DefaultExpressionTest {
     public void testNullExpression(){
         thrown.expect(ExpressionException.class);
         thrown.expectMessage("Invalid expression: expression null");
-        DefaultExpression.create(null,parser,twoStackProcessorFactory).eval();
+        DefaultExpression.create(null,parser,twoStackProcessorFactory);
     }
 
     @Test
@@ -79,7 +81,7 @@ public class DefaultExpressionTest {
     @Test
     public void testExpressionWitVars(){
         String exp = "1+b";
-        VariableContext vctx = VariableContext.builder().add("b", 1).build();
+        VariableContext vctx = vars(var("b", 1));
 
         when(parser.eval(exp,twoStackBasedProcessor)).thenReturn(2D);
 

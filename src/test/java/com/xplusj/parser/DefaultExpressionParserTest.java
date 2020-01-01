@@ -3,13 +3,13 @@ package com.xplusj.parser;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.expression.Stack;
 import com.xplusj.factory.ExpressionTokenizerFactory;
-import com.xplusj.operator.Constant;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.tokenizer.ExpressionTokenizer;
+import com.xplusj.variable.Variable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,7 +82,7 @@ public class DefaultExpressionParserTest {
         when(definitions.getFunction("max")).thenReturn(new DefaultExpressionParserTest.Func("max","a","b","..."));
 
         when(definitions.hasConstant("PI")).thenReturn(Boolean.TRUE);
-        when(definitions.getConstant("PI")).thenReturn(Constant.newConst("PI", Math.PI));
+        when(definitions.getConstant("PI")).thenReturn(Variable.var("PI", Math.PI));
 
         when(definitions.hasBinaryOperator("&")).thenReturn(Boolean.TRUE,Boolean.FALSE);
         when(definitions.getBinaryOperator("&")).thenReturn(null);
