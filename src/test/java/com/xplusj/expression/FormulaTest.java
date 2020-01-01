@@ -1,7 +1,7 @@
 package com.xplusj.expression;
 
 import com.xplusj.Expression;
-import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class FormulaTest {
 
-    private static ExpressionGlobalContext context = ExpressionGlobalContext.builder().build();
+    private static ExpressionContext context = ExpressionContext.builder().build();
 
     @Test
     public void testPlus(){

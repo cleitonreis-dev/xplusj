@@ -1,6 +1,6 @@
 package com.xplusj.operator;
 
-import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionContext;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class BuiltinOperatorsIntegrationTest {
 
     private static final double DELTA = 0.0000000000000001;
-    private static ExpressionGlobalContext context = ExpressionGlobalContext.builder().build();
+    private static ExpressionContext context = ExpressionContext.builder().build();
 
     @Test
     public void testUnaryPlus(){

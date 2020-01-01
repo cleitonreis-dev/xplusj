@@ -1,6 +1,6 @@
 package com.xplusj.operator.function;
 
-import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class FunctionOperatorExecutorTest {
     public ExpectedException thrown = ExpectedException.none();
 
 
-    private ExpressionGlobalContext context = ExpressionGlobalContext.builder().build();
+    private ExpressionContext context = ExpressionContext.builder().build();
 
     @Mock
     private Function<FunctionOperatorContext,Double> function;
@@ -142,7 +142,7 @@ public class FunctionOperatorExecutorTest {
         double a = 2;
         double b = 3;
 
-        ExpressionGlobalContext ctx = context.append(ExpressionOperatorDefinitions.builder()
+        ExpressionContext ctx = context.append(ExpressionOperatorDefinitions.builder()
             .addFunction(FunctionOperator.func("test(a,b)", "pow(max(a,b),2)"))
             .build()
         );

@@ -1,6 +1,6 @@
 package com.xplusj.expression;
 
-import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.VariableContext;
 import com.xplusj.operator.binary.BinaryOperator;
@@ -29,7 +29,7 @@ public class InlineExpressionTest {
         .build();
 
 
-    private static final ExpressionGlobalContext ENV = ExpressionGlobalContext.builder()
+    private static final ExpressionContext ENV = ExpressionContext.builder()
             .setOperatorDefinitions(CONTEXT)
             .build();
 

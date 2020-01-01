@@ -1,6 +1,6 @@
 package com.xplusj.context;
 
-import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.factory.*;
 import com.xplusj.operator.Precedence;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultExpressionGlobalContextTest {
+public class DefaultExpressionContextTest {
 
     @Mock
     private ExpressionOperatorDefinitions definitions;
@@ -69,7 +69,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testCreateExpression(){
         String exp = "1+1";
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         context.expression(exp);
 
         verify(expressionFactory).expression(exp, context);
@@ -78,7 +78,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testCreateFormula(){
         String exp = "1+1";
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         context.formula(exp);
 
         verify(expressionFactory).formula(exp, context);
@@ -96,7 +96,7 @@ public class DefaultExpressionGlobalContextTest {
         UnaryOperator opDef = UnaryOperator.unary(op, Precedence.low(),null);
         when(definitions.getUnaryOperator(op)).thenReturn(opDef);
 
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         context.getUnaryOperator(op);
 
         verify(definitions).getUnaryOperator(op);
@@ -109,7 +109,7 @@ public class DefaultExpressionGlobalContextTest {
         BinaryOperator opDef = BinaryOperator.binary(op, Precedence.low(),null);
         when(definitions.getBinaryOperator(op)).thenReturn(opDef);
 
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         context.getBinaryOperator(op);
 
         verify(definitions).getBinaryOperator(op);
@@ -122,7 +122,7 @@ public class DefaultExpressionGlobalContextTest {
         FunctionOperator opDef = FunctionOperator.func(op+"(a,b)",(Function<FunctionOperatorContext, Double>) null);
         when(definitions.getFunction(op)).thenReturn(opDef);
 
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         context.getFunction(op);
 
         verify(definitions).getFunction(op);
@@ -131,7 +131,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testCreateTokenizer(){
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         ExpressionTokenizer tokenizer = context.getTokenizer();
 
         verify(tokenizerFactory).create(definitions);
@@ -140,7 +140,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testCreateParser(){
-        ExpressionGlobalContext context = build();
+        ExpressionContext context = build();
         ExpressionParser parser = context.getParser();
 
         verify(parserFactory).create(tokenizer, definitions);
@@ -149,8 +149,8 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testAppendDefinition(){
-        ExpressionGlobalContext context = build();
-        ExpressionGlobalContext context2 = context.append(newDefinitions);
+        ExpressionContext context = build();
+        ExpressionContext context2 = context.append(newDefinitions);
 
         assertNotEquals(context, context2);
         assertEquals(definitions, context.getDefinitions());
@@ -160,7 +160,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testAppendCreateExpression(){
         String exp = "1+1";
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         context.expression(exp);
 
         verify(expressionFactory).expression(exp, context);
@@ -169,7 +169,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testAppendCreateFormula(){
         String exp = "1+1";
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         context.formula(exp);
 
         verify(expressionFactory).formula(exp, context);
@@ -181,7 +181,7 @@ public class DefaultExpressionGlobalContextTest {
         UnaryOperator opDef = UnaryOperator.unary(op, Precedence.low(),null);
         when(newDefinitions.getUnaryOperator(op)).thenReturn(opDef);
 
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         context.getUnaryOperator(op);
 
         verify(newDefinitions).getUnaryOperator(op);
@@ -194,7 +194,7 @@ public class DefaultExpressionGlobalContextTest {
         BinaryOperator opDef = BinaryOperator.binary(op, Precedence.low(),null);
         when(newDefinitions.getBinaryOperator(op)).thenReturn(opDef);
 
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         context.getBinaryOperator(op);
 
         verify(newDefinitions).getBinaryOperator(op);
@@ -207,7 +207,7 @@ public class DefaultExpressionGlobalContextTest {
         FunctionOperator opDef = FunctionOperator.func(op+"(a,b)",(Function<FunctionOperatorContext, Double>)null);
         when(newDefinitions.getFunction(op)).thenReturn(opDef);
 
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         context.getFunction(op);
 
         verify(newDefinitions).getFunction(op);
@@ -216,7 +216,7 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testAppendCreateTokenizer(){
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         ExpressionTokenizer tokenizer = context.getTokenizer();
 
         verify(tokenizerFactory).create(newDefinitions);
@@ -225,15 +225,15 @@ public class DefaultExpressionGlobalContextTest {
 
     @Test
     public void testAppendCreateParser(){
-        ExpressionGlobalContext context = build().append(newDefinitions);
+        ExpressionContext context = build().append(newDefinitions);
         ExpressionParser parser = context.getParser();
 
         verify(parserFactory).create(tokenizer, newDefinitions);
         assertEquals(this.parser, parser);
     }
 
-    private ExpressionGlobalContext build(){
-        return DefaultExpressionGlobalContext.builder()
+    private ExpressionContext build(){
+        return DefaultExpressionContext.builder()
                 .setOperatorDefinitions(definitions)
                 .setExpressionFactory(expressionFactory)
                 .setParserFactory(parserFactory)

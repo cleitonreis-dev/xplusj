@@ -1,5 +1,7 @@
 package com.xplusj;
 
+import com.xplusj.context.DefaultExpressionContext;
+import com.xplusj.factory.*;
 import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
@@ -19,9 +21,31 @@ public interface ExpressionContext {
 
     ExpressionParser getParser();
 
-    interface Builder<T extends ExpressionContext>{
-        Builder<T> setOperatorDefinitions(ExpressionOperatorDefinitions definitions);
+    Expression expression(String expression);
 
-        T build();
+    Expression formula(String formula);
+
+    ExpressionContext append(ExpressionOperatorDefinitions operatorDefinitions);
+
+    interface Builder{
+        Builder setOperatorDefinitions(ExpressionOperatorDefinitions definitions);
+
+        Builder setExpressionFactory(ExpressionFactory expressionFactory);
+
+        Builder setParserFactory(ExpressionParserFactory parserFactory);
+
+        Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory);
+
+        Builder setUnaryOperatorFactory(ExpressionUnaryOperatorFactory unaryFactory);
+
+        Builder setBinaryOperatorFactory(ExpressionBinaryOperatorFactory binaryFactory);
+
+        Builder setFunctionOperatorFactory(ExpressionFunctionOperatorFactory functionFactory);
+
+        ExpressionContext build();
+    }
+
+    static Builder builder(){
+        return DefaultExpressionContext.builder();
     }
 }

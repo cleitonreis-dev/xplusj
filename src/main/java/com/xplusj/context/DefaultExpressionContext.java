@@ -1,10 +1,9 @@
 package com.xplusj.context;
 
 import com.xplusj.Expression;
-import com.xplusj.ExpressionGlobalContext;
+import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperatorDefinitions;
 import com.xplusj.factory.*;
-import com.xplusj.variable.Constants;
 import com.xplusj.operator.Functions;
 import com.xplusj.operator.Operators;
 import com.xplusj.operator.binary.BinaryOperatorExecutor;
@@ -12,8 +11,9 @@ import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
 import com.xplusj.tokenizer.ExpressionTokenizer;
+import com.xplusj.variable.Constants;
 
-public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
+public class DefaultExpressionContext implements ExpressionContext {
 
     private final ExpressionOperatorDefinitions definitions;
     private final ExpressionParser parser;
@@ -25,13 +25,13 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
     private final ExpressionBinaryOperatorFactory binaryFactory;
     private final ExpressionFunctionOperatorFactory functionFactory;
 
-    private DefaultExpressionGlobalContext(ExpressionOperatorDefinitions definitions,
-                                           ExpressionFactory expressionFactory,
-                                           ExpressionParserFactory parserFactory,
-                                           ExpressionTokenizerFactory tokenizerFactory,
-                                           ExpressionUnaryOperatorFactory unaryFactory,
-                                           ExpressionBinaryOperatorFactory binaryFactory,
-                                           ExpressionFunctionOperatorFactory functionFactory) {
+    private DefaultExpressionContext(ExpressionOperatorDefinitions definitions,
+                                     ExpressionFactory expressionFactory,
+                                     ExpressionParserFactory parserFactory,
+                                     ExpressionTokenizerFactory tokenizerFactory,
+                                     ExpressionUnaryOperatorFactory unaryFactory,
+                                     ExpressionBinaryOperatorFactory binaryFactory,
+                                     ExpressionFunctionOperatorFactory functionFactory) {
         this.definitions = definitions;
         this.tokenizer = tokenizerFactory.create(definitions);
         this.parser = parserFactory.create(this.tokenizer, definitions);
@@ -84,8 +84,8 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
     }
 
     @Override
-    public ExpressionGlobalContext append(ExpressionOperatorDefinitions operatorDefinitions) {
-        return new DefaultExpressionGlobalContext(
+    public ExpressionContext append(ExpressionOperatorDefinitions operatorDefinitions) {
+        return new DefaultExpressionContext(
                 definitions.append(operatorDefinitions), expressionFactory, parserFactory,
                 tokenizerFactory, unaryFactory, binaryFactory, functionFactory
         );
@@ -95,7 +95,7 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
         return new Builder();
     }
 
-    static class Builder implements ExpressionGlobalContext.Builder{
+    static class Builder implements ExpressionContext.Builder{
 
         private ExpressionOperatorDefinitions definitions;
         private ExpressionFactory expressionFactory;
@@ -107,52 +107,52 @@ public class DefaultExpressionGlobalContext implements ExpressionGlobalContext {
 
 
         @Override
-        public ExpressionGlobalContext.Builder setExpressionFactory(ExpressionFactory expressionFactory) {
+        public Builder setExpressionFactory(ExpressionFactory expressionFactory) {
             this.expressionFactory = expressionFactory;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext.Builder setParserFactory(ExpressionParserFactory parserFactory) {
+        public Builder setParserFactory(ExpressionParserFactory parserFactory) {
             this.parserFactory = parserFactory;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext.Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory) {
+        public Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory) {
             this.tokenizerFactory = tokenizerFactory;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext.Builder setUnaryOperatorFactory(ExpressionUnaryOperatorFactory unaryFactory) {
+        public Builder setUnaryOperatorFactory(ExpressionUnaryOperatorFactory unaryFactory) {
             this.unaryFactory = unaryFactory;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext.Builder setBinaryOperatorFactory(ExpressionBinaryOperatorFactory binaryFactory) {
+        public Builder setBinaryOperatorFactory(ExpressionBinaryOperatorFactory binaryFactory) {
             this.binaryFactory = binaryFactory;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext.Builder setFunctionOperatorFactory(ExpressionFunctionOperatorFactory functionFactory) {
+        public Builder setFunctionOperatorFactory(ExpressionFunctionOperatorFactory functionFactory) {
             this.functionFactory = functionFactory;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext.Builder setOperatorDefinitions(ExpressionOperatorDefinitions definitions) {
+        public Builder setOperatorDefinitions(ExpressionOperatorDefinitions definitions) {
             this.definitions = definitions;
             return this;
         }
 
         @Override
-        public ExpressionGlobalContext build() {
+        public ExpressionContext build() {
             initDefaults();
 
-            return new DefaultExpressionGlobalContext(
+            return new DefaultExpressionContext(
                 definitions,expressionFactory, parserFactory,
                 tokenizerFactory,unaryFactory, binaryFactory, functionFactory
             );

@@ -17,7 +17,7 @@ public class PerformanceTest {
 
     //static final ExpressionParser PARSER = new com.xplusj.interpreter.parser.ExpressionParser(CONTEXT);
 
-    static final ExpressionGlobalContext env = ExpressionGlobalContext.builder().build();
+    static final ExpressionContext env = ExpressionContext.builder().build();
 
     public static void main(String[] args) {
         System.out.println(env.expression("8/2*(2+2)").eval());
