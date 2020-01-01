@@ -3,7 +3,6 @@ package com.xplusj.operator.function;
 import com.xplusj.Expression;
 import com.xplusj.ExpressionContext;
 import com.xplusj.VariableContext;
-import com.xplusj.expression.DefaultExpressionFactory;
 
 import java.util.function.Function;
 
@@ -26,7 +25,7 @@ public class CompiledFunction implements Function<FunctionOperatorContext,Double
 
     private synchronized void initExpression(ExpressionContext context){
         if(expression == null)
-            this.expression = DefaultExpressionFactory.getInstance().formula(expressionStr, context);
+            this.expression = context.formula(expressionStr);
     }
 
     private static class FVariableContext implements VariableContext{
