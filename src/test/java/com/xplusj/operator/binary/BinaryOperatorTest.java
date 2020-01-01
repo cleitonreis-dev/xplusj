@@ -33,7 +33,7 @@ public class BinaryOperatorTest {
 
     @Test
     public void testOperatorCall(){
-        BinaryOperatorDefinition definition = BinaryOperatorDefinition.create("+", low(), function);
+        BinaryOperatorDefinition definition = BinaryOperatorDefinition.binary("+", low(), function);
         double[] params = {1D,2D};
         double expectedValue = 3;
 
@@ -55,7 +55,7 @@ public class BinaryOperatorTest {
 
     @Test
     public void testOperatorParams(){
-        BinaryOperatorDefinition definition = BinaryOperatorDefinition.create("+", low(), function);
+        BinaryOperatorDefinition definition = BinaryOperatorDefinition.binary("+", low(), function);
         double[] params = {1D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -67,7 +67,7 @@ public class BinaryOperatorTest {
 
     @Test
     public void testOperatorParams1(){
-        BinaryOperatorDefinition definition = BinaryOperatorDefinition.create("+", low(), function);
+        BinaryOperatorDefinition definition = BinaryOperatorDefinition.binary("+", low(), function);
         double[] params = {1D,2D,3D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -79,7 +79,7 @@ public class BinaryOperatorTest {
 
     @Test
     public void testOperatorParams2(){
-        BinaryOperatorDefinition definition = BinaryOperatorDefinition.create("+", low(), function);
+        BinaryOperatorDefinition definition = BinaryOperatorDefinition.binary("+", low(), function);
         double[] params = {};
 
         thrown.expect(IllegalArgumentException.class);

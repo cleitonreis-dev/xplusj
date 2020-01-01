@@ -18,13 +18,13 @@ import static org.junit.Assert.assertEquals;
 public class InlineExpressionTest {
     private static final ExpressionOperatorDefinitions CONTEXT =
             ExpressionOperatorDefinitions.builder()
-            .addBinaryOperator(BinaryOperatorDefinition.create("+", low(), ctx->ctx.param0() + ctx.param1()))
-            .addBinaryOperator(BinaryOperatorDefinition.create("-", low(), ctx->ctx.param0() - ctx.param1()))
-            .addBinaryOperator(BinaryOperatorDefinition.create("*", high(), ctx->ctx.param0() * ctx.param1()))
-            .addBinaryOperator(BinaryOperatorDefinition.create("/", high(), ctx->ctx.param0() / ctx.param1()))
-            .addUnaryOperator(UnaryOperatorDefinition.create("+", higherThan(high()), ctx->+ctx.param()))
-            .addUnaryOperator(UnaryOperatorDefinition.create("-", higherThan(high()), ctx->-ctx.param()))
-            .addFunction(FunctionOperatorDefinition.create("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
+            .addBinaryOperator(BinaryOperatorDefinition.binary("+", low(), ctx->ctx.param0() + ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.binary("-", low(), ctx->ctx.param0() - ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.binary("*", high(), ctx->ctx.param0() * ctx.param1()))
+            .addBinaryOperator(BinaryOperatorDefinition.binary("/", high(), ctx->ctx.param0() / ctx.param1()))
+            .addUnaryOperator(UnaryOperatorDefinition.unary("+", higherThan(high()), ctx->+ctx.param()))
+            .addUnaryOperator(UnaryOperatorDefinition.unary("-", higherThan(high()), ctx->-ctx.param()))
+            .addFunction(FunctionOperatorDefinition.func("max(a,b)", ctx->Math.max(ctx.param("a"), ctx.param("b"))))
         .build();
 
 

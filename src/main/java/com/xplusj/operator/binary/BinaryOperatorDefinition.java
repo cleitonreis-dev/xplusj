@@ -12,7 +12,7 @@ public class BinaryOperatorDefinition extends OperatorDefinition<BinaryOperatorC
         super(symbol, OperatorType.BINARY, precedence, function, 2);
     }
 
-    public static BinaryOperatorDefinition create(String symbol, Precedence precedence, Function<BinaryOperatorContext, Double> function) {
+    public static BinaryOperatorDefinition binary(String symbol, Precedence precedence, Function<BinaryOperatorContext, Double> function) {
         return new BinaryOperatorDefinition(symbol,precedence,function);
     }
 }

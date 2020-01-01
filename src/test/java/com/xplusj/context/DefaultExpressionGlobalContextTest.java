@@ -93,7 +93,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testCreateUnaryOperator(){
         String op = "+";
-        UnaryOperatorDefinition opDef = UnaryOperatorDefinition.create(op, Precedence.low(),null);
+        UnaryOperatorDefinition opDef = UnaryOperatorDefinition.unary(op, Precedence.low(),null);
         when(definitions.getUnaryOperator(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build();
@@ -106,7 +106,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testCreateBinaryOperator(){
         String op = "+";
-        BinaryOperatorDefinition opDef = BinaryOperatorDefinition.create(op, Precedence.low(),null);
+        BinaryOperatorDefinition opDef = BinaryOperatorDefinition.binary(op, Precedence.low(),null);
         when(definitions.getBinaryOperator(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build();
@@ -119,7 +119,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testCreateFunctionOperator(){
         String op = "sum";
-        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.create(op+"(a,b)",(Function<FunctionOperatorContext, Double>) null);
+        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.func(op+"(a,b)",(Function<FunctionOperatorContext, Double>) null);
         when(definitions.getFunction(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build();
@@ -178,7 +178,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testAppendCreateUnaryOperator(){
         String op = "+";
-        UnaryOperatorDefinition opDef = UnaryOperatorDefinition.create(op, Precedence.low(),null);
+        UnaryOperatorDefinition opDef = UnaryOperatorDefinition.unary(op, Precedence.low(),null);
         when(newDefinitions.getUnaryOperator(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build().append(newDefinitions);
@@ -191,7 +191,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testAppendCreateBinaryOperator(){
         String op = "+";
-        BinaryOperatorDefinition opDef = BinaryOperatorDefinition.create(op, Precedence.low(),null);
+        BinaryOperatorDefinition opDef = BinaryOperatorDefinition.binary(op, Precedence.low(),null);
         when(newDefinitions.getBinaryOperator(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build().append(newDefinitions);
@@ -204,7 +204,7 @@ public class DefaultExpressionGlobalContextTest {
     @Test
     public void testAppendCreateFunctionOperator(){
         String op = "sum";
-        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.create(op+"(a,b)",(Function<FunctionOperatorContext, Double>)null);
+        FunctionOperatorDefinition opDef = FunctionOperatorDefinition.func(op+"(a,b)",(Function<FunctionOperatorContext, Double>)null);
         when(newDefinitions.getFunction(op)).thenReturn(opDef);
 
         ExpressionGlobalContext context = build().append(newDefinitions);

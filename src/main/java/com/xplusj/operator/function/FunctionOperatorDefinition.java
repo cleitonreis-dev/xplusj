@@ -50,12 +50,12 @@ public class FunctionOperatorDefinition extends OperatorDefinition<FunctionOpera
         return this.varArgs;
     }
 
-    public static FunctionOperatorDefinition create(String name, Function<FunctionOperatorContext, Double> function) {
+    public static FunctionOperatorDefinition func(String name, Function<FunctionOperatorContext, Double> function) {
         FunctionIdentifier identifier = FunctionIdentifier.create(name);
         return new FunctionOperatorDefinition(identifier.name,identifier.params,identifier.isVarargs,function);
     }
 
-    public static FunctionOperatorDefinition create(String name, String function) {
+    public static FunctionOperatorDefinition func(String name, String function) {
         FunctionIdentifier identifier = FunctionIdentifier.create(name);
         return new FunctionOperatorDefinition(identifier.name,identifier.params,identifier.isVarargs,new CompiledFunction(function));
     }

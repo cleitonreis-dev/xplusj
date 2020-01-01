@@ -19,13 +19,13 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     public ExpectedException thrown = ExpectedException.none();
 
     private static FunctionOperatorDefinition sum = FunctionOperatorDefinition
-            .create("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
+            .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
     private static BinaryOperatorDefinition plus = BinaryOperatorDefinition
-            .create("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+            .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
     private static UnaryOperatorDefinition minus = UnaryOperatorDefinition
-            .create("-", Precedence.low(), (ctx)->-ctx.param());
+            .unary("-", Precedence.low(), (ctx)->-ctx.param());
     
     private static ExpressionOperatorDefinitions parentDefinitions = DefaultExpressionOperatorDefinitions.builder()
             .addFunction(sum)
@@ -37,7 +37,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasFunction() {
         FunctionOperatorDefinition definition = FunctionOperatorDefinition
-                .create("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
+                .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
             .append(parentDefinitions,
@@ -53,7 +53,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasBinaryOperator() {
         BinaryOperatorDefinition definition = BinaryOperatorDefinition
-                .create("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+                .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
             .append(parentDefinitions,DefaultExpressionOperatorDefinitions.builder()
@@ -68,7 +68,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasUnaryOperator() {
         UnaryOperatorDefinition definition = UnaryOperatorDefinition
-                .create("-", Precedence.low(), (ctx)->-ctx.param());
+                .unary("-", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
             .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()
@@ -95,7 +95,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasFunctionFromParent() {
         FunctionOperatorDefinition definition = FunctionOperatorDefinition
-                .create("sum2(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
+                .func("sum2(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
                 .append(parentDefinitions,
@@ -111,7 +111,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasBinaryOperatorFromParent() {
         BinaryOperatorDefinition definition = BinaryOperatorDefinition
-                .create("%", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+                .binary("%", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
                 .append(parentDefinitions,DefaultExpressionOperatorDefinitions.builder()
@@ -126,7 +126,7 @@ public class DefaultExpressionOperatorDefinitionsAppenderTest {
     @Test
     public void hasUnaryOperatorFromParent() {
         UnaryOperatorDefinition definition = UnaryOperatorDefinition
-                .create("%", Precedence.low(), (ctx)->-ctx.param());
+                .unary("%", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions definitions = DefaultExpressionOperatorDefinitionsAppender
                 .append(parentDefinitions, DefaultExpressionOperatorDefinitions.builder()

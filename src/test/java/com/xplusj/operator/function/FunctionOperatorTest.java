@@ -33,7 +33,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorCall(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,c)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
         double[] params = {1D,2D,3D};
         double expectedValue = 3;
 
@@ -56,7 +56,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorCall2(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,c)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
         double[] params = {1D,2D,3D};
         double expectedValue = 3;
 
@@ -79,7 +79,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorParams(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,c)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
         double[] params = {1D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -91,7 +91,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorParams1(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,c)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
         double[] params = {1D,2D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -103,7 +103,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorParams2(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,c)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
         double[] params = {};
 
         thrown.expect(IllegalArgumentException.class);
@@ -115,7 +115,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorParams3(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,c)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,c)", function);
         double[] params = {1D,2D,3D,4D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -127,7 +127,7 @@ public class FunctionOperatorTest {
 
     @Test
     public void testOperatorParams4(){
-        FunctionOperatorDefinition definition = FunctionOperatorDefinition.create("sum(a,b,...)", function);
+        FunctionOperatorDefinition definition = FunctionOperatorDefinition.func("sum(a,b,...)", function);
         double[] params = {1D};
 
         thrown.expect(IllegalArgumentException.class);
@@ -143,7 +143,7 @@ public class FunctionOperatorTest {
         double b = 3;
 
         ExpressionGlobalContext ctx = context.append(ExpressionOperatorDefinitions.builder()
-            .addFunction(FunctionOperatorDefinition.create("test(a,b)", "pow(max(a,b),2)"))
+            .addFunction(FunctionOperatorDefinition.func("test(a,b)", "pow(max(a,b),2)"))
             .build()
         );
 

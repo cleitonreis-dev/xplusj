@@ -12,7 +12,7 @@ public class UnaryOperatorDefinition extends OperatorDefinition<UnaryOperatorCon
         super(symbol, OperatorType.UNARY, precedence, function, 1);
     }
 
-    public static UnaryOperatorDefinition create(String symbol, Precedence precedence, Function<UnaryOperatorContext, Double> function) {
+    public static UnaryOperatorDefinition unary(String symbol, Precedence precedence, Function<UnaryOperatorContext, Double> function) {
         return new UnaryOperatorDefinition(symbol,precedence,function);
     }
 }

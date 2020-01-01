@@ -15,7 +15,7 @@ public class DefaultExpressionOperatorDefinitionsTest {
     @Test
     public void hasFunction() {
         FunctionOperatorDefinition definition = FunctionOperatorDefinition
-                .create("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
+                .func("sum(a,b)", (ctx)->ctx.param("a")+ctx.param("b"));
 
         ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
             .addFunction(definition)
@@ -28,7 +28,7 @@ public class DefaultExpressionOperatorDefinitionsTest {
     @Test
     public void hasBinaryOperator() {
         BinaryOperatorDefinition definition = BinaryOperatorDefinition
-                .create("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
+                .binary("+", Precedence.low(), (ctx)->ctx.param0() + ctx.param1());
 
         ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
                 .addBinaryOperator(definition)
@@ -41,7 +41,7 @@ public class DefaultExpressionOperatorDefinitionsTest {
     @Test
     public void hasUnaryOperator() {
         UnaryOperatorDefinition definition = UnaryOperatorDefinition
-                .create("-", Precedence.low(), (ctx)->-ctx.param());
+                .unary("-", Precedence.low(), (ctx)->-ctx.param());
 
         ExpressionOperatorDefinitions repository = DefaultExpressionOperatorDefinitions.builder()
                 .addUnaryOperator(definition)
