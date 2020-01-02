@@ -79,34 +79,17 @@ public interface Operators {
         BinaryOperator POW = binary("^", lowerThan(highest()), ctx->Math.pow(ctx.param0(),ctx.param1()));
 
         //Conditional
-        BinaryOperator EQ = binary("==",
-                lowerThan(ADD.getPrecedence()), ctx->ctx.param0() == ctx.param1() ? 1D : 0D);
-
-        BinaryOperator NE = binary("!=",
-                sameAs(EQ.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
-
-        BinaryOperator GT = binary(">",
-                sameAs(EQ.getPrecedence()), ctx->ctx.param0() > ctx.param1() ? 1D : 0D);
-
-        BinaryOperator GE = binary(">=",
-                sameAs(EQ.getPrecedence()), ctx->ctx.param0() >= ctx.param1() ? 1D : 0D);
-
-        BinaryOperator LT = binary("<",
-                sameAs(EQ.getPrecedence()), ctx->ctx.param0() < ctx.param1() ? 1D : 0D);
-
-        BinaryOperator LE = binary("<=",
-                sameAs(EQ.getPrecedence()), ctx->ctx.param0() <= ctx.param1() ? 1D : 0D);
+        BinaryOperator EQ = binary("==", lowerThan(ADD.getPrecedence()), ctx->ctx.param0() == ctx.param1() ? 1D : 0D);
+        BinaryOperator NE = binary("!=", sameAs(EQ.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
+        BinaryOperator GT = binary(">", sameAs(EQ.getPrecedence()), ctx->ctx.param0() > ctx.param1() ? 1D : 0D);
+        BinaryOperator GE = binary(">=", sameAs(EQ.getPrecedence()), ctx->ctx.param0() >= ctx.param1() ? 1D : 0D);
+        BinaryOperator LT = binary("<", sameAs(EQ.getPrecedence()), ctx->ctx.param0() < ctx.param1() ? 1D : 0D);
+        BinaryOperator LE = binary("<=", sameAs(EQ.getPrecedence()), ctx->ctx.param0() <= ctx.param1() ? 1D : 0D);
 
         //Logical
-        BinaryOperator AND = binary("&&",
-                lowerThan(EQ.getPrecedence()), ctx->ctx.param0() == 1 && ctx.param1() == 1 ? 1D : 0D);
-
-        BinaryOperator OR = binary("||",
-                sameAs(AND.getPrecedence()), ctx->ctx.param0() == 1 || ctx.param1() == 1 ? 1D : 0D);
-
-        BinaryOperator XOR = binary("|",
-                sameAs(AND.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
-
+        BinaryOperator AND = binary("&&", lowerThan(EQ.getPrecedence()), ctx->ctx.param0() == 1 && ctx.param1() == 1 ? 1D : 0D);
+        BinaryOperator OR = binary("||", sameAs(AND.getPrecedence()), ctx->ctx.param0() == 1 || ctx.param1() == 1 ? 1D : 0D);
+        BinaryOperator XOR = binary("|", sameAs(AND.getPrecedence()), ctx->ctx.param0() != ctx.param1() ? 1D : 0D);
 
         BinaryOperator[] OPERATORS = {ADD,SUB,MULT,DIV,MOD,POW,EQ,NE,GT,GE,LT,LE,AND,OR,XOR};
     }
