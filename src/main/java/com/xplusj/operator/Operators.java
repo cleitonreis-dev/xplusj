@@ -27,11 +27,28 @@ package com.xplusj.operator;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.unary.UnaryOperator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.xplusj.operator.Precedence.*;
 import static com.xplusj.operator.binary.BinaryOperator.binary;
 import static com.xplusj.operator.unary.UnaryOperator.unary;
 
 public interface Operators {
+
+    /**
+     *
+     */
+    Set<Character> ALLOWED_OPERATOR_SYMBOLS = new HashSet<Character>(){{
+        add('!');add('@');add('#');add('$');
+        add('%');add('"');add('\'');add('&');
+        add('*');add('-');add('+');add('=');
+        add(':');add(';');add('~');add('^');
+        add('?');add('|');add('\\');add('>');
+        add('<');add('÷');add('/');add('ƒ');
+        add('£');add('¿');add('«');add('»');
+        add('¢');add('§');add('√');add('∛');
+    }};
 
     /**
      *
