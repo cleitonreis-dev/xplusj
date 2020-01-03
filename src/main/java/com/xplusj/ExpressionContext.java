@@ -6,7 +6,6 @@ import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
-import com.xplusj.tokenizer.ExpressionTokenizer;
 
 public interface ExpressionContext {
     ExpressionOperators getDefinitions();
@@ -16,8 +15,6 @@ public interface ExpressionContext {
     BinaryOperatorExecutor getBinaryOperator(String symbol);
 
     FunctionOperatorExecutor getFunction(String name);
-
-    ExpressionTokenizer getTokenizer();
 
     ExpressionParser getParser();
 
@@ -33,8 +30,6 @@ public interface ExpressionContext {
         Builder setExpressionFactory(ExpressionFactory expressionFactory);
 
         Builder setParserFactory(ExpressionParserFactory parserFactory);
-
-        Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory);
 
         Builder setUnaryOperatorFactory(ExpressionUnaryOperatorFactory unaryFactory);
 

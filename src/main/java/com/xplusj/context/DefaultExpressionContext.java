@@ -1,5 +1,6 @@
 package com.xplusj.context;
 
+import com.xplusj.Constants;
 import com.xplusj.Expression;
 import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperators;
@@ -10,17 +11,13 @@ import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
-import com.xplusj.tokenizer.ExpressionTokenizer;
-import com.xplusj.Constants;
 
 public class DefaultExpressionContext implements ExpressionContext {
 
     private final ExpressionOperators definitions;
     private final ExpressionParser parser;
-    private final ExpressionTokenizer tokenizer;
     private final ExpressionFactory expressionFactory;
     private final ExpressionParserFactory parserFactory;
-    private final ExpressionTokenizerFactory tokenizerFactory;
     private final ExpressionUnaryOperatorFactory unaryFactory;
     private final ExpressionBinaryOperatorFactory binaryFactory;
     private final ExpressionFunctionOperatorFactory functionFactory;
@@ -28,16 +25,13 @@ public class DefaultExpressionContext implements ExpressionContext {
     private DefaultExpressionContext(ExpressionOperators definitions,
                                      ExpressionFactory expressionFactory,
                                      ExpressionParserFactory parserFactory,
-                                     ExpressionTokenizerFactory tokenizerFactory,
                                      ExpressionUnaryOperatorFactory unaryFactory,
                                      ExpressionBinaryOperatorFactory binaryFactory,
                                      ExpressionFunctionOperatorFactory functionFactory) {
         this.definitions = definitions;
-        this.tokenizer = tokenizerFactory.create(definitions);
-        this.parser = parserFactory.create(this.tokenizer, definitions);
+        this.parser = parserFactory.create(this);
         this.expressionFactory = expressionFactory;
         this.parserFactory = parserFactory;
-        this.tokenizerFactory = tokenizerFactory;
         this.unaryFactory = unaryFactory;
         this.binaryFactory = binaryFactory;
         this.functionFactory = functionFactory;
@@ -74,11 +68,6 @@ public class DefaultExpressionContext implements ExpressionContext {
     }
 
     @Override
-    public ExpressionTokenizer getTokenizer() {
-        return tokenizer;
-    }
-
-    @Override
     public ExpressionParser getParser() {
         return parser;
     }
@@ -86,8 +75,8 @@ public class DefaultExpressionContext implements ExpressionContext {
     @Override
     public ExpressionContext append(ExpressionOperators operatorDefinitions) {
         return new DefaultExpressionContext(
-                definitions.append(operatorDefinitions), expressionFactory, parserFactory,
-                tokenizerFactory, unaryFactory, binaryFactory, functionFactory
+                definitions.append(operatorDefinitions), expressionFactory,
+                parserFactory, unaryFactory, binaryFactory, functionFactory
         );
     }
 
@@ -100,7 +89,6 @@ public class DefaultExpressionContext implements ExpressionContext {
         private ExpressionOperators definitions;
         private ExpressionFactory expressionFactory;
         private ExpressionParserFactory parserFactory;
-        private ExpressionTokenizerFactory tokenizerFactory;
         private ExpressionUnaryOperatorFactory unaryFactory;
         private ExpressionBinaryOperatorFactory binaryFactory;
         private ExpressionFunctionOperatorFactory functionFactory;
@@ -115,12 +103,6 @@ public class DefaultExpressionContext implements ExpressionContext {
         @Override
         public Builder setParserFactory(ExpressionParserFactory parserFactory) {
             this.parserFactory = parserFactory;
-            return this;
-        }
-
-        @Override
-        public Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory) {
-            this.tokenizerFactory = tokenizerFactory;
             return this;
         }
 
@@ -154,7 +136,7 @@ public class DefaultExpressionContext implements ExpressionContext {
 
             return new DefaultExpressionContext(
                 definitions,expressionFactory, parserFactory,
-                tokenizerFactory,unaryFactory, binaryFactory, functionFactory
+                unaryFactory, binaryFactory, functionFactory
             );
         }
 
@@ -172,9 +154,6 @@ public class DefaultExpressionContext implements ExpressionContext {
 
             if(parserFactory == null)
                 parserFactory = ExpressionParserFactory.defaultFactory();
-
-            if(tokenizerFactory == null)
-                tokenizerFactory = ExpressionTokenizerFactory.defaultFactory();
 
             if(unaryFactory == null)
                 unaryFactory = ExpressionUnaryOperatorFactory.defaultFactory();

@@ -4,9 +4,9 @@ import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.OperatorContext;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.function.FunctionOperator;
-import com.xplusj.tokenizer.ExpressionTokenizer;
-import com.xplusj.tokenizer.Token;
-import com.xplusj.tokenizer.TokenType;
+import com.xplusj.parser.tokenizer.ExpressionTokenizer;
+import com.xplusj.parser.tokenizer.Token;
+import com.xplusj.parser.tokenizer.TokenType;
 
 public class DefaultExpressionParser implements ExpressionParser {
     private enum ExecContext{PARENTHESIS,FUNC,EXP}

@@ -1,14 +1,14 @@
 package com.xplusj.parser;
 
+import com.xplusj.ExpressionContext;
 import com.xplusj.ExpressionOperators;
 import com.xplusj.expression.Stack;
-import com.xplusj.factory.ExpressionTokenizerFactory;
 import com.xplusj.operator.Operator;
 import com.xplusj.operator.Precedence;
 import com.xplusj.operator.binary.BinaryOperator;
 import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.unary.UnaryOperator;
-import com.xplusj.tokenizer.ExpressionTokenizer;
+import com.xplusj.parser.tokenizer.ExpressionTokenizer;
 import com.xplusj.Variable;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,6 +42,9 @@ public class DefaultExpressionParserTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
+    private ExpressionContext context;
+
+    @Mock
     private ExpressionOperators definitions;
 
     private DefaultExpressionParserTest.InstructionLogger instructionLogger;
@@ -52,7 +55,9 @@ public class DefaultExpressionParserTest {
     public void setUp(){
         instructionLogger = new DefaultExpressionParserTest.InstructionLogger();
 
-        tokenizer = ExpressionTokenizerFactory.defaultFactory().create(definitions);
+        when(context.getDefinitions()).thenReturn(definitions);
+
+        tokenizer = ExpressionTokenizer.tokenizer(context);
 
         when(definitions.hasBinaryOperator("+")).thenReturn(true);
         when(definitions.getBinaryOperator("+")).thenReturn(PLUS);

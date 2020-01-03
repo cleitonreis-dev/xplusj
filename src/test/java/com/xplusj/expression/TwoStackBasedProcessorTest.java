@@ -79,8 +79,7 @@ public class TwoStackBasedProcessorTest {
     public void setUp(){
         when(environment.getDefinitions()).thenReturn(globalContext);
 
-        ExpressionParser parser = ExpressionParserFactory.defaultFactory()
-                .create(ExpressionTokenizerFactory.defaultFactory().create(globalContext), globalContext);
+        ExpressionParser parser = ExpressionParserFactory.defaultFactory().create(environment);
         when(environment.getParser()).thenReturn(parser);
 
         when(unaryOperatorDefinition.getType()).thenReturn(OperatorType.UNARY);
