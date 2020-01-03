@@ -40,7 +40,9 @@ public class PerformanceTest {
         }
 
         int loops = 100000;
-        long start = System.currentTimeMillis();
+        long start = 0L;
+
+        start = System.currentTimeMillis();
         for(int i = 0; i < loops; i++)
             iExp.eval(vars);
 
@@ -54,12 +56,19 @@ public class PerformanceTest {
 
         start = System.currentTimeMillis();
         for(int i = 0; i < loops; i++)
-            result = (a/(2+b)-Math.max(a,b)*2)*(a/(2+b)-Math.max(a,b)*2)*(a/(2+b)-Math.max(a,b)*2);
+            env.expression(expression).eval(vars);
 
-        long totalJava = System.currentTimeMillis() - start;
+        long totalExp2 = System.currentTimeMillis() - start;
+
+        start = System.currentTimeMillis();
+        for(int i = 0; i < loops; i++)
+            env.formula(expression).eval(vars);
+
+        long totalFExp2 = System.currentTimeMillis() - start;
 
         System.out.println("Inline: " + totalIExp);
+        System.out.println("Inline 2: " + totalExp2);
         System.out.println("Formula: " + totalFExp);
-        System.out.println("Java: " + totalJava);
+        System.out.println("Formula 2: " + totalFExp2);
     }
 }

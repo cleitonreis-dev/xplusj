@@ -27,12 +27,13 @@ package com.xplusj.parser.tokenizer;
 import com.xplusj.parser.ExpressionParseException;
 
 import java.util.Set;
+import java.util.function.Function;
 
 public class Tokenizer implements ExpressionTokenizer.Tokenizer {
     private final String expression;
     private final int expressionLength;
     private final Set<Character> allowedOperators;
-    private final Set<String> definedOperators;
+    private final Function<String, Boolean> operatorFinder;
 
     private int currentIndex;
     private int startIndex;
@@ -40,11 +41,11 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     Tokenizer(final String expression,
               final Set<Character> allowedOperators,
-              final Set<String> definedOperators) {
+              final Function<String,Boolean> operatorFinder) {
         this.expression = expression;
         this.expressionLength = expression.length();
         this.allowedOperators = allowedOperators;
-        this.definedOperators = definedOperators;
+        this.operatorFinder = operatorFinder;
     }
 
     @Override
@@ -95,7 +96,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
     private Token getVarOrFuncToken() {
         int identifierStartIndex = startIndex;
-        String identifier = readIdentifier();
+        String identifier = readVarFuncIdentifier();
 
         if(!hasNext()) {
             lastToken = Token.var(identifier, identifierStartIndex);
@@ -110,7 +111,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
             return lastToken;
         }
 
-        if((!hasNext() && c == ' ') || allowedOperators.contains(c) || c == ',' || c == ')') {
+        if(!hasNext() || isAllowedAfterValue(c)) {
             lastToken = Token.var(identifier, identifierStartIndex);
             return lastToken;
         }
@@ -149,7 +150,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
             currentIndex++;
 
         char c = expression.charAt(hasNext() ? currentIndex : currentIndex-1);
-        if(isNumberValid(c) || c == ' ' || allowedOperators.contains(c) || c == ',' || c == ')'){
+        if(isNumberValid(c) || isAllowedAfterValue(c)){
             lastToken = Token.number(expression.substring(startIndex,currentIndex),startIndex);
             return lastToken;
         }
@@ -157,7 +158,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
         throw new ExpressionParseException(expression,currentIndex,"Invalid number");
     }
 
-    private String readIdentifier() {
+    private String readVarFuncIdentifier() {
         while (hasNext() && isVarFuncValid(expression.charAt(currentIndex)))
             currentIndex++;
 
@@ -173,7 +174,7 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
             currentIndex++;
 
         char c = expression.charAt(hasNext() ? currentIndex : currentIndex-1);
-        if(isConstValid(c) || c == ' ' || allowedOperators.contains(c) || c == ',' || c == ')') {
+        if(isConstValid(c) || isAllowedAfterValue(c)) {
             lastToken = Token.constant(expression.substring(startIndex, currentIndex), startIndex);
             return lastToken;
         }
@@ -188,12 +189,16 @@ public class Tokenizer implements ExpressionTokenizer.Tokenizer {
 
         String operatorIdentifier = expression.substring(startIndex, currentIndex);
         if(operatorIdentifier.length() > 1) {
-            while (!definedOperators.contains(operatorIdentifier) && currentIndex > startIndex)
+            while (!operatorFinder.apply(operatorIdentifier) && currentIndex > startIndex)
                 operatorIdentifier = expression.substring(startIndex,--currentIndex);
         }
 
         lastToken = Token.operator(operatorIdentifier, startIndex);
         return lastToken;
+    }
+
+    private boolean isAllowedAfterValue(char c) {
+        return c == ' ' || allowedOperators.contains(c) || c == ',' || c == ')';
     }
 
     private static boolean isNumberEligible(char c){

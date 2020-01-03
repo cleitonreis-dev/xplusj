@@ -15,7 +15,6 @@ import com.xplusj.parser.ExpressionParser;
 public class DefaultExpressionContext implements ExpressionContext {
 
     private final ExpressionOperators definitions;
-    private final ExpressionParser parser;
     private final ExpressionFactory expressionFactory;
     private final ExpressionParserFactory parserFactory;
     private final ExpressionUnaryOperatorFactory unaryFactory;
@@ -29,7 +28,6 @@ public class DefaultExpressionContext implements ExpressionContext {
                                      ExpressionBinaryOperatorFactory binaryFactory,
                                      ExpressionFunctionOperatorFactory functionFactory) {
         this.definitions = definitions;
-        this.parser = parserFactory.create(this);
         this.expressionFactory = expressionFactory;
         this.parserFactory = parserFactory;
         this.unaryFactory = unaryFactory;
@@ -69,7 +67,7 @@ public class DefaultExpressionContext implements ExpressionContext {
 
     @Override
     public ExpressionParser getParser() {
-        return parser;
+        return parserFactory.create(this);
     }
 
     @Override

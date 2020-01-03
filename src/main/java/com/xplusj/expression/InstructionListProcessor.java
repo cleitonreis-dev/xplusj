@@ -67,6 +67,6 @@ public class InstructionListProcessor
     }
 
     public static InstructionListProcessor create(){
-        return new InstructionListProcessor(Stack.instance());
+        return create(Stack.instance());
     }
 }

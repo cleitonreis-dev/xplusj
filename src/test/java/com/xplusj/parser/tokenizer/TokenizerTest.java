@@ -24,7 +24,6 @@
 
 package com.xplusj.parser.tokenizer;
 
-import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.Operators;
 import com.xplusj.parser.ExpressionParseException;
 import org.junit.Before;
@@ -33,7 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
@@ -41,7 +39,6 @@ import java.util.*;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TokenizerTest {
@@ -49,18 +46,13 @@ public class TokenizerTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Mock
-    private ExpressionOperators operatorDefinitions;
-
     private Set<String> definedOperators = new HashSet<String>(){{
         add("==");add(">");add(">=");
     }};
 
     @Before
     public void setUp(){
-        when(operatorDefinitions.hasBinaryOperator("==")).thenReturn(true);
-        when(operatorDefinitions.hasBinaryOperator(">")).thenReturn(true);
-        when(operatorDefinitions.hasBinaryOperator(">=")).thenReturn(true);
+
     }
 
     @Test
@@ -98,6 +90,7 @@ public class TokenizerTest {
         Tokenizer tokenizer = tokenizer("func_name");
         assertTrue(tokenizer.hasNext());
         Token token = tokenizer.next();
+
         assertEquals(TokenType.VAR, token.type);
         assertEquals("func_name", token.value);
         assertEquals(0, token.index);
@@ -188,11 +181,11 @@ public class TokenizerTest {
         List<Token> expectedTokens = Arrays.asList(
                 Token.constant("CON",0),
                 Token.operator("+",3),
-                Token.constant("AAA_B",4),
+                Token.constant("AAA_B1",4),
                 Token.EOE()
         );
 
-        Tokenizer tokenizer = tokenizer("CON+AAA_B");
+        Tokenizer tokenizer = tokenizer("CON+AAA_B1");
         List<Token> tokens = new ArrayList<>();
 
         while (tokenizer.hasNext())
@@ -522,7 +515,7 @@ public class TokenizerTest {
     }
 
     private Tokenizer tokenizer(String expression){
-        return new Tokenizer(expression, Operators.ALLOWED_OPERATOR_SYMBOLS, definedOperators
-        );
+        return new Tokenizer(expression, Operators.ALLOWED_OPERATOR_SYMBOLS,
+                symbol->definedOperators.contains(symbol));
     }
 }

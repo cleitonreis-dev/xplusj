@@ -27,26 +27,21 @@ package com.xplusj.parser.tokenizer;
 import com.xplusj.ExpressionOperators;
 import com.xplusj.operator.Operators;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Function;
 
 public class DefaultExpressionTokenizer implements ExpressionTokenizer{
-    private final Set<String> definedOperators;
+    private final Function<String,Boolean> operatorFinder;
 
     private DefaultExpressionTokenizer(final ExpressionOperators operatorDefinitions) {
-        this.definedOperators = new HashSet<String>(){
-            @Override public boolean contains(Object o) {
-                String symbol = (String)o;
-                return operatorDefinitions.hasBinaryOperator(symbol)
-                        || operatorDefinitions.hasUnaryOperator(symbol);
-            }
-        };
+        this.operatorFinder = symbol ->
+                operatorDefinitions.hasBinaryOperator(symbol)
+                || operatorDefinitions.hasUnaryOperator(symbol);
     }
 
     @Override
     public Tokenizer tokenize(final String expression) {
         return new com.xplusj.parser.tokenizer.Tokenizer(expression,
-                Operators.ALLOWED_OPERATOR_SYMBOLS, definedOperators);
+                Operators.ALLOWED_OPERATOR_SYMBOLS, operatorFinder);
     }
 
     public static DefaultExpressionTokenizer create(ExpressionOperators operatorDefinitions){
