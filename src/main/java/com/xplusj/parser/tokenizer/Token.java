@@ -39,18 +39,6 @@ public class Token {
         this.index = index;
     }
 
-    public TokenType getType() {
-        return type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,8 +97,4 @@ public class Token {
     public static Token EOE(){
         return EOE;
     }
-
-    /*public static Token identifier(String value, int index) {
-        return new Token(TokenType.IDENTIFIER, value, index);
-    }*/
 }

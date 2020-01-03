@@ -27,7 +27,6 @@ package com.xplusj.parser.tokenizer;
 public enum TokenType {
     NUMBER,
     CONST,
-    //IDENTIFIER,
     VAR,
     FUNC,
     PARENTHESIS_OPENING,

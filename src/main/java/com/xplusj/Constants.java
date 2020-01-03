@@ -24,8 +24,6 @@
 
 package com.xplusj;
 
-import com.xplusj.Variable;
-
 public interface Constants {
     Variable PI = Variable.var("PI", Math.PI);
 
