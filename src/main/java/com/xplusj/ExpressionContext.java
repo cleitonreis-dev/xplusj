@@ -29,6 +29,8 @@ public interface ExpressionContext {
 
         Builder setExpressionFactory(ExpressionFactory expressionFactory);
 
+        Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory);
+
         Builder setParserFactory(ExpressionParserFactory parserFactory);
 
         Builder setUnaryOperatorFactory(ExpressionUnaryOperatorFactory unaryFactory);

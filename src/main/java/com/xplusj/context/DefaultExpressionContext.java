@@ -16,6 +16,7 @@ public class DefaultExpressionContext implements ExpressionContext {
 
     private final ExpressionOperators definitions;
     private final ExpressionFactory expressionFactory;
+    private final ExpressionTokenizerFactory tokenizerFactory;
     private final ExpressionParserFactory parserFactory;
     private final ExpressionUnaryOperatorFactory unaryFactory;
     private final ExpressionBinaryOperatorFactory binaryFactory;
@@ -23,12 +24,14 @@ public class DefaultExpressionContext implements ExpressionContext {
 
     private DefaultExpressionContext(ExpressionOperators definitions,
                                      ExpressionFactory expressionFactory,
+                                     ExpressionTokenizerFactory tokenizerFactory,
                                      ExpressionParserFactory parserFactory,
                                      ExpressionUnaryOperatorFactory unaryFactory,
                                      ExpressionBinaryOperatorFactory binaryFactory,
                                      ExpressionFunctionOperatorFactory functionFactory) {
         this.definitions = definitions;
         this.expressionFactory = expressionFactory;
+        this.tokenizerFactory = tokenizerFactory;
         this.parserFactory = parserFactory;
         this.unaryFactory = unaryFactory;
         this.binaryFactory = binaryFactory;
@@ -73,7 +76,7 @@ public class DefaultExpressionContext implements ExpressionContext {
     @Override
     public ExpressionContext append(ExpressionOperators operatorDefinitions) {
         return new DefaultExpressionContext(
-                definitions.append(operatorDefinitions), expressionFactory,
+                definitions.append(operatorDefinitions), expressionFactory, tokenizerFactory,
                 parserFactory, unaryFactory, binaryFactory, functionFactory
         );
     }
@@ -87,6 +90,7 @@ public class DefaultExpressionContext implements ExpressionContext {
         private ExpressionOperators definitions;
         private ExpressionFactory expressionFactory;
         private ExpressionParserFactory parserFactory;
+        private ExpressionTokenizerFactory tokenizerFactory;
         private ExpressionUnaryOperatorFactory unaryFactory;
         private ExpressionBinaryOperatorFactory binaryFactory;
         private ExpressionFunctionOperatorFactory functionFactory;
@@ -101,6 +105,12 @@ public class DefaultExpressionContext implements ExpressionContext {
         @Override
         public Builder setParserFactory(ExpressionParserFactory parserFactory) {
             this.parserFactory = parserFactory;
+            return this;
+        }
+
+        @Override
+        public Builder setTokenizerFactory(ExpressionTokenizerFactory tokenizerFactory) {
+            this.tokenizerFactory = tokenizerFactory;
             return this;
         }
 
@@ -133,7 +143,7 @@ public class DefaultExpressionContext implements ExpressionContext {
             initDefaults();
 
             return new DefaultExpressionContext(
-                definitions,expressionFactory, parserFactory,
+                definitions,expressionFactory, tokenizerFactory, parserFactory,
                 unaryFactory, binaryFactory, functionFactory
             );
         }
@@ -152,6 +162,9 @@ public class DefaultExpressionContext implements ExpressionContext {
 
             if(parserFactory == null)
                 parserFactory = ExpressionParserFactory.defaultFactory();
+
+            if(tokenizerFactory == null)
+                tokenizerFactory = ExpressionTokenizerFactory.defaultFactory();
 
             if(unaryFactory == null)
                 unaryFactory = ExpressionUnaryOperatorFactory.defaultFactory();
