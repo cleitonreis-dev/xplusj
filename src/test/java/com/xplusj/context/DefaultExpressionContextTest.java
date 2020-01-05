@@ -9,6 +9,7 @@ import com.xplusj.operator.function.FunctionOperator;
 import com.xplusj.operator.function.FunctionOperatorContext;
 import com.xplusj.operator.unary.UnaryOperator;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.parser.tokenizer.ExpressionTokenizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,9 @@ public class DefaultExpressionContextTest {
     private ExpressionParserFactory parserFactory;
 
     @Mock
+    private ExpressionTokenizerFactory tokenizerFactory;
+
+    @Mock
     private ExpressionUnaryOperatorFactory unaryFactory;
 
     @Mock
@@ -46,10 +50,21 @@ public class DefaultExpressionContextTest {
     private ExpressionParser parser;
 
     @Mock
+    private ExpressionTokenizer tokenizer;
+
+    @Mock
     private ExpressionOperators newDefinitions;
+
+    @Mock
+    private ExpressionContext context;
 
     @Before
     public void setUp(){
+        when(tokenizerFactory.create(context)).thenReturn(tokenizer);
+        when(tokenizerFactory.create(context)).thenReturn(tokenizer);
+
+        when(parserFactory.create(context)).thenReturn(parser);
+        when(parserFactory.create(context)).thenReturn(parser);
         when(parserFactory.create(any(ExpressionContext.class))).thenReturn(parser);
         //when(parserFactory.create(tokenizer, newDefinitions)).thenReturn(parser);
 
@@ -117,6 +132,13 @@ public class DefaultExpressionContextTest {
 
         verify(definitions).getFunction(op);
         verify(functionFactory).create(opDef, context);
+    }
+
+    @Test
+    public void testCreateTokenizer(){
+        ExpressionContext context = build();
+        context.getTokenizer();
+        verify(tokenizerFactory).create(context);
     }
 
     @Test
@@ -196,6 +218,14 @@ public class DefaultExpressionContextTest {
     }
 
     @Test
+    public void testAppendCreateTokenizer(){
+        ExpressionContext context = build().append(newDefinitions);
+        context.getTokenizer();
+
+        verify(tokenizerFactory).create(context);
+    }
+
+    @Test
     public void testAppendCreateParser(){
         ExpressionContext context = build().append(newDefinitions);
         ExpressionParser parser = context.getParser();
@@ -209,6 +239,7 @@ public class DefaultExpressionContextTest {
                 .setOperatorDefinitions(definitions)
                 .setExpressionFactory(expressionFactory)
                 .setParserFactory(parserFactory)
+                .setTokenizerFactory(tokenizerFactory)
                 .setUnaryOperatorFactory(unaryFactory)
                 .setBinaryOperatorFactory(binaryFactory)
                 .setFunctionOperatorFactory(functionFactory)

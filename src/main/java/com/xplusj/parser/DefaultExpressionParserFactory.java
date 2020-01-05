@@ -2,7 +2,6 @@ package com.xplusj.parser;
 
 import com.xplusj.ExpressionContext;
 import com.xplusj.factory.ExpressionParserFactory;
-import com.xplusj.parser.tokenizer.ExpressionTokenizer;
 
 public class DefaultExpressionParserFactory implements ExpressionParserFactory {
 
@@ -10,11 +9,7 @@ public class DefaultExpressionParserFactory implements ExpressionParserFactory {
 
     @Override
     public ExpressionParser create(ExpressionContext context) {
-        return DefaultExpressionParser.create(context.getDefinitions(), createTokenizer(context));
-    }
-
-    protected ExpressionTokenizer createTokenizer(ExpressionContext context){
-        return ExpressionTokenizer.tokenizer(context);
+        return DefaultExpressionParser.create(context.getDefinitions(), context.getTokenizer());
     }
 
     public static ExpressionParserFactory getInstance() {

@@ -11,6 +11,7 @@ import com.xplusj.operator.binary.BinaryOperatorExecutor;
 import com.xplusj.operator.function.FunctionOperatorExecutor;
 import com.xplusj.operator.unary.UnaryOperatorExecutor;
 import com.xplusj.parser.ExpressionParser;
+import com.xplusj.parser.tokenizer.ExpressionTokenizer;
 
 public class DefaultExpressionContext implements ExpressionContext {
 
@@ -66,6 +67,11 @@ public class DefaultExpressionContext implements ExpressionContext {
     @Override
     public FunctionOperatorExecutor getFunction(String name) {
         return functionFactory.create(definitions.getFunction(name),this);
+    }
+
+    @Override
+    public ExpressionTokenizer getTokenizer() {
+        return tokenizerFactory.create(this);
     }
 
     @Override
